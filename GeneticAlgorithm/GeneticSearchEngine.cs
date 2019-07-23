@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -80,8 +79,34 @@ namespace GeneticAlgorithm
         private void RenewPopulation(int populationToRenew)
         {
             var newPopulation = populationGenerator.GeneratePopulation(populationToRenew).ToArray();
-            for (int i = 0; i < populationToRenew; i++)
+            var oldPopulation = GetBestChromosomes(population.Length - populationToRenew);
+            var i = 0;
+            for (; i < populationToRenew; i++)
                 population[i] = newPopulation[i];
+            for (; i < population.Length; i++)
+                population[i] = oldPopulation[i - populationToRenew];
+        }
+
+        private IChromosome[] GetBestChromosomes(int n)
+        {
+            if (n == 0)
+                return new IChromosome[0];
+
+            var min = evaluations.OrderByDescending(x => x).Take(n).Last();
+            var bestChromosomes = new IChromosome[n];
+            int index = 0;
+            for (int i = 0; i < population.Length; i++)
+            {
+                if (evaluations[i] >= min)
+                {
+                    bestChromosomes[index] = population[i];
+                    index++;
+                }
+                if (index >= n)
+                    return bestChromosomes;
+            }
+
+            throw new InternalSearchException("Code 1000 (not enough best chromosomes found)");
         }
 
         private void EvaluatePopulation()

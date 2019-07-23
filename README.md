@@ -33,7 +33,8 @@ You'll need to implement the ICrossoverManager class. This tells the engine how 
 
 ### IPopulationGenerator
 
-You'll also need to implement the IPopulationGenerator class. The engine uses this class to create its initial population. the PopulationGeneratorwill also renew the population when needed (see the secssion on IPopulationRenwalManagers).
+You'll also need to implement the IPopulationGenerator class. The engine uses this class to create its initial population. 
+The PopulationGenerator will also renew the population when needed (see [IPopulationRenwalManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/README.md#ipopulationrenwalmanagers)).
 
 ```CSharp
     public interface IPopulationGenerator
@@ -57,6 +58,8 @@ var result = searchEngine.Search();
 ```
 
 ## Search Options
+
+Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 

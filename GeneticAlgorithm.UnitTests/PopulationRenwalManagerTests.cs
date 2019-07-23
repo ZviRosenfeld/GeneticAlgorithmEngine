@@ -25,6 +25,21 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
+        public void RenewOnlySomeChromosomes()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 4, 4, 4 }, false);
+            populationManager.SetPopulationGenerated(new[]
+                {new double[] {3, 3, 3}, new double[] {2, 2, 2}, new double[] {1, 1, 1}});
+            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                .AddPopulationRenwalManager(new RenewAtConvergence(0.9, 0.5))
+                .IncludeAllHistory().Build();
+
+            var result = engine.Search();
+
+            Assert.AreEqual(4, result.BestChromosome.Evaluate());
+        }
+
+        [TestMethod]
         public void RenewIfNoImprovmentTest1()
         {
             var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 }, false);

@@ -29,6 +29,9 @@ namespace GeneticAlgorithm
             return this;
         }
 
+        /// <summary>
+        /// The GeneticSearchResult will include the entire history of the population
+        /// </summary>
         public GeneticSearchEngineBuilder IncludeAllHistory()
         {
             includeAllHistory = true;

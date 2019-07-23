@@ -31,10 +31,7 @@ namespace GeneticAlgorithm
         public int MaxGenerations { get; }
 
         public double MutationProbability { get; }
-
-        /// <summary>
-        /// If this is true, the GeneticSearchResult will include the entire history of the population
-        /// </summary>
+        
         public bool IncludeAllHistory { get; }
 
         public List<IStopManager> StopManagers { get; }
