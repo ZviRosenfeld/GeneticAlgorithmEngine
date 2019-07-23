@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.StopManagers;
 
 namespace GeneticAlgorithm
 {
@@ -41,6 +43,12 @@ namespace GeneticAlgorithm
         public GeneticSearchEngineBuilder AddStopManager(IStopManager manager)
         {
             stopManagers.Add(manager);
+            return this;
+        }
+
+        public GeneticSearchEngineBuilder SetCancellationToken(CancellationToken cancellationToken)
+        {
+            stopManagers.Add(new StopWithCancellationToken(cancellationToken));
             return this;
         }
 

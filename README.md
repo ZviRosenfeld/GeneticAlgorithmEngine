@@ -63,7 +63,14 @@ Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 
-By defualt, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability(double probability) method.
+By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability(double probability) method.
+
+### CancellationToken
+
+You can use the GeneticSearchEngineBuilder.SetCancellationToken(CancellationToken cancellationToken) method to add cencellationTokens.
+The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
+
+When the cancellation is requested, you'll get the best results that was found up till than.
 
 ### IncludeAllHistory
 

@@ -8,7 +8,6 @@ namespace GeneticAlgorithm.UnitTests
         private readonly IPopulationGenerator populationGenerator = A.Fake<IPopulationGenerator>();
         private readonly IChildrenGenerator childrenGenerator = A.Fake<IChildrenGenerator>();
         private readonly int initialPopulationSize;
-        private readonly object lockOnject = new object();
 
         public TestPopulationManager(double[][] populationEvaluation)
         {
