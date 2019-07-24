@@ -15,8 +15,8 @@ namespace GeneticAlgorithm.UnitTests
             GenerateInitailPopulation(populationEvaluation[0]);
 
             int index = 0;
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._, A<int>._)).ReturnsLazily(
-                (IChromosome[] c, double[] d, int n) =>
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._)).ReturnsLazily(
+                (Population p, int n) =>
                 {
                     index++;
                     return GetNextGeneration(populationEvaluation[index], n, index, "Gen");
@@ -30,14 +30,14 @@ namespace GeneticAlgorithm.UnitTests
             nextGenerationEvaluationFunc = nextGenerationEvaluationFunc ?? (c => c.Evaluate());
 
             int index = 0;
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._, A<int>._)).ReturnsLazily(
-                (IChromosome[] c, double[] d, int n) =>
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._)).ReturnsLazily(
+                (Population p, int n) =>
                 {
                     index++;
 
                     var newEvaluation = new double[populationEvaluation.Length];
                     for (int i = 0; i < populationEvaluation.Length; i++)
-                        newEvaluation[i] = nextGenerationEvaluationFunc(c[i]);
+                        newEvaluation[i] = nextGenerationEvaluationFunc(p[i].Chromosome);
 
                     return GetNextGeneration(newEvaluation, n , index, "Gen");
                 });

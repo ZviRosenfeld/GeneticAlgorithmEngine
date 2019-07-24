@@ -19,29 +19,26 @@ namespace GeneticAlgorithm
             this.options = options;
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
-            population = new IChromosome[options.PopulationSize];
-            evaluations = new double[options.PopulationSize];
         }
 
-        private IChromosome[] population;
+        private Population population;
         private List<IChromosome[]> history;
-        private double[] evaluations;
 
         public GeneticSearchResult Search()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             history = new List<IChromosome[]>();
-            population = populationGenerator.GeneratePopulation(options.PopulationSize).ToArray();
+            population = new Population(populationGenerator.GeneratePopulation(options.PopulationSize).ToArray());
             if (options.IncludeAllHistory)
-                history.Add(population);
+                history.Add(population.GetChromosomes());
 
             int generation;
             for (generation = 0; generation < options.MaxGenerations; generation++)
             {
                 EvaluatePopulation();
 
-                if (options.StopManagers.Any(stopManager => stopManager.ShouldStop(population, evaluations, generation)))
+                if (options.StopManagers.Any(stopManager => stopManager.ShouldStop(population.GetChromosomes(), population.GetEvaluations(), generation)))
                     break;
 
                 var populationToRenew = GetPopulationToRenew(generation);
@@ -54,20 +51,20 @@ namespace GeneticAlgorithm
                 NormilizeEvaluations();
                 GenerateChildren();
                 if (options.IncludeAllHistory)
-                    history.Add(population);
+                    history.Add(population.GetChromosomes());
             }
 
             stopwatch.Stop();
-            return new GeneticSearchResult(population, history, stopwatch.Elapsed, generation);
+            return new GeneticSearchResult(population.GetChromosomes(), history, stopwatch.Elapsed, generation);
         }
 
         private void GenerateChildren()
         {
             var eliteChromosomes = (int) Math.Ceiling(options.PopulationSize * options.ElitPercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
-            var children = childrenGenerator.GenerateChildren(population, evaluations, numberOfChildren);
+            var children = childrenGenerator.GenerateChildren(population, numberOfChildren);
             var elite = GetBestChromosomes(eliteChromosomes);
-            population = SearchUtils.Combine(children, elite);
+            population = new Population(SearchUtils.Combine(children, elite));
         }
 
         private int GetPopulationToRenew(int generation)
@@ -76,7 +73,7 @@ namespace GeneticAlgorithm
                 return 0;
 
             var percantage = options.PopulationRenwalManagers.Select(populationRenwalManager =>
-                populationRenwalManager.ShouldRenew(population, evaluations, generation)).Max();
+                populationRenwalManager.ShouldRenew(population.GetChromosomes(), population.GetEvaluations(), generation)).Max();
 
             if (percantage < 0)
                 throw new PopulationRenewalException("percentage of the population to renew can't be less then 0");
@@ -89,8 +86,8 @@ namespace GeneticAlgorithm
         private void RenewPopulation(int populationToRenew)
         {
             var newPopulation = populationGenerator.GeneratePopulation(populationToRenew).ToArray();
-            var oldPopulation = GetBestChromosomes(population.Length - populationToRenew);
-            population = SearchUtils.Combine(newPopulation, oldPopulation);
+            var oldPopulation = GetBestChromosomes(options.PopulationSize - populationToRenew);
+            population = new Population(SearchUtils.Combine(newPopulation, oldPopulation));
         }
 
         private IChromosome[] GetBestChromosomes(int n)
@@ -98,14 +95,14 @@ namespace GeneticAlgorithm
             if (n == 0)
                 return new IChromosome[0];
 
-            var min = evaluations.OrderByDescending(x => x).Take(n).Last();
+            var min = population.GetEvaluations().OrderByDescending(x => x).Take(n).Last();
             var bestChromosomes = new IChromosome[n];
             int index = 0;
-            for (int i = 0; i < population.Length; i++)
+            foreach (var chromosome in population)
             {
-                if (evaluations[i] >= min)
+                if (chromosome.Evaluation >= min)
                 {
-                    bestChromosomes[index] = population[i];
+                    bestChromosomes[index] = chromosome.Chromosome;
                     index++;
                 }
                 if (index >= n)
@@ -117,22 +114,22 @@ namespace GeneticAlgorithm
 
         private void EvaluatePopulation()
         {
-            var index = 0;
             Parallel.ForEach(population, chromosome =>
             {
-                var evaluation = chromosome.Evaluate();
+                var evaluation = chromosome.Chromosome.Evaluate();
                 if (evaluation < 0)
                     throw new NegativeEvaluationException();
-                evaluations[index] = evaluation;
-                index++;
+                chromosome.Evaluation = evaluation;
             });
         }
 
         private void NormilizeEvaluations()
         {
-            var total = evaluations.Sum();
-            for (int i = 0; i < options.PopulationSize; i++)
-                evaluations[i] = evaluations[i] / total;
+            var total = population.GetEvaluations().Sum();
+            Parallel.ForEach(population, chromosome =>
+            {
+                chromosome.Evaluation = chromosome.Evaluation / total;
+            });
         }
     }
 }

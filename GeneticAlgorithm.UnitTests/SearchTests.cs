@@ -29,7 +29,7 @@ namespace GeneticAlgorithm.UnitTests
         // In this test, without elitism, the population will decrease without the elitism.
         [TestMethod]
         [DataRow(0.1)]
-        //[DataRow(0.5)]
+        [DataRow(0.5)]
         public void ElitismTest(double eilentPrecentage)
         {
             var populationSize = 10;
@@ -41,10 +41,7 @@ namespace GeneticAlgorithm.UnitTests
             
             var result = engine.Search();
             var maxEvaluation = result.BestChromosome.Evaluate();
-
-            foreach (var chromosomese in result.History)
-                Console.WriteLine(chromosomese.MyToString());
-
+            
             Assert.AreEqual(10, maxEvaluation);
             Assert.AreEqual(eilentPrecentage * populationSize, result.Population.Count(c => c.Evaluate() == maxEvaluation));
         }

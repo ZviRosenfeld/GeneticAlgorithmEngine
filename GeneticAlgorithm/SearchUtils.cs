@@ -1,13 +1,9 @@
-﻿using System;
-using System.Text;
-using GeneticAlgorithm.Interfaces;
+﻿using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
     public static class SearchUtils
     {
-        private static readonly Random random = new Random();
-
         public static IChromosome ChooseBest(this IChromosome[] population)
         {
             double bestEvaluation = -1;
@@ -24,21 +20,7 @@ namespace GeneticAlgorithm
 
             return bestChromosome;
         }
-
-        public static IChromosome ChooseParent(IChromosome[] population, double[] evaluations)
-        {
-            var randomNumber = random.NextDouble();
-            var sum = 0.0;
-            var index = -1;
-            while (sum < randomNumber)
-            {
-                index++;
-                sum += evaluations[index];
-            }
-
-            return population[index];
-        }
-
+        
         public static IChromosome[] Combine(IChromosome[] chromosomes1, IChromosome[] chromosomes2)
         {
             var firstChromosomesLength = chromosomes1.Length;
@@ -50,14 +32,6 @@ namespace GeneticAlgorithm
                 newChromosomes[i] = chromosomes2[i - firstChromosomesLength];
 
             return newChromosomes;
-        }
-
-        public static string MyToString(this IChromosome[] chromosomes)
-        {
-            var stringBuilder = new StringBuilder();
-            foreach (var chromosome in chromosomes)
-                stringBuilder.AppendLine(chromosome + ", ");
-            return stringBuilder.ToString();
         }
     }
 }
