@@ -40,7 +40,7 @@ namespace GeneticAlgorithm
             return children.ToArray();
         }
 
-        public IChromosome ChooseParent(IChromosome[] population, double[] evaluations)
+        private IChromosome ChooseParent(IChromosome[] population, double[] evaluations)
         {
             var randomNumber = random.NextDouble();
             var sum = 0.0;
