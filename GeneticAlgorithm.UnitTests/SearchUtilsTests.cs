@@ -35,6 +35,45 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
+        public void CombineTest_BothArraysContainElements()
+        {
+            var population1 = new[] { chromosome1, chromosome2 };
+            var population2 = new[] {chromosome3};
+
+            var newPopulation = SearchUtils.Combine(population1, population2);
+
+            Assert.AreEqual(newPopulation[0], chromosome1);
+            Assert.AreEqual(newPopulation[1], chromosome2);
+            Assert.AreEqual(newPopulation[2], chromosome3);
+        }
+
+        [TestMethod]
+        public void CombineTest_FirstArrayEmty()
+        {
+            var population1 = new IChromosome[] {};
+            var population2 = new[] { chromosome1, chromosome2 , chromosome3 };
+
+            var newPopulation = SearchUtils.Combine(population1, population2);
+
+            Assert.AreEqual(newPopulation[0], chromosome1);
+            Assert.AreEqual(newPopulation[1], chromosome2);
+            Assert.AreEqual(newPopulation[2], chromosome3);
+        }
+
+        [TestMethod]
+        public void CombineTest_SecondArrayEmty()
+        {
+            var population1 = new[] { chromosome1, chromosome2, chromosome3 };
+            var population2 = new IChromosome[] { };
+
+            var newPopulation = SearchUtils.Combine(population1, population2);
+
+            Assert.AreEqual(newPopulation[0], chromosome1);
+            Assert.AreEqual(newPopulation[1], chromosome2);
+            Assert.AreEqual(newPopulation[2], chromosome3);
+        }
+
+        [TestMethod]
         public void ChooseParent_MostLieklyToChooseBestChromosome()
         {
             const int tries = 1000;

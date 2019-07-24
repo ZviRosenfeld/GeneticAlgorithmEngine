@@ -13,6 +13,7 @@ namespace GeneticAlgorithm
         protected readonly int maxGenerations;
         protected double mutationProbability = 0;
         protected bool includeAllHistory = false;
+        protected double elitPercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
         protected List<IPopulationRenwalManager> populationRenwalManagers = new List<IPopulationRenwalManager>();
 
@@ -28,6 +29,15 @@ namespace GeneticAlgorithm
         public GeneticSearchEngineBuilder SetMutationProbability(double probability)
         {
             mutationProbability = probability;
+            return this;
+        }
+
+        /// <summary>
+        /// The "percentage" of the best chromosome will be passed "as is" to the next generation
+        /// </summary>
+        public GeneticSearchEngineBuilder SetElitPercentage(double percentage)
+        {
+            elitPercentage = percentage;
             return this;
         }
 
@@ -61,7 +71,7 @@ namespace GeneticAlgorithm
         public virtual GeneticSearchEngine Build()
         {
             var options = new GeneticSearchOptions(populationSize, maxGenerations,
-                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers);
+                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers, elitPercentage);
             var childrenGenerator = new ChildrenGenerator(options, crossoverManager);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator);
         }

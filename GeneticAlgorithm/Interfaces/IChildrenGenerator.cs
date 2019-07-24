@@ -2,6 +2,6 @@
 {
     public interface IChildrenGenerator
     {
-        IChromosome[] GenerateChildren(IChromosome[] population, double[] evaluations);
+        IChromosome[] GenerateChildren(IChromosome[] population, double[] evaluations, int number);
     }
 }

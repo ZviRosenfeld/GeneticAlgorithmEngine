@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.UnitTests
@@ -7,45 +8,42 @@ namespace GeneticAlgorithm.UnitTests
     {
         private readonly IPopulationGenerator populationGenerator = A.Fake<IPopulationGenerator>();
         private readonly IChildrenGenerator childrenGenerator = A.Fake<IChildrenGenerator>();
-        private readonly int initialPopulationSize;
+        private int initialPopulationSize;
 
         public TestPopulationManager(double[][] populationEvaluation)
         {
-            initialPopulationSize = populationEvaluation[0].Length;
-            var initailPopulation = new IChromosome[initialPopulationSize];
-            for (int i = 0; i < initailPopulation.Length; i++)
-            {
-                initailPopulation[i] = A.Fake<IChromosome>();
-                A.CallTo(() => initailPopulation[i].ToString()).Returns("Initial Chromosome");
-                A.CallTo(() => initailPopulation[i].Evaluate()).Returns(populationEvaluation[0][i]);
-            }
+            GenerateInitailPopulation(populationEvaluation[0]);
 
             int index = 0;
-            A.CallTo(() => populationGenerator.GeneratePopulation(A<int>._)).Returns(initailPopulation);
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._)).ReturnsLazily(
-                (IChromosome[] c, double[] d) =>
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._, A<int>._)).ReturnsLazily(
+                (IChromosome[] c, double[] d, int n) =>
                 {
                     index++;
-                    return GetNextGeneration(populationEvaluation[index], index, "Gen");
+                    return GetNextGeneration(populationEvaluation[index], n, index, "Gen");
                 });
         }
-
-        private IChromosome[] GetNextGeneration(double[] generationEvaluations, int index, string type)
+        
+        public TestPopulationManager(double[] populationEvaluation, Func<IChromosome, double> nextGenerationEvaluationFunc = null)
         {
-            var population = new IChromosome[generationEvaluations.Length];
-            for (int i = 0; i < generationEvaluations.Length; i++)
-            {
-                var newChromosome = A.Fake<IChromosome>();
-                var evaluation = generationEvaluations[i];
-                A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
-                A.CallTo(() => newChromosome.ToString()).Returns($"{type}{index} (Eval={evaluation})");
-                population[i] = newChromosome;
-            }
+            GenerateInitailPopulation(populationEvaluation);
 
-            return population;
+            nextGenerationEvaluationFunc = nextGenerationEvaluationFunc ?? (c => c.Evaluate());
+
+            int index = 0;
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._, A<int>._)).ReturnsLazily(
+                (IChromosome[] c, double[] d, int n) =>
+                {
+                    index++;
+
+                    var newEvaluation = new double[populationEvaluation.Length];
+                    for (int i = 0; i < populationEvaluation.Length; i++)
+                        newEvaluation[i] = nextGenerationEvaluationFunc(c[i]);
+
+                    return GetNextGeneration(newEvaluation, n , index, "Gen");
+                });
         }
-
-        public TestPopulationManager(double[] populationEvaluation, bool repeat)
+        
+        private void GenerateInitailPopulation(double[] populationEvaluation)
         {
             initialPopulationSize = populationEvaluation.Length;
             var initailPopulation = new IChromosome[initialPopulationSize];
@@ -55,20 +53,22 @@ namespace GeneticAlgorithm.UnitTests
                 A.CallTo(() => initailPopulation[i].ToString()).Returns("Initial Chromosome");
                 A.CallTo(() => initailPopulation[i].Evaluate()).Returns(populationEvaluation[i]);
             }
-
-            int index = 0;
             A.CallTo(() => populationGenerator.GeneratePopulation(A<int>._)).Returns(initailPopulation);
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<IChromosome[]>._, A<double[]>._)).ReturnsLazily(
-                (IChromosome[] c, double[] d) =>
-                {
-                    index++;
-                    
-                    if (!repeat)
-                        for (int i = 0; i < populationEvaluation.Length; i++)
-                            populationEvaluation[i] = c[i].Evaluate();
+        }
 
-                    return GetNextGeneration(populationEvaluation, index, "Gen");
-                });
+        private IChromosome[] GetNextGeneration(double[] generationEvaluations, int children, int index, string type)
+        {
+            var population = new IChromosome[children];
+            for (int i = 0; i < children; i++)
+            {
+                var newChromosome = A.Fake<IChromosome>();
+                var evaluation = generationEvaluations[i];
+                A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
+                A.CallTo(() => newChromosome.ToString()).Returns($"{type}{index} (Eval={evaluation})");
+                population[i] = newChromosome;
+            }
+            
+            return population;
         }
 
         public void SetPopulationGenerated(double[][] populationEvaluation)
@@ -81,7 +81,7 @@ namespace GeneticAlgorithm.UnitTests
                 index++;
                 if (index == -1) return initialPopulation;
 
-                return GetNextGeneration(populationEvaluation[index], index, "Renewal");
+                return GetNextGeneration(populationEvaluation[index], s, index, "Renewal");
             });
         }
 

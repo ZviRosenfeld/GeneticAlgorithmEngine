@@ -8,15 +8,15 @@ namespace GeneticAlgorithm
     {
         public GeneticSearchOptions(int populationSize, int maxGenerations, double mutationProbability,
             List<IStopManager> stopManagers, bool includeAllHistory,
-            List<IPopulationRenwalManager> populationRenwalManagers)
+            List<IPopulationRenwalManager> populationRenwalManagers, double elitPercentage)
         {
-            if (mutationProbability > 1 || mutationProbability < 0)
-                throw new GeneticAlgorithmException(nameof(mutationProbability) +
-                                                    " must be between 0.0 to 1.0 (including)");
+            AssertIsBetweenZeroAndOne(mutationProbability, nameof(mutationProbability));
             MutationProbability = mutationProbability;
             StopManagers = stopManagers;
             IncludeAllHistory = includeAllHistory;
             PopulationRenwalManagers = populationRenwalManagers;
+            AssertIsBetweenZeroAndOne(elitPercentage, nameof(elitPercentage));
+            ElitPercentage = elitPercentage;
 
             MaxGenerations = maxGenerations > 0
                 ? maxGenerations
@@ -26,6 +26,12 @@ namespace GeneticAlgorithm
                 : throw new GeneticAlgorithmException(nameof(populationSize) + " must be greater then zero");
         }
 
+        private void AssertIsBetweenZeroAndOne(double value, string name)
+        {
+            if (value > 1 || value < 0)
+                throw new GeneticAlgorithmException(name + " must be between 0.0 to 1.0 (including)");
+        }
+
         public int PopulationSize { get; }
 
         public int MaxGenerations { get; }
@@ -33,6 +39,8 @@ namespace GeneticAlgorithm
         public double MutationProbability { get; }
         
         public bool IncludeAllHistory { get; }
+
+        public double ElitPercentage { get; }
 
         public List<IStopManager> StopManagers { get; }
 

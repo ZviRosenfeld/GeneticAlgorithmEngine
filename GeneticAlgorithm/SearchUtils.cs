@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
@@ -36,6 +37,27 @@ namespace GeneticAlgorithm
             }
 
             return population[index];
+        }
+
+        public static IChromosome[] Combine(IChromosome[] chromosomes1, IChromosome[] chromosomes2)
+        {
+            var firstChromosomesLength = chromosomes1.Length;
+            var newChromosomes = new IChromosome[firstChromosomesLength + chromosomes2.Length];
+            var i = 0;
+            for (; i < firstChromosomesLength; i++)
+                newChromosomes[i] = chromosomes1[i];
+            for (; i < firstChromosomesLength + chromosomes2.Length; i++)
+                newChromosomes[i] = chromosomes2[i - firstChromosomesLength];
+
+            return newChromosomes;
+        }
+
+        public static string MyToString(this IChromosome[] chromosomes)
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var chromosome in chromosomes)
+                stringBuilder.AppendLine(chromosome + ", ");
+            return stringBuilder.ToString();
         }
     }
 }

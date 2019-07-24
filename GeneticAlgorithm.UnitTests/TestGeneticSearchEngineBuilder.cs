@@ -14,7 +14,7 @@
         public override GeneticSearchEngine Build()
         {
             var options = new GeneticSearchOptions(populationSize, maxGenerations,
-                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers);
+                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers, elitPercentage);
             return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator());
         }
     }

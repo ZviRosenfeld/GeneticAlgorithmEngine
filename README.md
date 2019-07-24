@@ -58,26 +58,25 @@ var result = searchEngine.Search();
 ```
 
 ## Search Options
-
 Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
-
 By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability(double probability) method.
 
 ### CancellationToken
-
 You can use the GeneticSearchEngineBuilder.SetCancellationToken(CancellationToken cancellationToken) method to add cencellationTokens.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
 When the cancellation is requested, you'll get the best results that was found up till than.
 
 ### IncludeAllHistory
-
 If this option is turned on (by default it's off) the result will include the entire history of the population.
 
-### IStopManagers
+### Elitism
+Using elitism, you can set a percentage of the best chromosomes that will be passed "as is" to the next generation.
+You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_algorithm#Elitism).
 
+### IStopManagers
 StopManagers let you configure when you want the search to stop. StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
 You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
 
@@ -95,7 +94,6 @@ var result = searchEngine.Search();
 ```
 
 ### IPopulationRenwalManagers
-
 PopulationRenwalManagers will renew a certain percentage of the population if some condition is met. PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
 

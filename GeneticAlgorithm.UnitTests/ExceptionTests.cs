@@ -37,6 +37,14 @@ namespace GeneticAlgorithm.UnitTests
                 .SetMutationProbability(probability).Build();
 
         [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        [DataRow(-0.1)]
+        [DataRow(1.1)]
+        public void SetIllegalElitPercentage_ThrowsException(double percentage) =>
+            new GeneticSearchEngineBuilder(2, 2, A.Fake<ICrossoverManager>(), A.Fake<IPopulationGenerator>())
+                .SetElitPercentage(percentage).Build();
+
+        [TestMethod]
         public void NagitiveEvaluation_ThrowException()
         {
             try
