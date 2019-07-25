@@ -47,7 +47,9 @@ namespace GeneticAlgorithm
                     RenewPopulation(populationToRenew);
                     EvaluatePopulation();
                 }
-                
+
+                UpdateStopAndRenewalManagers();
+
                 NormilizeEvaluations();
                 GenerateChildren();
                 if (options.IncludeAllHistory)
@@ -56,6 +58,14 @@ namespace GeneticAlgorithm
 
             stopwatch.Stop();
             return new GeneticSearchResult(population.GetChromosomes(), history, stopwatch.Elapsed, generation);
+        }
+
+        private void UpdateStopAndRenewalManagers()
+        {
+            foreach (var stopManager in options.StopManagers)
+                stopManager.AddGeneration(population.GetChromosomes(), population.GetEvaluations());
+            foreach (var populationRenwalManager in options.PopulationRenwalManagers)
+                populationRenwalManager.AddGeneration(population.GetChromosomes(), population.GetEvaluations());
         }
 
         private void GenerateChildren()

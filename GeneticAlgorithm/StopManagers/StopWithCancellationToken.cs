@@ -14,5 +14,10 @@ namespace GeneticAlgorithm.StopManagers
 
         public bool ShouldStop(IChromosome[] population, double[] evaluations, int generation) =>
             cancellationToken.IsCancellationRequested;
+
+        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        {
+            // Do nothing
+        }
     }
 }

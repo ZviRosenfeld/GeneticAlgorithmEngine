@@ -14,7 +14,6 @@ namespace GeneticAlgorithm.StopManagers
         /// <summary>
         /// Stop if there isn't an improvement of at least "minImprovment" after "generations" generations
         /// </summary>
-        /// <param name="generations"></param>
         public StopIfNoImprovment(int generations, double minImprovment)
         {
             this.generations = generations;
@@ -25,15 +24,17 @@ namespace GeneticAlgorithm.StopManagers
         {
             var currentEvaluation = evaluations.Max();
             if (generation < generations)
-            {
-                oldEvaluations.Add(currentEvaluation);
                 return false;
-            }
-
+            
             var min = oldEvaluations.Skip(generation - generations).Take(generations).Min();
             oldEvaluations.Add(currentEvaluation);
 
             return Math.Abs(currentEvaluation - min) <= minImprovment;
+        }
+
+        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        {
+            oldEvaluations.Add(evaluations.Max());
         }
     }
 }

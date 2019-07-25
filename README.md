@@ -51,8 +51,8 @@ The PopulationGenerator will also renew the population when needed (see [IPopula
 It's highly recommended that you use the GeneticSearchEngineBuilder class to create your GeneticSearchEngine. See the following example.
 
 ```CSharp
-var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, new NumberVectorCrossoverManager(),
-     new NumberVectorBassicPopulationGenerator()).SetMutationProbability(0.1).Build();
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.SetMutationProbability(0.1).Build();
 
 var result = searchEngine.Search();
 ```
@@ -80,12 +80,14 @@ You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_alg
 StopManagers let you configure when you want the search to stop. StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
 You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
 
+You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
+
 Existing StopManagers:
 - **StopAtEvaluation**: Will cause the search to stop when it reaches some predefined evaluation.
 - **StopAtConvergence**: The search will stop when the difference between chromosomes in the population is too small.
 - **StopIfNoImprovment**: Will stop if the improvement over 'X' generations isn't good enough.
 
-Exsample:
+Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.AddStopManager(new StopAtConvergence(0.5)).Build();
@@ -96,6 +98,8 @@ var result = searchEngine.Search();
 ### IPopulationRenwalManagers
 PopulationRenwalManagers will renew a certain percentage of the population if some condition is met. PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
+
+You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
 
 Existing PopulationRenwalManagers:
 - **RenewAtConvergence**: The search will renew some of the population if the difference between chromosomes in the population is too small.

@@ -29,5 +29,10 @@ namespace GeneticAlgorithm.StopManagers
 
             return (maxEvaluation - minEvaluation) <= diff;
         }
+
+        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        {
+            // Do nothing
+        }
     }
 }
