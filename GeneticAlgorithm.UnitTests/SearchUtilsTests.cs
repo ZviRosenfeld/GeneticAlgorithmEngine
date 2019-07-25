@@ -26,7 +26,9 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => chromosome2.Evaluate()).Returns(8);
             A.CallTo(() => chromosome3.Evaluate()).Returns(0.5);
 
-            var population = new[] {chromosome1, chromosome2, chromosome3};
+            var population = new Population(new[] {chromosome1, chromosome2, chromosome3});
+            foreach (var chromosome in population)
+                chromosome.Evaluation = chromosome.Chromosome.Evaluate();
             var best = population.ChooseBest();
 
             Assert.AreEqual(chromosome2, best);

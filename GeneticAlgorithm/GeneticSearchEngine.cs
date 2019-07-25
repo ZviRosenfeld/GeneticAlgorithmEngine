@@ -15,7 +15,7 @@ namespace GeneticAlgorithm
         private readonly GeneticSearchOptions options;
 
         /// <summary>
-        /// This even is risen for every new generation. It's arguments are the population and their evaluations.
+        /// This even is risen once for every new generation. It's arguments are the population and their evaluations.
         /// </summary>
         public event Action<IChromosome[], double[]> OnNewGeneration; 
 
@@ -34,17 +34,20 @@ namespace GeneticAlgorithm
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             history = new List<IChromosome[]>();
-            population = new Population(populationGenerator.GeneratePopulation(options.PopulationSize).ToArray());
-            if (options.IncludeAllHistory)
-                history.Add(population.GetChromosomes());
-
             int generation;
             for (generation = 0; generation < options.MaxGenerations; generation++)
             {
+                if (generation == 0)
+                    population = new Population(populationGenerator.GeneratePopulation(options.PopulationSize).ToArray());
+                else
+                    GenerateChildren();
                 EvaluatePopulation();
 
                 if (options.StopManagers.Any(stopManager => stopManager.ShouldStop(population.GetChromosomes(), population.GetEvaluations(), generation)))
+                {
+                    UpdateEventsAndHistory(population.GetChromosomes(), population.GetEvaluations());
                     break;
+                }
 
                 var populationToRenew = GetPopulationToRenew(generation);
                 if (populationToRenew > 0)
@@ -54,15 +57,11 @@ namespace GeneticAlgorithm
                 }
 
                 UpdateNewGeneration();
-
                 NormilizeEvaluations();
-                GenerateChildren();
-                if (options.IncludeAllHistory)
-                    history.Add(population.GetChromosomes());
             }
 
             stopwatch.Stop();
-            return new GeneticSearchResult(population.GetChromosomes(), history, stopwatch.Elapsed, generation);
+            return new GeneticSearchResult(population.ChooseBest(), population.GetChromosomes(), history, stopwatch.Elapsed, generation);
         }
 
         /// <summary>
@@ -78,7 +77,15 @@ namespace GeneticAlgorithm
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
                 populationRenwalManager.AddGeneration(chromosomes, evaluations);
 
+            UpdateEventsAndHistory(chromosomes, evaluations);
+        }
+
+        private void UpdateEventsAndHistory(IChromosome[] chromosomes, double[] evaluations)
+        {
             OnNewGeneration?.Invoke(chromosomes, evaluations);
+
+            if (options.IncludeAllHistory)
+                history.Add(population.GetChromosomes());
         }
 
         private void GenerateChildren()

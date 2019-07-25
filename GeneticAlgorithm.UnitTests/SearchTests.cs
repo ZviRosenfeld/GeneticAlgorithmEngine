@@ -73,7 +73,7 @@ namespace GeneticAlgorithm.UnitTests
             var result = searchEngine.Search();
 
             if (includeHistory)
-                Assert.AreEqual(3, result.History.Count, "There should have been history");
+                Assert.AreEqual(2, result.History.Count, "There should have been history");
             else
                 Assert.AreEqual(0, result.History.Count, "There shouldn't be any history");
         }

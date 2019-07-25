@@ -4,17 +4,17 @@ namespace GeneticAlgorithm
 {
     public static class SearchUtils
     {
-        public static IChromosome ChooseBest(this IChromosome[] population)
+        public static IChromosome ChooseBest(this Population population)
         {
             double bestEvaluation = -1;
             IChromosome bestChromosome = null;
             foreach (var chromosome in population)
             {
-                var evaluation = chromosome.Evaluate();
+                var evaluation = chromosome.Evaluation;
                 if (evaluation > bestEvaluation)
                 {
                     bestEvaluation = evaluation;
-                    bestChromosome = chromosome;
+                    bestChromosome = chromosome.Chromosome;
                 }
             }
 

@@ -6,13 +6,13 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchResult
     {
-        public GeneticSearchResult(IChromosome[] population, List<IChromosome[]> history, TimeSpan searchTime, int generations)
+        public GeneticSearchResult(IChromosome bestChromosome, IChromosome[] population, List<IChromosome[]> history, TimeSpan searchTime, int generations)
         {
             Population = population;
             History = history;
             SearchTime = searchTime;
             Generations = generations;
-            BestChromosome = population.ChooseBest();
+            BestChromosome = bestChromosome;
         }
 
         public IChromosome[] Population { get; }
