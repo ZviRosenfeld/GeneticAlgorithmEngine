@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>GeneticAlgorithm</id>
+    <version>1.0.0</version>
+    <description>A parallel Genetic Algorithm Engine</description>
+    <authors>Zvi Rosenfeld</authors>
+	<license type="expression">MIT</license>
+	<projectUrl>https://github.com/ZviRosenfeld/GeneticAlgorithmEngine</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>GeneticAlgorithm GA</tags>
+	<copyright>Zvi Rosenfeld</copyright>
+  </metadata>
+  <files>
+        <file src="bin\Release\netstandard2.0\*.dll" target="lib\netstandard2.0" />
+   </files>
+</package>
