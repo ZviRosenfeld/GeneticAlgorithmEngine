@@ -23,6 +23,7 @@ Your chromosomes will need to implement the IChromosome classes.
 ### ICrossoverManager
 
 You'll need to implement the ICrossoverManager class. This tells the engine how to perform crossovers for your chromosomes.
+You can read more about corossovers [here](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
 
 ```CSharp
     public interface ICrossoverManager
@@ -54,6 +55,23 @@ It's highly recommended that you use the GeneticSearchEngineBuilder class to cre
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetMutationProbability(0.1).Build();
 
+var result = searchEngine.Search();
+```
+
+## Events
+
+### OnNewGeneration
+
+This event is called once for every new generations. It's arguments are the generation's population, and their evaluations.
+This is a good way for GUIs to visually show the argument's progress, or just show the search progress.
+
+Example:
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator).Build();
+searchEngine.OnNewGeneration += (IChromosome[] c,double[] d) =>
+{
+    // Do some work here
+};
 var result = searchEngine.Search();
 ```
 

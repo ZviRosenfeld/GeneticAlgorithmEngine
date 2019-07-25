@@ -14,9 +14,9 @@ namespace GreatestVectorTests
 
         public IEnumerable<IChromosome> GeneratePopulation(int size)
         {
-            var population = new IChromosome[BassicTests.POPULATION_SIZE];
+            var population = new IChromosome[size];
 
-            for (int i = 0; i < BassicTests.POPULATION_SIZE; i++)
+            for (int i = 0; i < size; i++)
                 population[i] = GetChromosome();
 
             return population;

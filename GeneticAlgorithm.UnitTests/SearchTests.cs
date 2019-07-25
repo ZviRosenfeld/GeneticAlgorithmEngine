@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests
@@ -86,10 +88,45 @@ namespace GeneticAlgorithm.UnitTests
                     .IncludeAllHistory().Build();
 
             var result = searchEngine.Search();
+            
+            AssertHasEvaluation(result.History, population);
+        }
 
-            for (int i = 0; i < population.Length; i++)
-            for (int j = 0; j < population[i].Length; j++)
-                Assert.AreEqual(population[i][j], result.History[i][j].Evaluate());
+        [TestMethod]
+        public void OnNewGenerationEventTest()
+        {
+            var population = new[] { new double[] { 1, 1, 1 }, new double[] { 2, 2, 2 }, new double[] { 2, 3, 2 } };
+            var populationManager = new TestPopulationManager(population);
+            var searchEngine =
+                new TestGeneticSearchEngineBuilder(population[0].Length, population.Length - 1, populationManager)
+                    .Build();
+
+            var actualPopulation = new List<IChromosome[]>();
+            var actualEvaluations = new List<double[]>();
+            searchEngine.OnNewGeneration += (c, d) =>
+            {
+                actualEvaluations.Add(d);
+                actualPopulation.Add(c);
+            };
+
+            searchEngine.Search();
+            
+            AssertAreTheSame(actualEvaluations, population);
+            AssertHasEvaluation(actualPopulation, population);
+        }
+
+        private void AssertHasEvaluation(List<IChromosome[]> chromosomes, double[][] evaluations)
+        {
+            for (int i = 0; i < chromosomes.Count; i++)
+            for (int j = 0; j < chromosomes[0].Length; j++)
+                Assert.AreEqual(evaluations[i][j], chromosomes[i][j].Evaluate());
+        }
+
+        private void AssertAreTheSame(List<double[]> collection1, double[][] collection2)
+        {
+            for (int i = 0; i < collection1.Count; i++)
+            for (int j = 0; j < collection1[0].Length; j++)
+                Assert.AreEqual(collection1[i][j], collection2[i][j]);
         }
     }
 }

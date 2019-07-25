@@ -6,7 +6,7 @@ namespace GreatestVectorTests
     [TestClass]
     public class BassicTests
     {
-        public const int POPULATION_SIZE = 100;
+        private const int POPULATION_SIZE = 100;
 
         [TestMethod]
         public void BassicTest()

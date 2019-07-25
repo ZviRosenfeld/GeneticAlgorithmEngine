@@ -14,6 +14,11 @@ namespace GeneticAlgorithm
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
 
+        /// <summary>
+        /// This even is risen for every new generation. It's arguments are the population and their evaluations.
+        /// </summary>
+        public event Action<IChromosome[], double[]> OnNewGeneration; 
+
         public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator)
         {
             this.options = options;
@@ -48,7 +53,7 @@ namespace GeneticAlgorithm
                     EvaluatePopulation();
                 }
 
-                UpdateStopAndRenewalManagers();
+                UpdateNewGeneration();
 
                 NormilizeEvaluations();
                 GenerateChildren();
@@ -60,12 +65,20 @@ namespace GeneticAlgorithm
             return new GeneticSearchResult(population.GetChromosomes(), history, stopwatch.Elapsed, generation);
         }
 
-        private void UpdateStopAndRenewalManagers()
+        /// <summary>
+        /// Update everyone that needs to know about the new generation
+        /// </summary>
+        private void UpdateNewGeneration()
         {
+            var chromosomes = population.GetChromosomes();
+            var evaluations = population.GetEvaluations();
+
             foreach (var stopManager in options.StopManagers)
-                stopManager.AddGeneration(population.GetChromosomes(), population.GetEvaluations());
+                stopManager.AddGeneration(chromosomes, evaluations);
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
-                populationRenwalManager.AddGeneration(population.GetChromosomes(), population.GetEvaluations());
+                populationRenwalManager.AddGeneration(chromosomes, evaluations);
+
+            OnNewGeneration?.Invoke(chromosomes, evaluations);
         }
 
         private void GenerateChildren()
