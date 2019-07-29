@@ -65,11 +65,11 @@ You can also use the Pause method to pause the search, and then resume it anytim
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetMutationProbability(0.1).Build();
 	
-engine.Next();
-Task.Run(() => engine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
+searchEngine.Next();
+Task.Run(() => searchEngine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
 Thread.Sleep(10); // Give the engine some time to run
-engine.Pause();
-Task.Run(() => engine.Run());
+searchEngine.Pause();
+Task.Run(() => searchEngine.Run());
 ```
 
 ## Events
