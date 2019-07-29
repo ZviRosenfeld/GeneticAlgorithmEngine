@@ -54,8 +54,22 @@ It's highly recommended that you use the GeneticSearchEngineBuilder class to cre
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetMutationProbability(0.1).Build();
+	
+var result = searchEngine.Run();
+```
 
-var result = searchEngine.Search();
+Once you have and instance of an engine you can either use the Run method to run a complate search, or the Next method to run just one more generation.
+You can also use the Pause method to pause the search, and then resume it anytime.
+
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.SetMutationProbability(0.1).Build();
+	
+engine.Next();
+Task.Run(() => engine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
+Thread.Sleep(10); // Give the engine some time to run
+engine.Pause();
+Task.Run(() => engine.Run());
 ```
 
 ## Events
@@ -72,7 +86,7 @@ searchEngine.OnNewGeneration += (IChromosome[] c,double[] d) =>
 {
     // Do some work here
 };
-var result = searchEngine.Search();
+var result = searchEngine.Run();
 ```
 
 ## Search Options
@@ -110,7 +124,7 @@ Example:
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.AddStopManager(new StopAtConvergence(0.5)).Build();
 
-var result = searchEngine.Search();
+var result = searchEngine.Run();
 ```
 
 ### IPopulationRenwalManagers

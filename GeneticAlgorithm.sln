@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticAlgorithm", "GeneticAlgorithm\GeneticAlgorithm.csproj", "{5FADB04C-EE9D-4169-81A1-441FF61DA671}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreatestVectorTests", "GreatestVectorTests\GreatestVectorTests.csproj", "{CB7D02BA-D9C7-4B19-8882-5D091107A60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NumberVector", "GreatestVectorTests\NumberVector.csproj", "{CB7D02BA-D9C7-4B19-8882-5D091107A60D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarking", "Banchmarking\Benchmarking.csproj", "{2522F7FA-EB00-4DFA-B5A2-3DF4D2EB95B4}"
 EndProject

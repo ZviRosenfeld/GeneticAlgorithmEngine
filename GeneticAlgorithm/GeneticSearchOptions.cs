@@ -6,7 +6,7 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchOptions
     {
-        public GeneticSearchOptions(int populationSize, int maxGenerations, double mutationProbability,
+        public GeneticSearchOptions(int populationSize, double mutationProbability,
             List<IStopManager> stopManagers, bool includeAllHistory,
             List<IPopulationRenwalManager> populationRenwalManagers, double elitPercentage)
         {
@@ -17,10 +17,7 @@ namespace GeneticAlgorithm
             PopulationRenwalManagers = populationRenwalManagers;
             AssertIsBetweenZeroAndOne(elitPercentage, nameof(elitPercentage));
             ElitPercentage = elitPercentage;
-
-            MaxGenerations = maxGenerations > 0
-                ? maxGenerations
-                : throw new GeneticAlgorithmException(nameof(maxGenerations) + " must be greater then zero");
+            
             PopulationSize = populationSize > 0
                 ? populationSize
                 : throw new GeneticAlgorithmException(nameof(populationSize) + " must be greater then zero");

@@ -25,7 +25,7 @@ namespace Banchmarking
 
             var engine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager,
                 new SlowPopulationGenerator(SLEEP_TIME)).Build();
-            var result = engine.Search();
+            var result = engine.Run();
 
             Console.WriteLine("Total time: " + result.SearchTime);
         }

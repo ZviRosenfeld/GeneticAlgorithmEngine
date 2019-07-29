@@ -10,7 +10,6 @@ namespace GeneticAlgorithm
         protected readonly ICrossoverManager crossoverManager;
         protected readonly IPopulationGenerator populationGenerator;
         protected readonly int populationSize;
-        protected readonly int maxGenerations;
         protected double mutationProbability = 0;
         protected bool includeAllHistory = false;
         protected double elitPercentage = 0;
@@ -21,9 +20,10 @@ namespace GeneticAlgorithm
             IPopulationGenerator populationGenerator)
         {
             this.populationSize = populationSize;
-            this.maxGenerations = maxGenerations;
             this.crossoverManager = crossoverManager;
             this.populationGenerator = populationGenerator;
+
+            stopManagers.Add(new StopAtGeneration(maxGenerations));
         }
 
         public GeneticSearchEngineBuilder SetMutationProbability(double probability)
@@ -70,7 +70,7 @@ namespace GeneticAlgorithm
         
         public virtual GeneticSearchEngine Build()
         {
-            var options = new GeneticSearchOptions(populationSize, maxGenerations,
+            var options = new GeneticSearchOptions(populationSize,
                 mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers, elitPercentage);
             var childrenGenerator = new ChildrenGenerator(options, crossoverManager);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator);

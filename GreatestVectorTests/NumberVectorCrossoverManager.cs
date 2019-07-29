@@ -3,7 +3,7 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GreatestVectorTests
 {
-    class NumberVectorCrossoverManager : ICrossoverManager
+    public class NumberVectorCrossoverManager : ICrossoverManager
     {
         private readonly Random random = new Random();
 

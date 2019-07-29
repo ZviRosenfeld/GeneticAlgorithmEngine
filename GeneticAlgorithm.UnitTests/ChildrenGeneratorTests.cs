@@ -20,7 +20,7 @@ namespace GeneticAlgorithm.UnitTests
             const int tries = 1500;
             int mutationCounter = 0;
             var population = GetPopulation(tries, 0.1, 0.1, 0.8, () => Interlocked.Increment(ref mutationCounter));
-            var option = new GeneticSearchOptions(tries, 1, mutationProbability, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
+            var option = new GeneticSearchOptions(tries, mutationProbability, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._))
                 .ReturnsLazily((IChromosome c1, IChromosome c2) => c1);
@@ -40,7 +40,7 @@ namespace GeneticAlgorithm.UnitTests
             const double chromosome1Probability = 0.1, chromosome2Probability = 0.3, chromosome3Probability = 0.6;
             var counters = new int[3];
             var population = GetPopulation(tries, chromosome1Probability, chromosome2Probability, chromosome3Probability);
-            var option = new GeneticSearchOptions(tries, 1, 0, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
+            var option = new GeneticSearchOptions(tries, 0, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._)).Invokes(
                 (IChromosome c1, IChromosome c2) =>

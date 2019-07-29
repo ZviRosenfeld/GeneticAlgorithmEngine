@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
@@ -57,7 +55,7 @@ namespace GeneticAlgorithm.UnitTests
 
                 var engine = new GeneticSearchEngineBuilder(1, 2, A.Fake<ICrossoverManager>(), populationGenerator)
                     .Build();
-                engine.Search();
+                engine.Run();
                 Assert.Fail("Should have thrown an exception before this");
             }
             catch (AggregateException e)
@@ -85,7 +83,7 @@ namespace GeneticAlgorithm.UnitTests
                 new GeneticSearchEngineBuilder(1, 2, A.Fake<ICrossoverManager>(), populationGenerator)
                     .AddPopulationRenwalManager(populationRenewalManager)
                     .Build();
-            engine.Search();
+            engine.Run();
         }
     }
 }

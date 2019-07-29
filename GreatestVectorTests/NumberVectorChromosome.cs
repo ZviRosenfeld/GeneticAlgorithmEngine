@@ -5,7 +5,7 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GreatestVectorTests
 {
-    class NumberVectorChromosome : IChromosome
+    public class NumberVectorChromosome : IChromosome
     {
         private readonly int[] vector;
 

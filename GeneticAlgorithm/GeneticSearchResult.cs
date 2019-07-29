@@ -6,12 +6,14 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchResult
     {
-        public GeneticSearchResult(IChromosome bestChromosome, IChromosome[] population, List<IChromosome[]> history, TimeSpan searchTime, int generations)
+        public GeneticSearchResult(IChromosome bestChromosome, IChromosome[] population, List<IChromosome[]> history,
+            TimeSpan searchTime, int generations, bool isCompleted)
         {
             Population = population;
             History = history;
             SearchTime = searchTime;
             Generations = generations;
+            IsCompleted = isCompleted;
             BestChromosome = bestChromosome;
         }
 
@@ -27,5 +29,7 @@ namespace GeneticAlgorithm
         public List<IChromosome[]> History { get; }
 
         public TimeSpan SearchTime { get; }
+
+        public bool IsCompleted { get; }
     }
 }
