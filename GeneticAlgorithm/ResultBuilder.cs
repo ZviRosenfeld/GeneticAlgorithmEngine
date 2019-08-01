@@ -33,7 +33,7 @@ namespace GeneticAlgorithm
             if (lastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
 
-            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.GetChromosomes(), history, searchTime, generations, isComplated);
+            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration, history, searchTime, generations, isComplated);
         }
     }
 }

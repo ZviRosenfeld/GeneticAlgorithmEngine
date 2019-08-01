@@ -29,9 +29,9 @@ namespace GeneticAlgorithm
         
         public GeneticSearchResult Run()
         {
-            TryToStart();
             try
             {
+                TryToStart();
                 while (!ShouldPause)
                 {
                     generation++;
@@ -59,9 +59,9 @@ namespace GeneticAlgorithm
 
         public GeneticSearchResult Next()
         {
-            TryToStart();
             try
             {
+                TryToStart();
                 generation++;
                 lastResult = engine.RunSingleGeneration(lastResult?.Population, generation);
                 resultBuilder.AddGeneration(lastResult);                

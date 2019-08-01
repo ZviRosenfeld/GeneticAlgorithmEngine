@@ -6,7 +6,7 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchResult
     {
-        public GeneticSearchResult(IChromosome bestChromosome, IChromosome[] population, List<IChromosome[]> history,
+        public GeneticSearchResult(IChromosome bestChromosome, Population population, List<IChromosome[]> history,
             TimeSpan searchTime, int generations, bool isCompleted)
         {
             Population = population;
@@ -17,7 +17,7 @@ namespace GeneticAlgorithm
             BestChromosome = bestChromosome;
         }
 
-        public IChromosome[] Population { get; }
+        public Population Population { get; }
 
         public IChromosome BestChromosome { get; }
 

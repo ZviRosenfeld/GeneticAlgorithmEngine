@@ -51,7 +51,8 @@ namespace GeneticAlgorithm.UnitTests
             var maxEvaluation = result.BestChromosome.Evaluate();
             
             Assert.AreEqual(10, maxEvaluation);
-            Assert.AreEqual(eilentPrecentage * populationSize, result.Population.Count(c => c.Evaluate() == maxEvaluation));
+            Assert.AreEqual(eilentPrecentage * populationSize,
+                result.Population.GetChromosomes().Count(c => c.Evaluate() == maxEvaluation));
         }
 
         [TestMethod]
@@ -143,7 +144,7 @@ namespace GeneticAlgorithm.UnitTests
             while (result == null || !result.IsCompleted)
             {
                 result = searchEngine.Next();
-                actualPopulation.Add(result.Population);
+                actualPopulation.Add(result.Population.GetChromosomes());
             }
             
             Assert.AreEqual(3, result.Generations, "We should have ran for 3 generations");
