@@ -2,8 +2,9 @@
 <package >
   <metadata>
     <id>GeneticAlgorithm</id>
-    <version>1.0.0</version>
-    <description>A parallel Genetic Algorithm Engine</description>
+    <version>1.1.0</version>
+	<title>A parallel Genetic Algorithm Engine</title>
+    <description>A parallel Genetic Algorithm Engine. GeneticAlgorithm was created to be easily customized and simple to use.</description>
     <authors>Zvi Rosenfeld</authors>
 	<license type="expression">MIT</license>
 	<projectUrl>https://github.com/ZviRosenfeld/GeneticAlgorithmEngine</projectUrl>

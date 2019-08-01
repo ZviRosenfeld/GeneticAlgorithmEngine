@@ -11,7 +11,7 @@ namespace GeneticAlgorithm
         private readonly ResultBuilder resultBuilder;
 
         /// <summary>
-        /// This even is risen once for every new generation. It's arguments are the population and their evaluations.
+        /// This event is risen once for every new generation. It's arguments are the population and their evaluations.
         /// </summary>
         public event Action<IChromosome[], double[]> OnNewGeneration; 
 
@@ -26,7 +26,10 @@ namespace GeneticAlgorithm
         private bool ShouldPause = false;
         
         public bool IsRunning { get; private set; }
-        
+
+        /// <summary>
+        /// Run's a complete search.
+        /// </summary>
         public GeneticSearchResult Run()
         {
             try
@@ -57,6 +60,9 @@ namespace GeneticAlgorithm
             }
         }
 
+        /// <summary>
+        /// Creates the next generation.
+        /// </summary>
         public GeneticSearchResult Next()
         {
             try
@@ -73,6 +79,9 @@ namespace GeneticAlgorithm
             }
         }
 
+        /// <summary>
+        /// Puases the search (if it is running).
+        /// </summary>
         public bool Puase()
         {
             if (!IsRunning)

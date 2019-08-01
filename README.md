@@ -58,7 +58,7 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
-Once you have and instance of an engine you can either use the Run method to run a complate search, or the Next method to run just one more generation.
+Once you have and instance of an engine you can either use the Run method to run a complete search, or the Next method to run just one more generation.
 You can also use the Pause method to pause the search, and then resume it anytime.
 
 ```CSharp

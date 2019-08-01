@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,7 +70,41 @@ namespace GeneticAlgorithm.UnitTests
 
             Assert.IsTrue(result2.SearchTime > result1.SearchTime, $"engine1 ran for less time than engine2 (engine1 = {result1.SearchTime}; engine2 = {result2.SearchTime})");
         }
-        
+
+        [TestMethod]
+        public void BestChromosome()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 1, 10, 14, 7, 8, 13, 11, 1, 6, 6 });
+            var engine = new TestGeneticSearchEngineBuilder(10, 10, populationManager).Build();
+
+            var result = engine.Next();
+
+            Assert.AreEqual(14, result.BestChromosome.Evaluate());
+        }
+
+        [TestMethod]
+        public void SearchTimeWithNextTest()
+        {
+            var sleepTime = 10;
+            var generations = 50;
+            var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
+            var engine = new TestGeneticSearchEngineBuilder(10, generations, populationManager).Build();
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            GeneticSearchResult result = null;
+            while (result == null || !result.IsCompleted)
+            {
+                result = engine.Next();
+                Thread.Sleep(sleepTime);
+            }
+            stopwatch.Stop();
+
+            var time = stopwatch.Elapsed.TotalMilliseconds - sleepTime * generations -
+                       result.SearchTime.TotalMilliseconds;
+            Assert.IsTrue(time < 0.1 * stopwatch.Elapsed.TotalMilliseconds);
+        }
+
         [DataRow(false, RunType.Run)]
         [DataRow(true, RunType.Run)]
         [DataRow(false, RunType.Next)]
@@ -149,6 +184,25 @@ namespace GeneticAlgorithm.UnitTests
             
             Assert.AreEqual(3, result.Generations, "We should have ran for 3 generations");
             AssertHasEvaluation(actualPopulation, population);
+        }
+
+        [TestMethod]
+        public void IsCompletedTests()
+        {
+            var generations = 30;
+            var populationManager = new TestPopulationManager(new double[]{1,2,3});
+            var searchEngine =
+                new TestGeneticSearchEngineBuilder(3, generations, populationManager)
+                    .IncludeAllHistory().Build();
+            
+            for (int i = 0; i < generations - 1; i++)
+            {
+                var result = searchEngine.Next();
+                Assert.IsFalse(result.IsCompleted, "Shouldn't have finsihed yet");
+            }
+
+            var finalResult = searchEngine.Next();
+            Assert.IsTrue(finalResult.IsCompleted);
         }
 
         private void AssertHasEvaluation(List<IChromosome[]> chromosomes, double[][] evaluations)

@@ -33,7 +33,7 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
-        /// The "percentage" of the best chromosome will be passed "as is" to the next generation
+        /// The "percentage" of the best chromosomes will be passed "as is" to the next generation.
         /// </summary>
         public GeneticSearchEngineBuilder SetElitPercentage(double percentage)
         {
@@ -42,7 +42,7 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
-        /// The GeneticSearchResult will include the entire history of the population
+        /// The GeneticSearchResult will include the entire history of the population.
         /// </summary>
         public GeneticSearchEngineBuilder IncludeAllHistory()
         {

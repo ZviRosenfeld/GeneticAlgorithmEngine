@@ -27,9 +27,9 @@ namespace GeneticAlgorithm
         /// Will only have a value if IncludeAllHistory is set to true
         /// </summary>
         public List<IChromosome[]> History { get; }
-
+        
         public TimeSpan SearchTime { get; }
-
+        
         public bool IsCompleted { get; }
     }
 }
