@@ -94,6 +94,7 @@ namespace GUI
             this.PuaseButton.TabIndex = 2;
             this.PuaseButton.Text = "Puase";
             this.PuaseButton.UseVisualStyleBackColor = true;
+            this.PuaseButton.Click += new System.EventHandler(this.PuaseButton_Click);
             // 
             // NextButton
             // 
@@ -131,10 +132,10 @@ namespace GUI
             // 
             // Chromosome
             // 
+            this.Chromosome.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Chromosome.HeaderText = "Chromosome";
             this.Chromosome.Name = "Chromosome";
             this.Chromosome.ReadOnly = true;
-            Chromosome.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             // 
             // Evaluation
             // 
