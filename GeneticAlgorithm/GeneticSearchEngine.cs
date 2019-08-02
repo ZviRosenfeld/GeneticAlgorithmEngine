@@ -32,9 +32,9 @@ namespace GeneticAlgorithm
         /// </summary>
         public GeneticSearchResult Run()
         {
+            TryToStart();
             try
             {
-                TryToStart();
                 while (!ShouldPause)
                 {
                     generation++;
@@ -65,9 +65,9 @@ namespace GeneticAlgorithm
         /// </summary>
         public GeneticSearchResult Next()
         {
+            TryToStart();
             try
             {
-                TryToStart();
                 generation++;
                 lastResult = engine.RunSingleGeneration(lastResult?.Population, generation);
                 resultBuilder.AddGeneration(lastResult);                
