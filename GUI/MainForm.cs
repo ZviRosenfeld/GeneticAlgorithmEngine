@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GeneticAlgorithm;
@@ -16,14 +14,21 @@ namespace GUI
 
         private bool shouldPause = false;
         private readonly object shouldPauseLock = new object(); 
-        private readonly GeneticSearchEngine engine;
-        private IList<DisplayChromosome> displayChromosomesCollection = new BindingList<DisplayChromosome>();
+        private GeneticSearchEngine engine;
 
         public MainForm()
         {
-            engine = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, new NumberVectorCrossoverManager(),
-                new NumberVectorBassicPopulationGenerator()).Build();
             InitializeComponent();
+            InitializeEngine();
+        }
+
+        private void InitializeEngine()
+        {
+            engine = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, new NumberVectorCrossoverManager(),
+                    new NumberVectorBassicPopulationGenerator()).SetMutationProbability(MutationInputBox.GetValue)
+                .SetElitPercentage(ElitismInputBox.GetValue).Build();
+            var result = engine.Next(); // Create the initial population;
+            Update(result);
         }
 
         private async void RunButton_Click(object sender, System.EventArgs e)
@@ -43,20 +48,13 @@ namespace GUI
 
             SetButtonsState(EngineState.Puased);
         }
-
-        private GeneticSearchResult RunSingleGeneration()
-        {
-            var result = engine.Next();
-            lock (shouldPauseLock)
-                shouldPause = shouldPause || result.IsCompleted;
-            return result;
-        }
-
+        
         private void SetButtonsState(EngineState engineState)
         {
             PuaseButton.Enabled = engineState == EngineState.Running;
             RunButton.Enabled = engineState == EngineState.Puased;
             NextButton.Enabled = engineState == EngineState.Puased;
+            RestartButton.Enabled = engineState == EngineState.Puased;
         }
 
         private void NextButton_Click(object sender, System.EventArgs e)
@@ -69,7 +67,9 @@ namespace GUI
         {
             generationLabel.Text = result.Generations.ToString();
             generationLabel.Refresh();
-            displayChromosomesCollection = new BindingList<DisplayChromosome>();
+            SearchTimeLable.Text = result.SearchTime.ToString();
+            SearchTimeLable.Refresh();
+            var displayChromosomesCollection = new BindingList<DisplayChromosome>();
             foreach (var population in result.Population)
                 displayChromosomesCollection.Add(new DisplayChromosome((NumberVectorChromosome) population.Chromosome,
                     population.Evaluation));
@@ -81,6 +81,11 @@ namespace GUI
         {
             lock (shouldPauseLock)
                 shouldPause = true;
+        }
+
+        private void RestartButton_Click(object sender, System.EventArgs e)
+        {
+            InitializeEngine();
         }
     }
 }

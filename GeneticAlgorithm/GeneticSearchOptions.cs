@@ -30,9 +30,7 @@ namespace GeneticAlgorithm
         }
 
         public int PopulationSize { get; }
-
-        public int MaxGenerations { get; }
-
+        
         public double MutationProbability { get; }
         
         public bool IncludeAllHistory { get; }
