@@ -9,6 +9,7 @@ namespace GeneticAlgorithm
         private readonly object lockObject = new object();
         private readonly InternalEngine engine;
         private readonly ResultBuilder resultBuilder;
+        private readonly GeneticSearchOptions options;
 
         /// <summary>
         /// This event is risen once for every new generation. It's arguments are the population and their evaluations.
@@ -17,6 +18,7 @@ namespace GeneticAlgorithm
 
         public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator)
         {
+            this.options = options;
             resultBuilder = new ResultBuilder(options.IncludeAllHistory);
             engine = new InternalEngine(populationGenerator, childrenGenerator, options, (c, d) => OnNewGeneration?.Invoke(c, d));
         }
@@ -89,6 +91,30 @@ namespace GeneticAlgorithm
 
             ShouldPause = true;
             return true;
+        }
+
+        /// <summary>
+        /// Renews a certain percentage of the population. This can only be called while the engine is paused.
+        /// Note that the renewed population will be considered a new generation. 
+        ///  </summary>
+        public GeneticSearchResult RenewPopulation(double percentageToRenew)
+        {
+            if (lastResult?.Population == null)
+                throw new GeneticAlgorithmException("Can renew population before the search started.");
+
+            if (percentageToRenew <= 0 || percentageToRenew > 1)
+                throw new GeneticAlgorithmException($"{nameof(percentageToRenew)} must be between 0 (not including) and 1 (including).");
+
+            lock (lockObject)
+            {
+                if (IsRunning)
+                    throw new EngineAlreadyRunningException();
+
+                generation++;
+                lastResult = engine.RenewPopulationAndUpdatePopulation(percentageToRenew, lastResult.Population);  
+                resultBuilder.AddGeneration(lastResult);
+                return resultBuilder.Build(generation);
+            }
         }
     }
 }

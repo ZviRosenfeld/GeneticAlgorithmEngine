@@ -102,7 +102,7 @@ namespace GeneticAlgorithm.UnitTests
 
             var time = stopwatch.Elapsed.TotalMilliseconds - sleepTime * generations -
                        result.SearchTime.TotalMilliseconds;
-            Assert.IsTrue(time < 0.1 * stopwatch.Elapsed.TotalMilliseconds);
+            Assert.IsTrue(time < 0.2 * stopwatch.Elapsed.TotalMilliseconds);
         }
 
         [DataRow(false, RunType.Run)]

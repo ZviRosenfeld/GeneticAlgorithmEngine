@@ -54,6 +54,15 @@ namespace GeneticAlgorithm
             stopwatch.Stop();
             return new InternalSearchResult(population, stopwatch.Elapsed, false);
         }
+
+        public InternalSearchResult RenewPopulationAndUpdatePopulation(double percantage, Population population)
+        {
+            var chromosomesToRenew = (int)Math.Ceiling(options.PopulationSize * percantage);
+            var newPopulation = RenewPopulation(chromosomesToRenew, population);
+            EvaluatePopulation(newPopulation);
+            UpdateNewGeneration(newPopulation);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+        }
         
         private Population CreateNewGeneration(Population population, int generation)
         {
@@ -95,7 +104,7 @@ namespace GeneticAlgorithm
             return new Population(SearchUtils.Combine(newPopulation, oldPopulation));
         }
 
-        private IChromosome[] GetBestChromosomes(int n, Population population)
+        private static IChromosome[] GetBestChromosomes(int n, Population population)
         {
             if (n == 0)
                 return new IChromosome[0];
@@ -117,7 +126,7 @@ namespace GeneticAlgorithm
             throw new InternalSearchException("Code 1000 (not enough best chromosomes found)");
         }
 
-        private void EvaluatePopulation(Population population)
+        private static void EvaluatePopulation(Population population)
         {
             Parallel.ForEach(population, chromosome =>
             {
