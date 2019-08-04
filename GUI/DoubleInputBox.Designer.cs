@@ -34,44 +34,60 @@ namespace GUI
             this.Lable = new System.Windows.Forms.Label();
             this.InputBox = new System.Windows.Forms.MaskedTextBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Lable
             // 
             this.Lable.AutoSize = true;
-            this.Lable.Location = new System.Drawing.Point(3, 0);
+            this.Lable.Location = new System.Drawing.Point(2, 0);
+            this.Lable.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Lable.Name = "Lable";
-            this.Lable.Size = new System.Drawing.Size(48, 20);
+            this.Lable.Size = new System.Drawing.Size(33, 13);
             this.Lable.TabIndex = 0;
             this.Lable.Text = "Lable";
             // 
             // InputBox
             // 
-            this.InputBox.Location = new System.Drawing.Point(57, 3);
-            this.InputBox.Mask = "\\0.00";
+            this.InputBox.Location = new System.Drawing.Point(39, 2);
+            this.InputBox.Margin = new System.Windows.Forms.Padding(2);
+            this.InputBox.Mask = "00";
             this.InputBox.Name = "InputBox";
-            this.InputBox.Size = new System.Drawing.Size(49, 26);
+            this.InputBox.Size = new System.Drawing.Size(34, 20);
             this.InputBox.TabIndex = 1;
-            this.InputBox.Text = "0.00";
+            this.InputBox.Text = "00";
+            this.InputBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.Lable);
             this.flowLayoutPanel1.Controls.Add(this.InputBox);
+            this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(283, 70);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(115, 45);
             this.flowLayoutPanel1.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(78, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(15, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "%";
             // 
             // DoubleInputBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flowLayoutPanel1);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DoubleInputBox";
-            this.Size = new System.Drawing.Size(283, 70);
+            this.Size = new System.Drawing.Size(115, 45);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -83,5 +99,6 @@ namespace GUI
         private System.Windows.Forms.Label Lable;
         private System.Windows.Forms.MaskedTextBox InputBox;
         private FlowLayoutPanel flowLayoutPanel1;
+        private Label label1;
     }
 }

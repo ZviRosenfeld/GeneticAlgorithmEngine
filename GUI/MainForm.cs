@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -55,6 +56,7 @@ namespace GUI
             RunButton.Enabled = engineState == EngineState.Puased;
             NextButton.Enabled = engineState == EngineState.Puased;
             RestartButton.Enabled = engineState == EngineState.Puased;
+            RenewPopulationButton.Enabled = engineState == EngineState.Puased;
         }
 
         private void NextButton_Click(object sender, System.EventArgs e)
@@ -86,6 +88,19 @@ namespace GUI
         private void RestartButton_Click(object sender, System.EventArgs e)
         {
             InitializeEngine();
+        }
+
+        private void RenewPopulationButton_Click(object sender, System.EventArgs e)
+        {
+            try
+            {
+                var result = engine.RenewPopulation(double.Parse(RenewPopulationInputBox.Text) / 100);
+                Update(result);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "Oops");
+            }
         }
     }
 }

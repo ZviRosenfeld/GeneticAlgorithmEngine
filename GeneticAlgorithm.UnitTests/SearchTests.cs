@@ -205,6 +205,52 @@ namespace GeneticAlgorithm.UnitTests
             Assert.IsTrue(finalResult.IsCompleted);
         }
 
+        [TestMethod]
+        public void RenewPopulation_CheckPopulationRenewedRight()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 2, 2 });
+            populationManager.SetPopulationGenerated(new[] { new double[] { 3, 3 } });
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, populationManager).Build();
+            engine.Next();
+
+            var result = engine.RenewPopulation(1);
+            foreach (var chromosme in result.Population)
+                Assert.AreEqual(3, chromosme.Evaluation);
+        }
+
+        [TestMethod]
+        [DataRow(0.1)]
+        [DataRow(0.5)]
+        public void RenewPercantagePopulation_PercentageRenewed(double percent)
+        {
+            var populationManager = new TestPopulationManager(new double[] { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
+            populationManager.SetPopulationGenerated(new[] { new double[] { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } });
+            var engine =
+                new TestGeneticSearchEngineBuilder(10, int.MaxValue, populationManager).Build();
+            engine.Next();
+
+            var result = engine.RenewPopulation(percent);
+            var threeCounters = result.Population.Count(chromosme => chromosme.Evaluation == 3);
+
+            Assert.AreEqual(threeCounters, percent * 10);
+        }
+
+        [TestMethod]
+        public void RenewPopulation_CheckPopulationRenewedSentToNextGeneration()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 2, 2 }, c => c.Evaluate() + 1);
+            populationManager.SetPopulationGenerated(new[] { new double[] { 3, 3 } });
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, populationManager).Build();
+
+            engine.Next();
+            engine.RenewPopulation(1);
+            var result = engine.Next();
+            foreach (var chromosme in result.Population)
+                Assert.AreEqual(4, chromosme.Evaluation);
+        }
+
         private void AssertHasEvaluation(List<IChromosome[]> chromosomes, double[][] evaluations)
         {
             for (int i = 0; i < chromosomes.Count; i++)

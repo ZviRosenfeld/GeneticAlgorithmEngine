@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
@@ -84,6 +86,41 @@ namespace GeneticAlgorithm.UnitTests
                     .AddPopulationRenwalManager(populationRenewalManager)
                     .Build();
             engine.Run();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        [DataRow(0)]
+        [DataRow(1.1)]
+        [DataRow(-1)]
+        public void RenewPopulation_BedPercentage_ThrowException(double percentage)
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, 4, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            engine.Next();
+
+            engine.RenewPopulation(percentage);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void RenewPopulation_EngineNotStated_ThrowException()
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, 4, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            engine.RenewPopulation(0.5);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EngineAlreadyRunningException))]
+        public void RenewPopulation_EngineRunning_ThrowException()
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(50); // give the engine some time to start
+            engine.RenewPopulation(0.5);
         }
     }
 }

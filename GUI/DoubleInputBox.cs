@@ -9,7 +9,7 @@ namespace GUI
             InitializeComponent();
         }
         
-        public double GetValue => double.Parse(InputBox.Text);
+        public double GetValue => double.Parse(InputBox.Text) / 100;
 
         public string LableText
         {
