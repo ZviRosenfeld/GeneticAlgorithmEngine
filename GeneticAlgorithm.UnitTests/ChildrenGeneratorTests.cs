@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using FakeItEasy;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,12 +21,11 @@ namespace GeneticAlgorithm.UnitTests
             const int tries = 1500;
             int mutationCounter = 0;
             var population = GetPopulation(tries, 0.1, 0.1, 0.8, () => Interlocked.Increment(ref mutationCounter));
-            var option = new GeneticSearchOptions(tries, mutationProbability, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._))
                 .ReturnsLazily((IChromosome c1, IChromosome c2) => c1);
-            var childrenGenerator = new ChildrenGenerator(option, crossoverManager);
-            childrenGenerator.GenerateChildren(population, tries);
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(mutationProbability));
+            childrenGenerator.GenerateChildren(population, tries, 0);
 
             const double errorMargin = 0.05;
             Assert.IsTrue(mutationCounter < tries * mutationProbability + errorMargin * tries, $"Too few mutations ({mutationCounter})");
@@ -40,7 +40,6 @@ namespace GeneticAlgorithm.UnitTests
             const double chromosome1Probability = 0.1, chromosome2Probability = 0.3, chromosome3Probability = 0.6;
             var counters = new int[3];
             var population = GetPopulation(tries, chromosome1Probability, chromosome2Probability, chromosome3Probability);
-            var option = new GeneticSearchOptions(tries, 0, new List<IStopManager>(), false, new List<IPopulationRenwalManager>(), 0);
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._)).Invokes(
                 (IChromosome c1, IChromosome c2) =>
@@ -48,12 +47,27 @@ namespace GeneticAlgorithm.UnitTests
                     UpdateCounters(c1.ToString(), counters);
                     UpdateCounters(c2.ToString(), counters);
                 });
-            var childrenGenerator = new ChildrenGenerator(option, crossoverManager);
-            childrenGenerator.GenerateChildren(population, tries);
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0));
+            childrenGenerator.GenerateChildren(population, tries, 0);
 
             AssertIsWithinRange(counters[0], chromosome1Probability, tries, "c1");
             AssertIsWithinRange(counters[1], chromosome2Probability, tries, "c2");
             AssertIsWithinRange(counters[2], chromosome3Probability, tries, "c3");
+        }
+
+        [TestMethod]
+        [DataRow(-0.5)]
+        [DataRow(1.1)]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void BadMutationProbability_ThrowException(double probability)
+        {
+            var mutationManager = A.Fake<IMutationManager>();
+            A.CallTo(() => mutationManager.MutationProbability(A<IChromosome[]>._, A<double[]>._, A<int>._))
+                .Returns(probability);
+
+            var population = GetPopulation(1, 0.1, 0.4, 0.5);
+            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), mutationManager);
+            childrenGenerator.GenerateChildren(population, 1, 1);
         }
 
         private void UpdateCounters(string chromosomeName, int[] counters)

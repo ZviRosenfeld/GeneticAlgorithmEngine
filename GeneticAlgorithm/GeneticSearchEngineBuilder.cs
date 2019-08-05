@@ -10,7 +10,7 @@ namespace GeneticAlgorithm
         protected readonly ICrossoverManager crossoverManager;
         protected readonly IPopulationGenerator populationGenerator;
         protected readonly int populationSize;
-        protected double mutationProbability = 0;
+        protected IMutationManager mutationManager = new BassicMutationManager(0); // By default, mutation probability is 0
         protected bool includeAllHistory = false;
         protected double elitPercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
@@ -28,7 +28,13 @@ namespace GeneticAlgorithm
 
         public GeneticSearchEngineBuilder SetMutationProbability(double probability)
         {
-            mutationProbability = probability;
+            mutationManager = new BassicMutationManager(probability);
+            return this;
+        }
+
+        public GeneticSearchEngineBuilder SetMutationManager(IMutationManager manager)
+        {
+            mutationManager = manager;
             return this;
         }
 
@@ -70,9 +76,9 @@ namespace GeneticAlgorithm
         
         public virtual GeneticSearchEngine Build()
         {
-            var options = new GeneticSearchOptions(populationSize,
-                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers, elitPercentage);
-            var childrenGenerator = new ChildrenGenerator(options, crossoverManager);
+            var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
+                populationRenwalManagers, elitPercentage, mutationManager);
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator);
         }
     }

@@ -13,8 +13,8 @@
         
         public override GeneticSearchEngine Build()
         {
-            var options = new GeneticSearchOptions(populationSize,
-                mutationProbability, stopManagers, includeAllHistory, populationRenwalManagers, elitPercentage);
+            var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
+                populationRenwalManagers, elitPercentage, mutationManager);
             return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator());
         }
     }

@@ -68,15 +68,15 @@ namespace GeneticAlgorithm
         {
             return generation == 1
                 ? new Population(populationGenerator.GeneratePopulation(options.PopulationSize).ToArray())
-                : GenerateChildren(population);
+                : GenerateChildren(population, generation);
         }
 
-        private Population GenerateChildren(Population population)
+        private Population GenerateChildren(Population population, int generation)
         {
             NormilizeEvaluations(population);
             var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
-            var children = childrenGenerator.GenerateChildren(population, numberOfChildren);
+            var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation);
             var elite = GetBestChromosomes(eliteChromosomes, population);
             return new Population(SearchUtils.Combine(children, elite));
         }
@@ -158,6 +158,7 @@ namespace GeneticAlgorithm
                 stopManager.AddGeneration(chromosomes, evaluations);
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
                 populationRenwalManager.AddGeneration(chromosomes, evaluations);
+            options.MutationManager.AddGeneration(chromosomes, evaluations);
 
             onNewGeneration(chromosomes, evaluations);
 

@@ -15,8 +15,8 @@ namespace GeneticAlgorithm.UnitTests
             GenerateInitailPopulation(populationEvaluation[0]);
 
             int index = 0;
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._)).ReturnsLazily(
-                (Population p, int n) =>
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._, A<int>._)).ReturnsLazily(
+                (Population p, int n, int g) =>
                 {
                     index++;
                     return GetNextGeneration(populationEvaluation[index], n, index, "Gen");
@@ -30,8 +30,8 @@ namespace GeneticAlgorithm.UnitTests
             nextGenerationEvaluationFunc = nextGenerationEvaluationFunc ?? (c => c.Evaluate());
 
             int index = 0;
-            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._)).ReturnsLazily(
-                (Population p, int n) =>
+            A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._, A<int>._)).ReturnsLazily(
+                (Population p, int n, int g) =>
                 {
                     index++;
 

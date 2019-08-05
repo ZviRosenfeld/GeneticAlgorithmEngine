@@ -6,18 +6,16 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchOptions
     {
-        public GeneticSearchOptions(int populationSize, double mutationProbability,
-            List<IStopManager> stopManagers, bool includeAllHistory,
-            List<IPopulationRenwalManager> populationRenwalManagers, double elitPercentage)
+        public GeneticSearchOptions(int populationSize,List<IStopManager> stopManagers, bool includeAllHistory,
+            List<IPopulationRenwalManager> populationRenwalManagers, double elitPercentage, IMutationManager mutationManager)
         {
-            AssertIsBetweenZeroAndOne(mutationProbability, nameof(mutationProbability));
-            MutationProbability = mutationProbability;
             StopManagers = stopManagers;
             IncludeAllHistory = includeAllHistory;
             PopulationRenwalManagers = populationRenwalManagers;
             AssertIsBetweenZeroAndOne(elitPercentage, nameof(elitPercentage));
             ElitPercentage = elitPercentage;
-            
+            MutationManager = mutationManager;
+
             PopulationSize = populationSize > 0
                 ? populationSize
                 : throw new GeneticAlgorithmException(nameof(populationSize) + " must be greater then zero");
@@ -31,8 +29,6 @@ namespace GeneticAlgorithm
 
         public int PopulationSize { get; }
         
-        public double MutationProbability { get; }
-        
         public bool IncludeAllHistory { get; }
 
         public double ElitPercentage { get; }
@@ -40,5 +36,7 @@ namespace GeneticAlgorithm
         public List<IStopManager> StopManagers { get; }
 
         public List<IPopulationRenwalManager> PopulationRenwalManagers { get; }
+
+        public IMutationManager MutationManager { get; }
     }
 }

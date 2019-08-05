@@ -1,4 +1,6 @@
-﻿using GeneticAlgorithm.PopulationRenwalManagers;
+﻿using FakeItEasy;
+using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.PopulationRenwalManagers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests
@@ -71,6 +73,32 @@ namespace GeneticAlgorithm.UnitTests
             var result = engine.Run(runType);
 
             Assert.AreEqual(2, result.BestChromosome.Evaluate());
+        }
+
+        [TestMethod]
+        [DataRow(RunType.Run)]
+        [DataRow(RunType.Next)]
+        public void PopulationRenwalManagerGetsRightInfoTest(RunType runType)
+        {
+            var generation = 1;
+            var populationRenwalManager = A.Fake<IPopulationRenwalManager>();
+            A.CallTo(() => populationRenwalManager.ShouldRenew(A<IChromosome[]>._, A<double[]>._, A<int>._)).Invokes(
+                (IChromosome[] c, double[] e, int g) =>
+                {
+                    Assert.AreEqual(generation, g, "Wrong generation");
+                    foreach (var chromosome in c)
+                        Assert.AreEqual(generation, chromosome.Evaluate(), "Wrong chromosome");
+                    foreach (var evaluation in e)
+                        Assert.AreEqual(generation, evaluation, "Wrong evaluation");
+                    generation++;
+
+                });
+            var populationManager = new TestPopulationManager(new[]
+                {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}});
+            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 3, populationManager)
+                .AddPopulationRenwalManager(populationRenwalManager).IncludeAllHistory().Build();
+
+            engine.Run(runType);
         }
     }
 }

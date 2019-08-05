@@ -2,6 +2,12 @@
 
 GeneticAlgorithmEngine provides an engine for running a Genetic Algorithm that can be easily configured to fit most search domains.
 
+## Download
+
+You can find the GeneticAlgorithmEngine library on nuget.org via package name GeneticAlgorithm.
+
+## Usage
+
 GeneticAlgorithmEngine contains 3 main classes that you'll need to implement.
 
 ### IChromosome
@@ -111,6 +117,7 @@ You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_alg
 ### IStopManagers
 StopManagers let you configure when you want the search to stop. StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
 You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
+Note that there is no limit to the number of StopManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
 
@@ -130,9 +137,34 @@ var result = searchEngine.Run();
 ### IPopulationRenwalManagers
 PopulationRenwalManagers will renew a certain percentage of the population if some condition is met. PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
+Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
 
 Existing PopulationRenwalManagers:
 - **RenewAtConvergence**: The search will renew some of the population if the difference between chromosomes in the population is too small.
 - **RenewIfNoImprovment**: Will renew some of the population if the improvement over 'X' generations isn't good enough.
+
+Example:
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.AddPopulationRenwalManager(new RenewAtConvergence(0.5, 0.5)).Build();
+
+var result = searchEngine.Run();
+```
+
+### IMutationManager
+
+The IMutationManager class lets you dynamically determine the probability of a mutation based on the current population.
+You might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
+
+Note that there are no default implementations of IMutationManager.
+
+Example:
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.SetMutationManager(new MyMutationManager()).Build();
+
+var result = searchEngine.Run();
+```
+
