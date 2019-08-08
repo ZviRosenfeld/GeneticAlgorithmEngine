@@ -198,7 +198,7 @@ namespace GeneticAlgorithm.UnitTests
             for (int i = 0; i < generations - 1; i++)
             {
                 var result = searchEngine.Next();
-                Assert.IsFalse(result.IsCompleted, "Shouldn't have finsihed yet");
+                Assert.IsFalse(result.IsCompleted, "Shouldn't have finished yet");
             }
 
             var finalResult = searchEngine.Next();
@@ -221,7 +221,7 @@ namespace GeneticAlgorithm.UnitTests
 
         [TestMethod]
         [DataRow(0.1)]
-        //[DataRow(0.5)]
+        [DataRow(0.5)]
         public void RenewPercantagePopulation_PercentageRenewed(double percent)
         {
             var populationManager = new TestPopulationManager(new double[] { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 });

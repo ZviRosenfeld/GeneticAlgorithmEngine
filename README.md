@@ -172,7 +172,7 @@ var result = searchEngine.Run();
 
 The IPopulationConverter interface provides you with a very powerful tool for customizing your search.
 The IPopulationConverter method ConvertPopulation is called every generation after the population is created. In this method you can change the population in any way you want.
-This allows you to add [Lamarckian evolution](https://amitksaha.wordpress.com/2009/12/04/lamarckism-in-genetic-algorithms/) to your algorithm - that is, let the chromosomes improve themselves before generation the children.
+This allows you to add [Lamarckian evolution](https://amitksaha.wordpress.com/2009/12/04/lamarckism-in-genetic-algorithms/) to your algorithm - that is, let the chromosomes improve themselves before generating the children.
 
 Example:
 ```CSharp
