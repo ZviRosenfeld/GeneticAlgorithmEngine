@@ -221,7 +221,7 @@ namespace GeneticAlgorithm.UnitTests
 
         [TestMethod]
         [DataRow(0.1)]
-        [DataRow(0.5)]
+        //[DataRow(0.5)]
         public void RenewPercantagePopulation_PercentageRenewed(double percent)
         {
             var populationManager = new TestPopulationManager(new double[] { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
@@ -233,7 +233,7 @@ namespace GeneticAlgorithm.UnitTests
             var result = engine.RenewPopulation(percent);
             var threeCounters = result.Population.Count(chromosme => chromosme.Evaluation == 3);
 
-            Assert.AreEqual(threeCounters, percent * 10);
+            Assert.AreEqual(percent * 10, threeCounters);
         }
 
         [TestMethod]

@@ -19,7 +19,7 @@ namespace GeneticAlgorithm.UnitTests
                 (Population p, int n, int g) =>
                 {
                     index++;
-                    return GetNextGeneration(populationEvaluation[index], n, index, "Gen");
+                    return populationEvaluation[index].ToChromosomes($"Gen{index}");
                 });
         }
         
@@ -39,7 +39,7 @@ namespace GeneticAlgorithm.UnitTests
                     for (int i = 0; i < populationEvaluation.Length; i++)
                         newEvaluation[i] = nextGenerationEvaluationFunc(p[i].Chromosome);
 
-                    return GetNextGeneration(newEvaluation, n , index, "Gen");
+                    return newEvaluation.ToChromosomes("Gen" + index);
                 });
         }
         
@@ -55,22 +55,7 @@ namespace GeneticAlgorithm.UnitTests
             }
             A.CallTo(() => populationGenerator.GeneratePopulation(A<int>._)).Returns(initailPopulation);
         }
-
-        private IChromosome[] GetNextGeneration(double[] generationEvaluations, int children, int index, string type)
-        {
-            var population = new IChromosome[children];
-            for (int i = 0; i < children; i++)
-            {
-                var newChromosome = A.Fake<IChromosome>();
-                var evaluation = generationEvaluations[i];
-                A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
-                A.CallTo(() => newChromosome.ToString()).Returns($"{type}{index} (Eval={evaluation})");
-                population[i] = newChromosome;
-            }
-            
-            return population;
-        }
-
+        
         public void SetPopulationGenerated(double[][] populationEvaluation)
         {
             var initialPopulation = populationGenerator.GeneratePopulation(initialPopulationSize);
@@ -81,7 +66,7 @@ namespace GeneticAlgorithm.UnitTests
                 index++;
                 if (index == -1) return initialPopulation;
 
-                return GetNextGeneration(populationEvaluation[index], s, index, "Renewal");
+                return populationEvaluation[index].ToChromosomes("Renewal" + index, s);
             });
         }
 

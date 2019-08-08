@@ -32,7 +32,10 @@ namespace GeneticAlgorithm
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            population = CreateNewGeneration(population, generation);
+            var nextGeneration = CreateNewGeneration(population, generation);
+            if (options.PopulationConverter != null)
+                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation);
+            population = new Population(nextGeneration);
             EvaluatePopulation(population);
 
             if (options.StopManagers.Any(stopManager =>
@@ -64,21 +67,21 @@ namespace GeneticAlgorithm
             return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
         }
         
-        private Population CreateNewGeneration(Population population, int generation)
+        private IChromosome[] CreateNewGeneration(Population population, int generation)
         {
             return generation == 1
-                ? new Population(populationGenerator.GeneratePopulation(options.PopulationSize).ToArray())
+                ? populationGenerator.GeneratePopulation(options.PopulationSize).ToArray()
                 : GenerateChildren(population, generation);
         }
 
-        private Population GenerateChildren(Population population, int generation)
+        private IChromosome[] GenerateChildren(Population population, int generation)
         {
             NormilizeEvaluations(population);
             var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
             var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation);
             var elite = GetBestChromosomes(eliteChromosomes, population);
-            return new Population(SearchUtils.Combine(children, elite));
+            return SearchUtils.Combine(children, elite);
         }
 
         private int GetPopulationToRenew(Population population, int generation)
@@ -159,6 +162,7 @@ namespace GeneticAlgorithm
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
                 populationRenwalManager.AddGeneration(chromosomes, evaluations);
             options.MutationManager.AddGeneration(chromosomes, evaluations);
+            options.PopulationConverter?.AddGeneration(chromosomes, evaluations);
 
             onNewGeneration(chromosomes, evaluations);
 

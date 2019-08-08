@@ -11,6 +11,7 @@ namespace GeneticAlgorithm
         protected readonly IPopulationGenerator populationGenerator;
         protected readonly int populationSize;
         protected IMutationManager mutationManager = new BassicMutationManager(0); // By default, mutation probability is 0
+        protected IPopulationConverter populationConverter = null;
         protected bool includeAllHistory = false;
         protected double elitPercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
@@ -35,6 +36,12 @@ namespace GeneticAlgorithm
         public GeneticSearchEngineBuilder SetMutationManager(IMutationManager manager)
         {
             mutationManager = manager;
+            return this;
+        }
+
+        public GeneticSearchEngineBuilder SetPopulationConverter(IPopulationConverter populationConverter)
+        {
+            this.populationConverter = populationConverter;
             return this;
         }
 
@@ -77,7 +84,7 @@ namespace GeneticAlgorithm
         public virtual GeneticSearchEngine Build()
         {
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager);
+                populationRenwalManagers, elitPercentage, mutationManager, populationConverter);
             var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator);
         }

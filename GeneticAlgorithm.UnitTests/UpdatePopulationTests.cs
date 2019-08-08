@@ -35,6 +35,7 @@ namespace GeneticAlgorithm.UnitTests
         private SavedTestopulation populationUpdatedForStopManager;
         private SavedTestopulation populationUpdatedForRenewalManager;
         private SavedTestopulation populationUpdatedForMutationManager;
+        private SavedTestopulation populationConverterForMutationManager;
 
         private void CleanChromosomesAndEvaluations()
         {
@@ -42,6 +43,7 @@ namespace GeneticAlgorithm.UnitTests
             populationUpdatedForStopManager = new SavedTestopulation();
             populationUpdatedForRenewalManager = new SavedTestopulation();
             populationUpdatedForMutationManager = new SavedTestopulation();
+            populationConverterForMutationManager = new SavedTestopulation();
         }
         
         [TestMethod]
@@ -50,6 +52,9 @@ namespace GeneticAlgorithm.UnitTests
             CleanChromosomesAndEvaluations();
             var renewedPopulation = new double[] {3, 3};
             var populationManager = new TestPopulationManager(new double[] { 2, 2 });
+            var populationConverter = A.Fake<IPopulationConverter>();
+            A.CallTo(() => populationConverter.AddGeneration(A<IChromosome[]>._, A<double[]>._))
+                .Invokes((IChromosome[] c, double[] e) => populationConverterForMutationManager.Save(c, e));
             var stopManager = A.Fake<IStopManager>();
             A.CallTo(() => stopManager.AddGeneration(A<IChromosome[]>._, A<double[]>._))
                 .Invokes((IChromosome[] c, double[] e) => populationUpdatedForStopManager.Save(c, e));
@@ -62,7 +67,8 @@ namespace GeneticAlgorithm.UnitTests
             populationManager.SetPopulationGenerated(new[] { renewedPopulation });
             var engine =
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, populationManager).AddStopManager(stopManager)
-                    .AddPopulationRenwalManager(populationRenwalManager).SetMutationManager(mutationManager).Build();
+                    .AddPopulationRenwalManager(populationRenwalManager).SetMutationManager(mutationManager)
+                    .SetPopulationConverter(populationConverter).Build();
             engine.Next();
             engine.OnNewGeneration += populationUpdatedOnEvent.Save;
 
@@ -71,6 +77,7 @@ namespace GeneticAlgorithm.UnitTests
             populationUpdatedForStopManager.AssertAreRightChromosomes(renewedPopulation);
             populationUpdatedForRenewalManager.AssertAreRightChromosomes(renewedPopulation);
             populationUpdatedForMutationManager.AssertAreRightChromosomes(renewedPopulation);
+            populationConverterForMutationManager.AssertAreRightChromosomes(renewedPopulation);
         }
         
         [TestMethod]
@@ -80,6 +87,9 @@ namespace GeneticAlgorithm.UnitTests
             var renewedPopulation = new double[] { 3, 3 };
             var populationManager = new TestPopulationManager(new double[] { 2, 2 });
             populationManager.SetPopulationGenerated(new[] { renewedPopulation });
+            var populationConverter = A.Fake<IPopulationConverter>();
+            A.CallTo(() => populationConverter.AddGeneration(A<IChromosome[]>._, A<double[]>._))
+                .Invokes((IChromosome[] c, double[] e) => populationConverterForMutationManager.Save(c, e));
             var stopManager = A.Fake<IStopManager>();
             A.CallTo(() => stopManager.AddGeneration(A<IChromosome[]>._, A<double[]>._))
                 .Invokes((IChromosome[] c, double[] e) => populationUpdatedForStopManager.Save(c, e));
@@ -94,7 +104,8 @@ namespace GeneticAlgorithm.UnitTests
             var engine =
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, populationManager)
                     .AddPopulationRenwalManager(renewManager).AddStopManager(stopManager)
-                    .AddPopulationRenwalManager(testPopulationRenewalManager).SetMutationManager(mutationManager).Build();
+                    .AddPopulationRenwalManager(testPopulationRenewalManager).SetMutationManager(mutationManager)
+                    .SetPopulationConverter(populationConverter).Build();
             engine.OnNewGeneration += populationUpdatedOnEvent.Save;
             engine.Next();
 
@@ -102,6 +113,7 @@ namespace GeneticAlgorithm.UnitTests
             populationUpdatedForStopManager.AssertAreRightChromosomes(renewedPopulation);
             populationUpdatedForRenewalManager.AssertAreRightChromosomes(renewedPopulation);
             populationUpdatedForMutationManager.AssertAreRightChromosomes(renewedPopulation);
+            populationConverterForMutationManager.AssertAreRightChromosomes(renewedPopulation);
         }
     }
 }
