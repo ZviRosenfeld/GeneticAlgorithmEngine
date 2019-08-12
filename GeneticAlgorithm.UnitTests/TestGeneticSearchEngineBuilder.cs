@@ -1,4 +1,6 @@
-﻿namespace GeneticAlgorithm.UnitTests
+﻿using GeneticAlgorithm.Interfaces;
+
+namespace GeneticAlgorithm.UnitTests
 {
     class TestGeneticSearchEngineBuilder : GeneticSearchEngineBuilder
     {
@@ -10,7 +12,13 @@
         {
             this.populationManager = populationManager;
         }
-        
+
+        public TestGeneticSearchEngineBuilder(int populationSize, int maxGenerations,
+            double[] population) : this(populationSize,
+            maxGenerations, new TestPopulationManager(population))
+        {
+        }
+
         public override GeneticSearchEngine Build()
         {
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,

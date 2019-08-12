@@ -24,15 +24,17 @@ namespace GeneticAlgorithm.UnitTests
             var size = number ?? generationEvaluations.Length;
             var population = new IChromosome[size];
             for (int i = 0; i < size; i++)
-            {
-                var newChromosome = A.Fake<IChromosome>();
-                var evaluation = generationEvaluations[i];
-                A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
-                A.CallTo(() => newChromosome.ToString()).Returns($"{tag} (Eval={evaluation})");
-                population[i] = newChromosome;
-            }
-
+                population[i] = CreateChromosome(generationEvaluations[i], tag);
+            
             return population;
+        }
+
+        public static IChromosome CreateChromosome(double evaluation, string tag)
+        {
+            var newChromosome = A.Fake<IChromosome>();
+            A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
+            A.CallTo(() => newChromosome.ToString()).Returns($"{tag} (Eval={evaluation})");
+            return newChromosome;
         }
 
         public static void AssertHasEvaluation(this List<IChromosome[]> chromosomes, double[][] evaluations)
@@ -70,7 +72,7 @@ namespace GeneticAlgorithm.UnitTests
                 result1.History[i].AssertIsSame(result2.History[i]);
         }
 
-        private static void AssertIsSame(this Population population1, Population population2)
+        public static void AssertIsSame(this Population population1, Population population2)
         {
             for (int i = 0; i < population1.GetChromosomes().Length; i++)
                 Assert.AreEqual(population1[i].Evaluation, population2[i].Evaluation); 

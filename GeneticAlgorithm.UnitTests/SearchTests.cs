@@ -275,5 +275,35 @@ namespace GeneticAlgorithm.UnitTests
 
             TestUtils.AssertAreTheSame(result1, result2);
         }
+
+        [TestMethod]
+        public void ChangeResultPopulation_AlgorithmPopulationNotChanged()
+        {
+            var expectedPopulation = new double[] {1, 1};
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, expectedPopulation).Build();
+            var fakeChromosome = TestUtils.CreateChromosome(10, "ChangedChromosome");
+
+            var result = engine.Next();
+            result.Population.GetChromosomes()[0] = fakeChromosome;
+            result = engine.GetCurrentPopulation();
+
+            foreach (var chromosome in result.Population.GetChromosomes())
+                Assert.AreNotEqual(fakeChromosome, chromosome);
+        }
+
+        [TestMethod]
+        public void ChangeHistoryLastGeneration_AlgorithmPopulationNotChanged()
+        {
+            var expectedPopulation = new double[] { 1, 1 };
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, expectedPopulation).IncludeAllHistory().Build();
+            var fakeChromosome = TestUtils.CreateChromosome(10, "ChangedChromosome");
+
+            var result = engine.Next();
+            result.History[result.History.Count - 1][0] = fakeChromosome;
+            result = engine.GetCurrentPopulation();
+
+            foreach (var chromosome in result.Population.GetChromosomes())
+                Assert.AreNotEqual(fakeChromosome, chromosome);
+        }
     }
 }

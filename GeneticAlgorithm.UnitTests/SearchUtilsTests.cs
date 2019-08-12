@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -71,6 +72,35 @@ namespace GeneticAlgorithm.UnitTests
             Assert.AreEqual(newPopulation[0], chromosome1);
             Assert.AreEqual(newPopulation[1], chromosome2);
             Assert.AreEqual(newPopulation[2], chromosome3);
+        }
+
+        [TestMethod]
+        public void ClonePopulation_IfPopulationCloned()
+        {
+            var evaluations = new double[] {1, 2, 1, 3};
+            var chromosomes = evaluations.ToChromosomes("Chromosomes");
+            var population = new Population(chromosomes);
+            foreach (var pop in population)
+                pop.Evaluation = pop.Chromosome.Evaluate();
+
+            var populationClone = population.Clone();
+
+            population.AssertIsSame(populationClone);
+        }
+
+        [TestMethod]
+        public void ClonePopulation_ChangingCloneDosntChangeOriginal()
+        {
+            var evaluations = new double[] { 1, 1, 1, 1 };
+            var chromosomes = evaluations.ToChromosomes("Chromosomes");
+            var population = new Population(chromosomes);
+
+            var populationClone = population.Clone();
+            var fakeChromosome = TestUtils.CreateChromosome(10, "New");
+            populationClone.GetChromosomes()[0] = fakeChromosome;
+
+            foreach (var chromosome in population.GetChromosomes())
+                Assert.AreNotEqual(fakeChromosome, chromosome);
         }
     }
 }

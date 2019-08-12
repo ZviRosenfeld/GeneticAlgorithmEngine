@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
@@ -23,7 +24,7 @@ namespace GeneticAlgorithm
         {
             searchTime += internalResult.SearchTime;
             if (includeHistory)
-                history.Add(internalResult.Population.GetChromosomes());
+                history.Add(internalResult.Population.GetChromosomes().ToArray());
             isComplated = isComplated || internalResult.IsCompleted;
             lastGeneration = internalResult.Population;
         }
@@ -33,7 +34,7 @@ namespace GeneticAlgorithm
             if (lastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
 
-            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration, history, searchTime, generations, isComplated);
+            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.Clone(), history, searchTime, generations, isComplated);
         }
     }
 }

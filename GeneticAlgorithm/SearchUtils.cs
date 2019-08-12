@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Interfaces;
+﻿using System.Linq;
+using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
@@ -32,6 +33,15 @@ namespace GeneticAlgorithm
                 newChromosomes[i] = chromosomes2[i - firstChromosomesLength];
 
             return newChromosomes;
+        }
+        
+        public static Population Clone(this Population population)
+        {
+            var newPopulation = new Population(population.GetChromosomes().ToArray());
+            for (int i = 0; i < population.Count(); i++)
+                newPopulation[i].Evaluation = population[i].Evaluation;
+
+            return newPopulation;
         }
     }
 }
