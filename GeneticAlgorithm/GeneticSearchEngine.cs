@@ -116,5 +116,37 @@ namespace GeneticAlgorithm
                 return resultBuilder.Build(generation);
             }
         }
+
+        /// <summary>
+        /// Gets the current population. This can only be called while the engine is paused.
+        /// </summary>
+        public GeneticSearchResult GetCurrentPopulation()
+        {
+            if (IsRunning)
+                throw new EngineAlreadyRunningException();
+
+            return resultBuilder.Build(generation);
+        }
+
+        /// <summary>
+        /// Sets the current population. This can only be called while the engine is paused.
+        /// Note that the renewed population will be considered a new generation. 
+        /// </summary>
+        public GeneticSearchResult SetCurrentPopulation(IChromosome[] newPopulation)
+        {
+            if (newPopulation.Length != options.PopulationSize)
+                throw new GeneticAlgorithmException($"Population size isn't right. Expected {options.PopulationSize}; got {newPopulation.Length}");
+
+            lock (lockObject)
+            {
+                if (IsRunning)
+                    throw new EngineAlreadyRunningException();
+
+                generation++;
+                lastResult = engine.ConvertPopulationAndUpdatePopulation(newPopulation);
+                resultBuilder.AddGeneration(lastResult);
+                return resultBuilder.Build(generation);
+            }
+        }
     }
 }

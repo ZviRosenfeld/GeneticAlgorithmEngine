@@ -66,7 +66,15 @@ namespace GeneticAlgorithm
             UpdateNewGeneration(newPopulation);
             return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
         }
-        
+
+        public InternalSearchResult ConvertPopulationAndUpdatePopulation(IChromosome[] population)
+        {
+            var newPopulation = new Population(population);
+            EvaluatePopulation(newPopulation);
+            UpdateNewGeneration(newPopulation);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+        }
+
         private IChromosome[] CreateNewGeneration(Population population, int generation)
         {
             return generation == 1

@@ -8,7 +8,7 @@ namespace GeneticAlgorithm.UnitTests
     public class PopulationConverterTests
     {
         [TestMethod]
-        public void ConvertPopulation_CheckPopulationConverted()
+        public void ConvertPopulationViaManager_CheckPopulationConverted()
         {
             var testPopulationManager = new TestPopulationManager(new double[] {1, 1, 1, 1, 1});
             var populationConverter = A.Fake<IPopulationConverter>();
@@ -25,7 +25,7 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
-        public void ConvertPopulation_CheckWeGetTheRightPopulationAndGeneration()
+        public void ConvertPopulationViaManager_CheckWeGetTheRightPopulationAndGeneration()
         {
             var generation = 0;
             var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
@@ -44,6 +44,36 @@ namespace GeneticAlgorithm.UnitTests
 
             for (int i = 0; i < 5; i++)
                 engine.Next();
+        }
+
+        [TestMethod]
+        public void ConvertPopulation_PopulationConverted()
+        {
+            var newPopulationEvaluation = new double[] {2, 2, 2};
+            var populationManager = new TestPopulationManager(new double[] {1, 1, 1});
+            var engine = new TestGeneticSearchEngineBuilder(3, 10, populationManager).Build();
+            engine.Next();
+
+            var newPopulation = engine.SetCurrentPopulation(newPopulationEvaluation.ToChromosomes("Converted"));
+            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+
+            newPopulation = engine.GetCurrentPopulation();
+            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+        }
+
+        [TestMethod]
+        public void ConvertPopulation_NextGetsRightPopulation()
+        {
+            var newPopulationEvaluation = new double[] { 2, 2, 2 };
+            var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 }, c => c.Evaluate());
+            var engine = new TestGeneticSearchEngineBuilder(3, 10, populationManager).Build();
+            engine.Next();
+
+            var newPopulation = engine.SetCurrentPopulation(newPopulationEvaluation.ToChromosomes("Converted"));
+            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+
+            newPopulation = engine.Next();
+            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
         }
     }
 }

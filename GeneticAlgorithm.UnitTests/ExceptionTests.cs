@@ -122,5 +122,41 @@ namespace GeneticAlgorithm.UnitTests
             Thread.Sleep(50); // give the engine some time to start
             engine.RenewPopulation(0.5);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(EngineAlreadyRunningException))]
+        public void GetCurrentPopulation_EngineRunning_ThrowException()
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(50); // give the engine some time to start
+            engine.GetCurrentPopulation();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EngineAlreadyRunningException))]
+        public void SetCurrentPopulation_EngineRunning_ThrowException()
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(50); // give the engine some time to start
+            engine.SetCurrentPopulation(new double[] { 3 ,3 }.ToChromosomes("Converted"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void SetCurrentPopulation_WrongNumberOfChromosomes_ThrowException()
+        {
+            var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(50); // give the engine some time to start
+            engine.SetCurrentPopulation(new double[] { 3, 3 ,3 }.ToChromosomes("Converted"));
+        }
     }
 }

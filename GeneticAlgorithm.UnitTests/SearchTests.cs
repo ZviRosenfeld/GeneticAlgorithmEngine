@@ -137,7 +137,7 @@ namespace GeneticAlgorithm.UnitTests
 
             var result = searchEngine.Run(runType);
             
-            AssertHasEvaluation(result.History, population);
+            result.History.AssertHasEvaluation(population);
         }
         
         [TestMethod]
@@ -161,8 +161,8 @@ namespace GeneticAlgorithm.UnitTests
 
             searchEngine.Run(runType);
             
-            AssertAreTheSame(actualEvaluations, population);
-            AssertHasEvaluation(actualPopulation, population);
+            actualEvaluations.AssertAreTheSame(population);
+            actualPopulation.AssertHasEvaluation(population);
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace GeneticAlgorithm.UnitTests
             }
             
             Assert.AreEqual(3, result.Generations, "We should have ran for 3 generations");
-            AssertHasEvaluation(actualPopulation, population);
+            actualPopulation.AssertHasEvaluation(population);
         }
 
         [TestMethod]
@@ -251,18 +251,29 @@ namespace GeneticAlgorithm.UnitTests
                 Assert.AreEqual(4, chromosme.Evaluation);
         }
 
-        private void AssertHasEvaluation(List<IChromosome[]> chromosomes, double[][] evaluations)
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void GetCurrentPopulation_CheckPopulationIsRight(bool includeHistory)
         {
-            for (int i = 0; i < chromosomes.Count; i++)
-            for (int j = 0; j < chromosomes[0].Length; j++)
-                Assert.AreEqual(evaluations[i][j], chromosomes[i][j].Evaluate());
-        }
+            var populationManager = new TestPopulationManager(new double[] { 2, 2 });
+            populationManager.SetPopulationGenerated(new[] { new double[] { 3, 3 } });
+            var engineBuilder =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, populationManager);
+            if (includeHistory)
+                engineBuilder.IncludeAllHistory();
 
-        private void AssertAreTheSame(List<double[]> collection1, double[][] collection2)
-        {
-            for (int i = 0; i < collection1.Count; i++)
-            for (int j = 0; j < collection1[0].Length; j++)
-                Assert.AreEqual(collection1[i][j], collection2[i][j]);
+            var engine = engineBuilder.Build();
+
+            var result1 = engine.Next();
+            var result2 = engine.GetCurrentPopulation();
+
+            TestUtils.AssertAreTheSame(result1, result2);
+
+            result1 = engine.Next();
+            result2 = engine.GetCurrentPopulation();
+
+            TestUtils.AssertAreTheSame(result1, result2);
         }
     }
 }

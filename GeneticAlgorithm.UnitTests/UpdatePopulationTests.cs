@@ -104,6 +104,41 @@ namespace GeneticAlgorithm.UnitTests
             AssertManagersUpdated( renewedPopulation);
         }
 
+        [TestMethod]
+        public void ConvertPopulation_NewPopulationUpdated()
+        {
+            var initialPopulation = new double[] { 2, 2 };
+            var newPopulation = new double[] { 3, 3 };
+            var populationManager = new TestPopulationManager(initialPopulation);
+
+            var engine = CreateEngineBuilder(populationManager).Build();
+            engine.OnNewGeneration += populationUpdatedOnEvent.Save;
+
+            engine.Next();
+
+            engine.SetCurrentPopulation(newPopulation.ToChromosomes("Converted"));
+
+            AssertManagersUpdated(new[] { initialPopulation, newPopulation });
+        }
+
+        [TestMethod]
+        public void ConvertPopulationViaManager_NewPopulationUpdated()
+        {
+            var initialPopulation = new double[] { 2, 2 };
+            var newPopulation = new double[] { 3, 3 };
+            var populationManager = new TestPopulationManager(initialPopulation);
+            var populationConverter = A.Fake<IPopulationConverter>();
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._)).Returns(newPopulation.ToChromosomes("Converted"));
+            A.CallTo(() => populationConverter.AddGeneration(A<IChromosome[]>._, A<double[]>._))
+                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForPopulationConverter.Save(c, e));
+
+            var engine = CreateEngineBuilder(populationManager).SetPopulationConverter(populationConverter).Build();
+            engine.OnNewGeneration += populationUpdatedOnEvent.Save;
+
+            engine.Next();
+            AssertManagersUpdated(newPopulation);
+        }
+
         private void AssertManagersUpdated(double[] renewedPopulation) =>
             AssertManagersUpdated(new[] { renewedPopulation });
 
