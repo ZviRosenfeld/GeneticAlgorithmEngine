@@ -18,14 +18,16 @@ namespace GeneticAlgorithm
         private readonly GeneticSearchOptions options;
         private readonly List<IChromosome[]> history = new List<IChromosome[]>();
         private readonly Action<IChromosome[], double[]> onNewGeneration;
+        private readonly IEnvironment environment;
 
         public InternalEngine(IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator,
-            GeneticSearchOptions options, Action<IChromosome[], double[]> onNewGeneration)
+            GeneticSearchOptions options, Action<IChromosome[], double[]> onNewGeneration, IEnvironment environment)
         {
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
             this.options = options;
             this.onNewGeneration = onNewGeneration;
+            this.environment = environment;
         }
 
         public InternalSearchResult RunSingleGeneration(Population population, int generation)
@@ -36,6 +38,8 @@ namespace GeneticAlgorithm
             if (options.PopulationConverter != null)
                 nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation);
             population = new Population(nextGeneration);
+            environment?.UpdateEnvierment(nextGeneration, generation);
+
             EvaluatePopulation(population);
 
             if (options.StopManagers.Any(stopManager =>
@@ -137,11 +141,13 @@ namespace GeneticAlgorithm
             throw new InternalSearchException("Code 1000 (not enough best chromosomes found)");
         }
 
-        private static void EvaluatePopulation(Population population)
+        private void EvaluatePopulation(Population population)
         {
+            options.ChromosomeEvaluator.SetEnvierment(environment);
+
             Parallel.ForEach(population, chromosome =>
             {
-                var evaluation = chromosome.Chromosome.Evaluate();
+                var evaluation = options.ChromosomeEvaluator.Evaluate(chromosome.Chromosome);
                 if (evaluation < 0)
                     throw new NegativeEvaluationException();
                 chromosome.Evaluation = evaluation;

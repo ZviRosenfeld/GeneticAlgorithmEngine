@@ -156,14 +156,14 @@ var result = searchEngine.Run();
 ### IMutationManager
 
 The IMutationManager class lets you dynamically determine the probability of a mutation based on the current population.
-You might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
+For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
 Note that there are no default implementations of IMutationManager.
 
 Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
-	.SetMutationManager(new MyMutationManager()).Build();
+	.SetCustomMutationManager(new MyMutationManager()).Build();
 
 var result = searchEngine.Run();
 ```
@@ -178,6 +178,33 @@ Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetPopulationConverter(new MyPopulationConverter()).Build();
+
+var result = searchEngine.Run();
+```
+
+## Using an Environment
+
+Sometimes, it's impossible to evaluate a chromosome without knowing information about it's surroundings, such as the rest of the population. (This, by the way, in the case in nature - where the fitness an individual depends on its envierment and the way it interacts with the other individuals).
+
+GeneticAlgorithmEngine provides two classes to deal with this.
+
+### IEnvironment
+
+The IEnvironment represents the "environment". You can set your own environment. If you don't, we will use the DefaultEnvironment class, which contains the other chromosomes, and the generation number.
+
+The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configuration your environment. UpdateEnvierment is guaranteed to be called once per generation.
+
+### IChromosomeEvaluator
+
+If you set the IChromosomeEvaluator, the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
+Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use use the information in the environment to evaluate the chromosomes.
+
+### Example
+
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.SetEnvironment(new MyEnvironment) // If you don't set an envierment, we'll use the DefaultEnvironment class
+	.SetCustomChromosomeEvaluator(new MyChromosomeEvaluator()).Build();
 
 var result = searchEngine.Run();
 ```

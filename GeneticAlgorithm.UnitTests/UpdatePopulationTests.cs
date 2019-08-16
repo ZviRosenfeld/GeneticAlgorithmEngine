@@ -169,7 +169,7 @@ namespace GeneticAlgorithm.UnitTests
                 .Invokes((IChromosome[] c, double[] e) => populationUpdatedForMutationManager.Save(c, e));
             var builder = new TestGeneticSearchEngineBuilder(2, generations, populationManager)
                 .AddStopManager(stopManager)
-                .AddPopulationRenwalManager(populationRenwalManager).SetMutationManager(mutationManager)
+                .AddPopulationRenwalManager(populationRenwalManager).SetCustomMutationManager(mutationManager)
                 .SetPopulationConverter(populationConverter);
             return builder;
         }

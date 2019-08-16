@@ -16,11 +16,11 @@ namespace GeneticAlgorithm
         /// </summary>
         public event Action<IChromosome[], double[]> OnNewGeneration; 
 
-        public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator)
+        public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator, IEnvironment environment)
         {
             this.options = options;
             resultBuilder = new ResultBuilder(options.IncludeAllHistory);
-            engine = new InternalEngine(populationGenerator, childrenGenerator, options, (c, d) => OnNewGeneration?.Invoke(c, d));
+            engine = new InternalEngine(populationGenerator, childrenGenerator, options, (c, d) => OnNewGeneration?.Invoke(c, d), environment);
         }
         
         private int generation = 0;
