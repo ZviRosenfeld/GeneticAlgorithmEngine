@@ -17,11 +17,11 @@ namespace GeneticAlgorithm
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
         private readonly List<IChromosome[]> history = new List<IChromosome[]>();
-        private readonly Action<IChromosome[], double[]> onNewGeneration;
+        private readonly Action<IChromosome[], double[], IEnvironment> onNewGeneration;
         private readonly IEnvironment environment;
 
         public InternalEngine(IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator,
-            GeneticSearchOptions options, Action<IChromosome[], double[]> onNewGeneration, IEnvironment environment)
+            GeneticSearchOptions options, Action<IChromosome[], double[], IEnvironment> onNewGeneration, IEnvironment environment)
         {
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
@@ -47,7 +47,7 @@ namespace GeneticAlgorithm
             {
                 UpdateNewGeneration(population);
                 stopwatch.Stop();
-                return new InternalSearchResult(population, stopwatch.Elapsed, true);
+                return new InternalSearchResult(population, stopwatch.Elapsed, true, environment);
             }
 
             var populationToRenew = GetPopulationToRenew(population, generation);
@@ -59,7 +59,7 @@ namespace GeneticAlgorithm
 
             UpdateNewGeneration(population);
             stopwatch.Stop();
-            return new InternalSearchResult(population, stopwatch.Elapsed, false);
+            return new InternalSearchResult(population, stopwatch.Elapsed, false, environment);
         }
 
         public InternalSearchResult RenewPopulationAndUpdatePopulation(double percantage, Population population)
@@ -68,7 +68,7 @@ namespace GeneticAlgorithm
             var newPopulation = RenewPopulation(chromosomesToRenew, population);
             EvaluatePopulation(newPopulation);
             UpdateNewGeneration(newPopulation);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
         public InternalSearchResult ConvertPopulationAndUpdatePopulation(IChromosome[] population)
@@ -76,7 +76,7 @@ namespace GeneticAlgorithm
             var newPopulation = new Population(population);
             EvaluatePopulation(newPopulation);
             UpdateNewGeneration(newPopulation);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
         private IChromosome[] CreateNewGeneration(Population population, int generation)
@@ -178,7 +178,7 @@ namespace GeneticAlgorithm
             options.MutationManager.AddGeneration(chromosomes, evaluations);
             options.PopulationConverter?.AddGeneration(chromosomes, evaluations);
 
-            onNewGeneration(chromosomes, evaluations);
+            onNewGeneration(chromosomes, evaluations, environment);
 
             if (options.IncludeAllHistory)
                 history.Add(chromosomes);

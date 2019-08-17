@@ -88,7 +88,7 @@ This is a good way for GUIs to visually show the argument's progress, or just sh
 Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator).Build();
-searchEngine.OnNewGeneration += (IChromosome[] c,double[] d) =>
+searchEngine.OnNewGeneration += (IChromosome[] c, double[] d, IEnvironment e) =>
 {
     // Do some work here
 };

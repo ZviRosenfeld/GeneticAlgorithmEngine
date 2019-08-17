@@ -47,11 +47,7 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => chromosomeEvaluator.SetEnvierment(A<IEnvironment>._)).Invokes((IEnvironment e) =>
             {
                 counter++;
-
-                var defaultEnvironment = (DefaultEnvironment) e;
-                Assert.AreEqual(counter, defaultEnvironment.Generation, "Wrong generation provided");
-                foreach (var chromosome in defaultEnvironment.Chromosomes)
-                    Assert.AreEqual(counter, chromosome.Evaluate(), "Wrong chromosome provided");
+                AssertIsRightEnvironment(e, counter);
             });
             var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(chromosomeEvaluator).Build();
@@ -61,6 +57,49 @@ namespace GeneticAlgorithm.UnitTests
             engine.Next();
 
             Assert.AreNotEqual(0, counter, "SetEnvierment was never called");
+        }
+
+        [TestMethod]
+        public void OnNewGenerationEventGetsRightEnvironment()
+        {
+            var counter = 0;
+            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(A.Fake<IChromosomeEvaluator>()).Build();
+            engine.OnNewGeneration += (c, e, en) =>
+            {
+                counter++;
+                AssertIsRightEnvironment(en, counter);
+            };
+            
+            engine.Next();
+            engine.Next();
+            engine.Next();
+
+            Assert.AreNotEqual(0, counter, "SetEnvierment was never called");
+        }
+
+        [TestMethod]
+        public void ResultGetsRightEnvironment()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(A.Fake<IChromosomeEvaluator>()).Build();
+
+            int i;
+            for (i = 1; i < 4; i++)
+            {
+                var result = engine.Next();
+                AssertIsRightEnvironment(result.Environment, i);
+            }
+
+            Assert.AreNotEqual(0, i, "SetEnvierment was never called");
+        }
+
+        private static void AssertIsRightEnvironment(IEnvironment en, int counter)
+        {
+            var defaultEnvironment = (DefaultEnvironment) en;
+            Assert.AreEqual(counter, defaultEnvironment.Generation, "Wrong generation provided");
+            foreach (var chromosome in defaultEnvironment.Chromosomes)
+                Assert.AreEqual(counter, chromosome.Evaluate(), "Wrong chromosome provided");
         }
 
         [TestMethod]
