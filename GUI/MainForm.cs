@@ -67,16 +67,7 @@ namespace GUI
 
         private void Update(GeneticSearchResult result)
         {
-            generationLabel.Text = result.Generations.ToString();
-            generationLabel.Refresh();
-            SearchTimeLable.Text = result.SearchTime.ToString();
-            SearchTimeLable.Refresh();
-            var displayChromosomesCollection = new BindingList<DisplayChromosome>();
-            foreach (var population in result.Population)
-                displayChromosomesCollection.Add(new DisplayChromosome((NumberVectorChromosome) population.Chromosome,
-                    population.Evaluation));
-            chromosomesDisplay.DataSource = displayChromosomesCollection;
-            chromosomesDisplay.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            resultDisplay.SetResult(result);
         }
 
         private void PuaseButton_Click(object sender, System.EventArgs e)
