@@ -82,15 +82,18 @@ Task.Run(() => searchEngine.Run());
 
 ### OnNewGeneration
 
-This event is called once for every new generations. It's arguments are the generation's population, and their evaluations.
+This event is called once for every new generations.
 This is a good way for GUIs to visually show the argument's progress, or just show the search progress.
 
 Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator).Build();
-searchEngine.OnNewGeneration += (IChromosome[] c, double[] d, IEnvironment e) =>
+searchEngine.OnNewGeneration += (Population population, IEnvironment e) =>
 {
-    // Do some work here
+    /* Do some work here. For instance:
+	IChromosome[] chromosomes = population.GetChromosomes();
+	double[] evaluations = population.GetEvaluations();
+	*/
 };
 var result = searchEngine.Run();
 ```

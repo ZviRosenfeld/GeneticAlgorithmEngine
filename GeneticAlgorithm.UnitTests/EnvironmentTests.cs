@@ -65,7 +65,7 @@ namespace GeneticAlgorithm.UnitTests
             var counter = 0;
             var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(A.Fake<IChromosomeEvaluator>()).Build();
-            engine.OnNewGeneration += (c, e, en) =>
+            engine.OnNewGeneration += (p, en) =>
             {
                 counter++;
                 AssertIsRightEnvironment(en, counter);

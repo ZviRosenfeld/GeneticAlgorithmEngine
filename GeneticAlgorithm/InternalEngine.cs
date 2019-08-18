@@ -17,11 +17,11 @@ namespace GeneticAlgorithm
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
         private readonly List<IChromosome[]> history = new List<IChromosome[]>();
-        private readonly Action<IChromosome[], double[], IEnvironment> onNewGeneration;
+        private readonly Action<Population, IEnvironment> onNewGeneration;
         private readonly IEnvironment environment;
 
         public InternalEngine(IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator,
-            GeneticSearchOptions options, Action<IChromosome[], double[], IEnvironment> onNewGeneration, IEnvironment environment)
+            GeneticSearchOptions options, Action<Population, IEnvironment> onNewGeneration, IEnvironment environment)
         {
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
@@ -178,7 +178,7 @@ namespace GeneticAlgorithm
             options.MutationManager.AddGeneration(chromosomes, evaluations);
             options.PopulationConverter?.AddGeneration(chromosomes, evaluations);
 
-            onNewGeneration(chromosomes, evaluations, environment);
+            onNewGeneration(population, environment);
 
             if (options.IncludeAllHistory)
                 history.Add(chromosomes);

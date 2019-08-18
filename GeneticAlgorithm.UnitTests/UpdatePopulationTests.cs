@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +9,9 @@ namespace GeneticAlgorithm.UnitTests
     {
         private readonly List<IChromosome[]> chromosomes = new List<IChromosome[]>();
         private readonly List<double[]> evaluations = new List<double[]>();
+
+        public void Save(Population population, IEnvironment environment) =>
+            Save(population.GetChromosomes(), population.GetEvaluations(), environment);
 
         public void Save(IChromosome[] chromosomes, double[] evaluations, IEnvironment environment)
         {
