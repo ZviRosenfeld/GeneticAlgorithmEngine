@@ -78,13 +78,13 @@ namespace GeneticAlgorithm.UnitTests
         {
             var generation = 1;
             var stopManager = A.Fake<IStopManager>();
-            A.CallTo(() => stopManager.ShouldStop(A<IChromosome[]>._, A<double[]>._, A<int>._)).Invokes(
-                (IChromosome[] c, double[] e, int g) =>
+            A.CallTo(() => stopManager.ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes(
+                (Population p, IEnvironment e, int g) =>
                 {
                     Assert.AreEqual(generation, g, "Wrong generation");
-                    foreach (var chromosome in c)
+                    foreach (var chromosome in p.GetChromosomes())
                         Assert.AreEqual(generation, chromosome.Evaluate(), "Wrong chromosome");
-                    foreach (var evaluation in e)
+                    foreach (var evaluation in p.GetEvaluations())
                         Assert.AreEqual(generation, evaluation, "Wrong evaluation");
                     generation++;
 

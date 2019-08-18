@@ -14,12 +14,12 @@ namespace GeneticAlgorithm.StopManagers
             this.diff = diff;
         }
 
-        public bool ShouldStop(IChromosome[] population, double[] evaluations, int generation)
+        public bool ShouldStop(Population population, IEnvironment environment, int generation)
         {
             var minEvaluation = double.MaxValue;
             var maxEvaluation = double.MinValue;
 
-            foreach (var evaluation in evaluations)
+            foreach (var evaluation in population.GetEvaluations())
             {
                 if (evaluation < minEvaluation)
                     minEvaluation = evaluation;
@@ -30,7 +30,7 @@ namespace GeneticAlgorithm.StopManagers
             return (maxEvaluation - minEvaluation) <= diff;
         }
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
             // Do nothing
         }

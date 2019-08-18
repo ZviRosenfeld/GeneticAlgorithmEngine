@@ -17,12 +17,12 @@ namespace GeneticAlgorithm.PopulationRenwalManagers
             stopManager = new StopIfNoImprovment(generations, minImprvment);
         }
 
-        public double ShouldRenew(IChromosome[] population, double[] evaluations, int generation) =>
-            stopManager.ShouldStop(population, evaluations, generation) ? precentageToRenew : 0;
+        public double ShouldRenew(Population population, IEnvironment environment, int generation) =>
+            stopManager.ShouldStop(population, environment, generation) ? precentageToRenew : 0;
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
-            stopManager.AddGeneration(population, evaluations);
+            stopManager.AddGeneration(population);
         }
     }
 }

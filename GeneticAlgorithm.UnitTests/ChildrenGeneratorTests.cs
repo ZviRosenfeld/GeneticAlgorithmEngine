@@ -25,7 +25,7 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._))
                 .ReturnsLazily((IChromosome c1, IChromosome c2) => c1);
             var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(mutationProbability));
-            childrenGenerator.GenerateChildren(population, tries, 0);
+            childrenGenerator.GenerateChildren(population, tries, 0, null);
 
             const double errorMargin = 0.05;
             Assert.IsTrue(mutationCounter < tries * mutationProbability + errorMargin * tries, $"Too few mutations ({mutationCounter})");
@@ -48,7 +48,7 @@ namespace GeneticAlgorithm.UnitTests
                     UpdateCounters(c2.ToString(), counters);
                 });
             var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0));
-            childrenGenerator.GenerateChildren(population, tries, 0);
+            childrenGenerator.GenerateChildren(population, tries, 0, null);
 
             AssertIsWithinRange(counters[0], chromosome1Probability, tries, "c1");
             AssertIsWithinRange(counters[1], chromosome2Probability, tries, "c2");
@@ -62,12 +62,12 @@ namespace GeneticAlgorithm.UnitTests
         public void BadMutationProbability_ThrowException(double probability)
         {
             var mutationManager = A.Fake<IMutationManager>();
-            A.CallTo(() => mutationManager.MutationProbability(A<IChromosome[]>._, A<double[]>._, A<int>._))
+            A.CallTo(() => mutationManager.MutationProbability(A<Population>._, A<IEnvironment>._, A<int>._))
                 .Returns(probability);
 
             var population = GetPopulation(1, 0.1, 0.4, 0.5);
             var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), mutationManager);
-            childrenGenerator.GenerateChildren(population, 1, 1);
+            childrenGenerator.GenerateChildren(population, 1, 1, null);
         }
 
         private void UpdateCounters(string chromosomeName, int[] counters)

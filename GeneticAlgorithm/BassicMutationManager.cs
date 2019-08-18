@@ -15,11 +15,11 @@ namespace GeneticAlgorithm
             this.mutation = mutation;
         }
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
             // Do nothing
         }
 
-        public double MutationProbability(IChromosome[] population, double[] evaluations, int generation) => mutation;
+        public double MutationProbability(Population population, IEnvironment environment, int generation) => mutation;
     }
 }

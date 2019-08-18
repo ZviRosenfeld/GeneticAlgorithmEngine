@@ -36,14 +36,14 @@ namespace GeneticAlgorithm
             stopwatch.Start();
             var nextGeneration = CreateNewGeneration(population, generation);
             if (options.PopulationConverter != null)
-                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation);
+                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation, environment);
             population = new Population(nextGeneration);
             environment?.UpdateEnvierment(nextGeneration, generation);
 
             EvaluatePopulation(population);
 
             if (options.StopManagers.Any(stopManager =>
-                stopManager.ShouldStop(population.GetChromosomes(), population.GetEvaluations(), generation)))
+                stopManager.ShouldStop(population, environment, generation)))
             {
                 UpdateNewGeneration(population);
                 stopwatch.Stop();
@@ -91,7 +91,7 @@ namespace GeneticAlgorithm
             NormilizeEvaluations(population);
             var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
-            var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation);
+            var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation, environment);
             var elite = GetBestChromosomes(eliteChromosomes, population);
             return SearchUtils.Combine(children, elite);
         }
@@ -102,7 +102,7 @@ namespace GeneticAlgorithm
                 return 0;
 
             var percantage = options.PopulationRenwalManagers.Select(populationRenwalManager =>
-                populationRenwalManager.ShouldRenew(population.GetChromosomes(), population.GetEvaluations(), generation)).Max();
+                populationRenwalManager.ShouldRenew(population, environment, generation)).Max();
 
             if (percantage < 0)
                 throw new PopulationRenewalException("percentage of the population to renew can't be less then 0");
@@ -168,20 +168,17 @@ namespace GeneticAlgorithm
         /// </summary>
         private void UpdateNewGeneration(Population population)
         {
-            var chromosomes = population.GetChromosomes();
-            var evaluations = population.GetEvaluations();
-
             foreach (var stopManager in options.StopManagers)
-                stopManager.AddGeneration(chromosomes, evaluations);
+                stopManager.AddGeneration(population);
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
-                populationRenwalManager.AddGeneration(chromosomes, evaluations);
-            options.MutationManager.AddGeneration(chromosomes, evaluations);
-            options.PopulationConverter?.AddGeneration(chromosomes, evaluations);
+                populationRenwalManager.AddGeneration(population);
+            options.MutationManager.AddGeneration(population);
+            options.PopulationConverter?.AddGeneration(population);
 
             onNewGeneration(population, environment);
 
             if (options.IncludeAllHistory)
-                history.Add(chromosomes);
+                history.Add(population.GetChromosomes());
         }
     }
 }

@@ -11,6 +11,7 @@ namespace GeneticAlgorithm
     {
         private readonly List<ChromosomeEvaluationPair> population;
         private readonly IChromosome[] chromosomes;
+        private readonly object evaluationLock = new object();
         private bool evaluationChanged = true;
 
         public Population(IChromosome[] population)
@@ -18,7 +19,11 @@ namespace GeneticAlgorithm
             chromosomes = population;
             this.population = new List<ChromosomeEvaluationPair>(population.Length);
             foreach (IChromosome chromosome in population)
-                this.population.Add(new ChromosomeEvaluationPair(chromosome, () => evaluationChanged = true));
+                this.population.Add(new ChromosomeEvaluationPair(chromosome, () =>
+                {
+                    lock (evaluationLock)
+                        evaluationChanged = true;
+                }));
         }
 
         public IEnumerator<ChromosomeEvaluationPair> GetEnumerator() => population.GetEnumerator();
@@ -34,11 +39,14 @@ namespace GeneticAlgorithm
                 return evaluations ??
                        throw new InternalSearchException($"Code 1002 ({nameof(evaluations)} should not be null)");
 
-            evaluations = new double[population.Count];
-            for (int i = 0; i < population.Count; i++)
-                evaluations[i] = population[i].Evaluation;
-            evaluationChanged = false;
-            return evaluations;
+            lock (evaluationLock)
+            {
+                evaluations = new double[population.Count];
+                for (int i = 0; i < population.Count; i++)
+                    evaluations[i] = population[i].Evaluation;
+                evaluationChanged = false;
+                return evaluations;
+            }
         }
 
         public ChromosomeEvaluationPair this[int i] => population[i];

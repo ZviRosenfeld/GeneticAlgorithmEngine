@@ -79,7 +79,7 @@ namespace GeneticAlgorithm.UnitTests
                 .Returns(new[] {chromosme});
 
             var populationRenewalManager = A.Fake<IPopulationRenwalManager>();
-            A.CallTo(() => populationRenewalManager.ShouldRenew(A<IChromosome[]>._, A<double[]>._, A<int>._))
+            A.CallTo(() => populationRenewalManager.ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._))
                 .Returns(percantage);
             var engine =
                 new GeneticSearchEngineBuilder(1, 2, A.Fake<ICrossoverManager>(), populationGenerator)
