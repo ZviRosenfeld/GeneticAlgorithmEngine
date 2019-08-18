@@ -79,6 +79,71 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
+        public void StopManagerGetsRightEnvironment()
+        {
+            var counter = 0;
+            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var stopManager = A.Fake<IStopManager>();
+            A.CallTo(() => stopManager.ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes((Population p, IEnvironment e, int g) =>
+            {
+                counter++;
+                AssertIsRightEnvironment(e, counter);
+            });
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
+                .SetEnvironment(new DefaultEnvironment()).AddStopManager(stopManager).Build();
+            
+            engine.Next();
+            engine.Next();
+            engine.Next();
+
+            Assert.AreNotEqual(0, counter, "SetEnvierment was never called");
+        }
+
+        [TestMethod]
+        public void PopulationConverterGetsRightEnvironment()
+        {
+            var counter = 0;
+            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationConverter = A.Fake<IPopulationConverter>();
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._)).ReturnsLazily((IChromosome[] c, int g, IEnvironment e) =>
+            {
+                if (counter > 0)
+                    AssertIsRightEnvironment(e, counter);
+                counter++;
+                return c;
+            });
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
+                .SetEnvironment(new DefaultEnvironment()).SetPopulationConverter(populationConverter).Build();
+
+            engine.Next();
+            engine.Next();
+            engine.Next();
+
+            Assert.AreNotEqual(0, counter, "SetEnvierment was never called");
+        }
+        
+        [TestMethod]
+        public void PopulationRenwalManagerGetsRightEnvironment()
+        {
+            var counter = 0;
+            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var renwalManager = A.Fake<IPopulationRenwalManager>();
+            A.CallTo(() => renwalManager.ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes((Population p, IEnvironment e, int g) =>
+            {
+                counter++;
+                AssertIsRightEnvironment(e, counter);
+            });
+            var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
+                .SetEnvironment(new DefaultEnvironment()).AddPopulationRenwalManager(renwalManager).Build();
+
+            engine.Next();
+            engine.Next();
+            engine.Next();
+
+            Assert.AreNotEqual(0, counter, "SetEnvierment was never called");
+        }
+
+        [TestMethod]
         public void ResultGetsRightEnvironment()
         {
             var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);

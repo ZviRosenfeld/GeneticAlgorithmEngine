@@ -15,8 +15,8 @@ namespace GeneticAlgorithm.UnitTests
 
         public void Save(Population population, IEnvironment environment)
         {
-            this.chromosomes.Add(population.GetChromosomes());
-            this.evaluations.Add(population.GetEvaluations());
+            chromosomes.Add(population.GetChromosomes());
+            evaluations.Add(population.GetEvaluations());
         }
         
         public void AssertAreRightChromosomes(double[][] expactedEvaluation)
