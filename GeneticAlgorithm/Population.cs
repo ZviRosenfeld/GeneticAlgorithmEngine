@@ -41,6 +41,9 @@ namespace GeneticAlgorithm
 
             lock (evaluationLock)
             {
+                if (!evaluationChanged)
+                    return evaluations;
+
                 evaluations = new double[population.Count];
                 for (int i = 0; i < population.Count; i++)
                     evaluations[i] = population[i].Evaluation;
