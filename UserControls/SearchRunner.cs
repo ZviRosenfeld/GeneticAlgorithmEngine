@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GeneticAlgorithm;
@@ -26,6 +27,10 @@ namespace UserControls
         public void SetEngineBuilder(GeneticSearchEngineBuilder engineBuilder)
         {
             this.engineBuilder = engineBuilder;
+            lock (shouldPauseLock)
+                shouldPause = true;
+            Thread.Sleep(200); // Give some time for the search to stop
+
             InitializeEngine();
             SetButtonsState(EngineState.Puased);
         }

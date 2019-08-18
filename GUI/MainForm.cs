@@ -23,6 +23,11 @@ namespace GUI
                     new NumberVectorBassicPopulationGenerator()).SetMutationProbability(MutationInputBox.GetValue)
                 .SetElitPercentage(ElitismInputBox.GetValue);
             searchRunner1.SetEngineBuilder(engineBuilder);
-        }      
+        }
+
+        private void applyButton_Click(object sender, System.EventArgs e)
+        {
+            InitializeEngine();
+        }
     }
 }

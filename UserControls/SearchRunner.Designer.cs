@@ -163,8 +163,8 @@ namespace UserControls
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.controlPanel);
             this.Controls.Add(this.geneticResultDisplay);
+            this.Controls.Add(this.controlPanel);
             this.MinimumSize = new System.Drawing.Size(630, 600);
             this.Name = "SearchRunner";
             this.Size = new System.Drawing.Size(650, 650);
