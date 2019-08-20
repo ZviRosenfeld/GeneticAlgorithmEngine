@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.MutationManagers;
 using GeneticAlgorithm.StopManagers;
 
 namespace GeneticAlgorithm

@@ -1,7 +1,7 @@
 ﻿using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
-namespace GeneticAlgorithm
+namespace GeneticAlgorithm.MutationManagers
 {
     public class BassicMutationManager : IMutationManager
     {

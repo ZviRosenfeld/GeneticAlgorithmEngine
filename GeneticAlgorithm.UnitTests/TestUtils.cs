@@ -19,7 +19,7 @@ namespace GeneticAlgorithm.UnitTests
             return result;
         }
 
-        public static IChromosome[] ToChromosomes(this double[] generationEvaluations, string tag, int? number = null)
+        public static IChromosome[] ToChromosomes(this double[] generationEvaluations, string tag = "Chromo", int? number = null)
         {
             var size = number ?? generationEvaluations.Length;
             var population = new IChromosome[size];
@@ -28,13 +28,19 @@ namespace GeneticAlgorithm.UnitTests
             
             return population;
         }
-
+        
         public static IChromosome CreateChromosome(double evaluation, string tag)
         {
             var newChromosome = A.Fake<IChromosome>();
             A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
             A.CallTo(() => newChromosome.ToString()).Returns($"{tag} (Eval={evaluation})");
             return newChromosome;
+        }
+
+        public static  void Evaluate(this Population population)
+        {
+            foreach (var chromosome in population)
+                chromosome.Evaluation = chromosome.Chromosome.Evaluate();
         }
 
         public static void AssertHasEvaluation(this List<IChromosome[]> chromosomes, double[][] evaluations)

@@ -4,6 +4,7 @@ using System.Threading;
 using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.MutationManagers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

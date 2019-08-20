@@ -90,7 +90,7 @@ Example:
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator).Build();
 searchEngine.OnNewGeneration += (Population population, IEnvironment e) =>
 {
-    /* Do some work here. For instance:
+	/* Do some work here. For instance:
 	IChromosome[] chromosomes = population.GetChromosomes();
 	double[] evaluations = population.GetEvaluations();
 	*/
@@ -123,6 +123,7 @@ You can create your own managers by implementing the IStopManager class, or use 
 Note that there is no limit to the number of StopManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
+In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/StopManagers) are some examples of custom StopManager.
 
 Existing StopManagers:
 - **StopAtEvaluation**: Will cause the search to stop when it reaches some predefined evaluation.
@@ -142,7 +143,9 @@ PopulationRenwalManagers will renew a certain percentage of the population if so
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
-You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
+You can find a tutorial on creating a custom PopulationRenwalManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
+In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/PopulationRenwalManagers) are some examples of custom PopulationRenwalManagers.
+
 
 Existing PopulationRenwalManagers:
 - **RenewAtConvergence**: The search will renew some of the population if the difference between chromosomes in the population is too small.
