@@ -19,7 +19,7 @@ namespace Environment
         {
             var engineBuidler = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATIONS, new CrossoverManager(),
                     new PopulationGenerator()).SetCustomChromosomeEvaluator(new ChromosomeEvaluator())
-                .SetEnvironment(new MyEnvironment()).SetMutationProbability(0.1);
+                .SetEnvironment(new MyEnvironment()).SetMutationProbability(0.01);
             searchRunner1.SetEngineBuilder(engineBuidler);
         }
     }

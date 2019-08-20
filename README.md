@@ -123,7 +123,7 @@ You can create your own managers by implementing the IStopManager class, or use 
 Note that there is no limit to the number of StopManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
-In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/StopManagers) are some examples of custom StopManager.
+In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/StopManagers) are some examples of custom StopManagers.
 
 Existing StopManagers:
 - **StopAtEvaluation**: Will cause the search to stop when it reaches some predefined evaluation.
@@ -164,7 +164,7 @@ var result = searchEngine.Run();
 The IMutationManager class lets you dynamically determine the probability of a mutation based on the current population.
 For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
-Note that there are no default implementations of IMutationManager.
+That there are no default implementations of IMutationManager. You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
 
 Example:
 ```CSharp
@@ -200,10 +200,14 @@ The IEnvironment represents the "environment". You can set your own environment.
 
 The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configuration your environment. UpdateEnvierment is guaranteed to be called once per generation.
 
+You can find an example of a custom Environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/Environment/MyEnvironment.cs).
+
 ### IChromosomeEvaluator
 
 If you set the IChromosomeEvaluator, the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
 Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use use the information in the environment to evaluate the chromosomes.
+
+You can find an example of a custom ChromosomeEvaluator [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/Environment/ChromosomeEvaluator.cs).
 
 ### Example
 
@@ -214,3 +218,8 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 
 var result = searchEngine.Run();
 ```
+
+### Tutorial
+
+You can find a tutorial on using an environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Using-an-Environment).
+The tutorial's full source code (alone with a poorly designed GUI) is [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/Environment).

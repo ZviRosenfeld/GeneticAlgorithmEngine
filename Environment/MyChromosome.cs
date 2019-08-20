@@ -16,14 +16,16 @@ namespace Environment
 
         public double Evaluate()
         {
+            // We don't need to implement this. Evaluations will be handled by our custom ChromosomeEvaluator.
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// A mutation will change the type of a chromosome
+        /// </summary>
         public void Mutate()
         {
-            if (random.NextDouble() < 0.1)
-                Type = Type == ChromosomeType.OProducer ? ChromosomeType.Oc2Producer : ChromosomeType.OProducer;
-
+            Type = Type == ChromosomeType.OProducer ? ChromosomeType.Oc2Producer : ChromosomeType.OProducer;
         }
 
         public override string ToString() => Type.ToString();
