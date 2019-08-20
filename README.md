@@ -188,6 +188,8 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
+You can find an exsample of a custom PopulationConverter [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/PopulationConverters/SamplePopulationConverter.cs).
+
 ## Using an Environment
 
 Sometimes, it's impossible to evaluate a chromosome without knowing information about it's surroundings, such as the rest of the population. (This, by the way, in the case in nature - where the fitness an individual depends on its envierment and the way it interacts with the other individuals).
@@ -213,7 +215,7 @@ You can find an example of a custom ChromosomeEvaluator [here](https://github.co
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
-	.SetEnvironment(new MyEnvironment) // If you don't set an envierment, we'll use the DefaultEnvironment class
+	.SetEnvironment(new MyEnvironment) // If you don't set an environment, we'll use the DefaultEnvironment class
 	.SetCustomChromosomeEvaluator(new MyChromosomeEvaluator()).Build();
 
 var result = searchEngine.Run();
@@ -222,4 +224,4 @@ var result = searchEngine.Run();
 ### Tutorial
 
 You can find a tutorial on using an environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Using-an-Environment).
-The tutorial's full source code (alone with a poorly designed GUI) is [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/Environment).
+The tutorial's full source code (alone with a poorly designed GUI) is located [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/EnvironmentGui).

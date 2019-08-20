@@ -7,6 +7,9 @@
         /// </summary>
         void AddGeneration(Population population);
 
+        /// <summary>
+        /// Returns the probability for a mutation
+        /// </summary>
         double MutationProbability(Population population, IEnvironment environment, int generation);
     }
 }

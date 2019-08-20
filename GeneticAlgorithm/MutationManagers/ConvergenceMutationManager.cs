@@ -12,11 +12,17 @@ namespace GeneticAlgorithm.MutationManagers
     {
         private double previousConvergence;
 
+        /// <summary>
+        /// This method is will be called once per generation (after the MutationProbability method for that generation), so you can use it to remember old data.
+        /// </summary>
         public void AddGeneration(Population population)
         {
             previousConvergence = GetConvergence(population.GetEvaluations());
         }
 
+        /// <summary>
+        /// Returns the probability for a mutation
+        /// </summary>
         public double MutationProbability(Population population, IEnvironment environment, int generation)
         {
             var maxEvaluation = population.GetEvaluations().Max();
