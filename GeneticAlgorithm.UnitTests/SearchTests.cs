@@ -153,10 +153,10 @@ namespace GeneticAlgorithm.UnitTests
 
             var actualPopulation = new List<IChromosome[]>();
             var actualEvaluations = new List<double[]>();
-            searchEngine.OnNewGeneration += (c, d) =>
+            searchEngine.OnNewGeneration += (p, e) =>
             {
-                actualEvaluations.Add(d);
-                actualPopulation.Add(c);
+                actualEvaluations.Add(p.GetEvaluations());
+                actualPopulation.Add(p.GetChromosomes());
             };
 
             searchEngine.Run(runType);

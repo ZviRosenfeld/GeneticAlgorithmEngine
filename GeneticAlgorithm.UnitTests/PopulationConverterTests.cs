@@ -13,7 +13,7 @@ namespace GeneticAlgorithm.UnitTests
             var testPopulationManager = new TestPopulationManager(new double[] {1, 1, 1, 1, 1});
             var populationConverter = A.Fake<IPopulationConverter>();
             var convertedPopulation = new double[] {2, 2, 2, 2, 2};
-            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._))
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
                 .Returns(convertedPopulation.ToChromosomes("Converted Chromosomes"));
             var engine = new TestGeneticSearchEngineBuilder(convertedPopulation.Length, 10, testPopulationManager)
                 .SetPopulationConverter(populationConverter).Build();
@@ -30,8 +30,8 @@ namespace GeneticAlgorithm.UnitTests
             var generation = 0;
             var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
             var populationConverter = A.Fake<IPopulationConverter>();
-            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._))
-                .ReturnsLazily((IChromosome[] c, int g) =>
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .ReturnsLazily((IChromosome[] c, int g, IEnvironment e) =>
                 {
                     generation++;
                     Assert.AreEqual(generation, g, "We got the wrong generation");

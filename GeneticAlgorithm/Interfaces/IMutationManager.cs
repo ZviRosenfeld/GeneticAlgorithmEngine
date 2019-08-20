@@ -5,8 +5,8 @@
         /// <summary>
         /// This method is will be called once per generation (after the MutationProbability method for that generation), so you can use it to remember old data.
         /// </summary>
-        void AddGeneration(IChromosome[] population, double[] evaluations);
+        void AddGeneration(Population population);
 
-        double MutationProbability(IChromosome[] population, double[] evaluations, int generation);
+        double MutationProbability(Population population, IEnvironment environment, int generation);
     }
 }

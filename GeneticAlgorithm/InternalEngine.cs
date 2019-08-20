@@ -17,15 +17,17 @@ namespace GeneticAlgorithm
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
         private readonly List<IChromosome[]> history = new List<IChromosome[]>();
-        private readonly Action<IChromosome[], double[]> onNewGeneration;
+        private readonly Action<Population, IEnvironment> onNewGeneration;
+        private readonly IEnvironment environment;
 
         public InternalEngine(IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator,
-            GeneticSearchOptions options, Action<IChromosome[], double[]> onNewGeneration)
+            GeneticSearchOptions options, Action<Population, IEnvironment> onNewGeneration, IEnvironment environment)
         {
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
             this.options = options;
             this.onNewGeneration = onNewGeneration;
+            this.environment = environment;
         }
 
         public InternalSearchResult RunSingleGeneration(Population population, int generation)
@@ -34,16 +36,18 @@ namespace GeneticAlgorithm
             stopwatch.Start();
             var nextGeneration = CreateNewGeneration(population, generation);
             if (options.PopulationConverter != null)
-                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation);
+                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation, environment);
             population = new Population(nextGeneration);
+            environment?.UpdateEnvierment(nextGeneration, generation);
+
             EvaluatePopulation(population);
 
             if (options.StopManagers.Any(stopManager =>
-                stopManager.ShouldStop(population.GetChromosomes(), population.GetEvaluations(), generation)))
+                stopManager.ShouldStop(population, environment, generation)))
             {
                 UpdateNewGeneration(population);
                 stopwatch.Stop();
-                return new InternalSearchResult(population, stopwatch.Elapsed, true);
+                return new InternalSearchResult(population, stopwatch.Elapsed, true, environment);
             }
 
             var populationToRenew = GetPopulationToRenew(population, generation);
@@ -55,7 +59,7 @@ namespace GeneticAlgorithm
 
             UpdateNewGeneration(population);
             stopwatch.Stop();
-            return new InternalSearchResult(population, stopwatch.Elapsed, false);
+            return new InternalSearchResult(population, stopwatch.Elapsed, false, environment);
         }
 
         public InternalSearchResult RenewPopulationAndUpdatePopulation(double percantage, Population population)
@@ -64,7 +68,7 @@ namespace GeneticAlgorithm
             var newPopulation = RenewPopulation(chromosomesToRenew, population);
             EvaluatePopulation(newPopulation);
             UpdateNewGeneration(newPopulation);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
         public InternalSearchResult ConvertPopulationAndUpdatePopulation(IChromosome[] population)
@@ -72,7 +76,7 @@ namespace GeneticAlgorithm
             var newPopulation = new Population(population);
             EvaluatePopulation(newPopulation);
             UpdateNewGeneration(newPopulation);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
         private IChromosome[] CreateNewGeneration(Population population, int generation)
@@ -87,7 +91,7 @@ namespace GeneticAlgorithm
             NormilizeEvaluations(population);
             var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
-            var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation);
+            var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation, environment);
             var elite = GetBestChromosomes(eliteChromosomes, population);
             return SearchUtils.Combine(children, elite);
         }
@@ -98,7 +102,7 @@ namespace GeneticAlgorithm
                 return 0;
 
             var percantage = options.PopulationRenwalManagers.Select(populationRenwalManager =>
-                populationRenwalManager.ShouldRenew(population.GetChromosomes(), population.GetEvaluations(), generation)).Max();
+                populationRenwalManager.ShouldRenew(population, environment, generation)).Max();
 
             if (percantage < 0)
                 throw new PopulationRenewalException("percentage of the population to renew can't be less then 0");
@@ -137,11 +141,13 @@ namespace GeneticAlgorithm
             throw new InternalSearchException("Code 1000 (not enough best chromosomes found)");
         }
 
-        private static void EvaluatePopulation(Population population)
+        private void EvaluatePopulation(Population population)
         {
+            options.ChromosomeEvaluator.SetEnvierment(environment);
+
             Parallel.ForEach(population, chromosome =>
             {
-                var evaluation = chromosome.Chromosome.Evaluate();
+                var evaluation = options.ChromosomeEvaluator.Evaluate(chromosome.Chromosome);
                 if (evaluation < 0)
                     throw new NegativeEvaluationException();
                 chromosome.Evaluation = evaluation;
@@ -162,20 +168,17 @@ namespace GeneticAlgorithm
         /// </summary>
         private void UpdateNewGeneration(Population population)
         {
-            var chromosomes = population.GetChromosomes();
-            var evaluations = population.GetEvaluations();
-
             foreach (var stopManager in options.StopManagers)
-                stopManager.AddGeneration(chromosomes, evaluations);
+                stopManager.AddGeneration(population);
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
-                populationRenwalManager.AddGeneration(chromosomes, evaluations);
-            options.MutationManager.AddGeneration(chromosomes, evaluations);
-            options.PopulationConverter?.AddGeneration(chromosomes, evaluations);
+                populationRenwalManager.AddGeneration(population);
+            options.MutationManager.AddGeneration(population);
+            options.PopulationConverter?.AddGeneration(population);
 
-            onNewGeneration(chromosomes, evaluations);
+            onNewGeneration(population, environment);
 
             if (options.IncludeAllHistory)
-                history.Add(chromosomes);
+                history.Add(population.GetChromosomes());
         }
     }
 }

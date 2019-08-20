@@ -12,15 +12,15 @@ namespace GeneticAlgorithm
         private readonly GeneticSearchOptions options;
 
         /// <summary>
-        /// This event is risen once for every new generation. It's arguments are the population and their evaluations.
+        /// This event is risen once for every new generation.
         /// </summary>
-        public event Action<IChromosome[], double[]> OnNewGeneration; 
+        public event Action<Population, IEnvironment> OnNewGeneration; 
 
-        public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator)
+        public GeneticSearchEngine(GeneticSearchOptions options, IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator, IEnvironment environment)
         {
             this.options = options;
             resultBuilder = new ResultBuilder(options.IncludeAllHistory);
-            engine = new InternalEngine(populationGenerator, childrenGenerator, options, (c, d) => OnNewGeneration?.Invoke(c, d));
+            engine = new InternalEngine(populationGenerator, childrenGenerator, options, (p, e) => OnNewGeneration?.Invoke(p, e), environment);
         }
         
         private int generation = 0;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,10 +10,13 @@ namespace GeneticAlgorithm.UnitTests
         private readonly List<IChromosome[]> chromosomes = new List<IChromosome[]>();
         private readonly List<double[]> evaluations = new List<double[]>();
 
-        public void Save(IChromosome[] chromosomes, double[] evaluations)
+        public void Save(Population population) =>
+            Save(population, null);
+
+        public void Save(Population population, IEnvironment environment)
         {
-            this.chromosomes.Add(chromosomes);
-            this.evaluations.Add(evaluations);
+            chromosomes.Add(population.GetChromosomes());
+            evaluations.Add(population.GetEvaluations());
         }
         
         public void AssertAreRightChromosomes(double[][] expactedEvaluation)
@@ -89,7 +91,7 @@ namespace GeneticAlgorithm.UnitTests
             CleanChromosomesAndEvaluations();
 
             var renewManager = A.Fake<IPopulationRenwalManager>();
-            A.CallTo(() => renewManager.ShouldRenew(A<IChromosome[]>._, A<double[]>._, A<int>._)).Returns(1);
+            A.CallTo(() => renewManager.ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._)).Returns(1);
             var renewedPopulation = new double[] { 3, 3 };
             var initialPopulation = new double[] {2, 2};
             var populationManager = new TestPopulationManager(initialPopulation);
@@ -128,9 +130,10 @@ namespace GeneticAlgorithm.UnitTests
             var newPopulation = new double[] { 3, 3 };
             var populationManager = new TestPopulationManager(initialPopulation);
             var populationConverter = A.Fake<IPopulationConverter>();
-            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._)).Returns(newPopulation.ToChromosomes("Converted"));
-            A.CallTo(() => populationConverter.AddGeneration(A<IChromosome[]>._, A<double[]>._))
-                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForPopulationConverter.Save(c, e));
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .Returns(newPopulation.ToChromosomes("Converted"));
+            A.CallTo(() => populationConverter.AddGeneration(A<Population>._))
+                .Invokes((Population p) => populationUpdatedForPopulationConverter.Save(p, null));
 
             var engine = CreateEngineBuilder(populationManager).SetPopulationConverter(populationConverter).Build();
             engine.OnNewGeneration += populationUpdatedOnEvent.Save;
@@ -151,25 +154,25 @@ namespace GeneticAlgorithm.UnitTests
             populationUpdatedForPopulationConverter.AssertAreRightChromosomes(renewedPopulation);
         }
 
-        private GeneticSearchEngineBuilder CreateEngineBuilder(TestPopulationManager populationManager, int generations = Int32.MaxValue)
+        private GeneticSearchEngineBuilder CreateEngineBuilder(TestPopulationManager populationManager, int generations = int.MaxValue)
         {
             var populationConverter = A.Fake<IPopulationConverter>();
-            A.CallTo(() => populationConverter.AddGeneration(A<IChromosome[]>._, A<double[]>._))
-                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForPopulationConverter.Save(c, e));
-            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._))
-                .ReturnsLazily((IChromosome[] c, int g) => c);
+            A.CallTo(() => populationConverter.AddGeneration(A<Population>._))
+                .Invokes((Population population) => populationUpdatedForPopulationConverter.Save(population));
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .ReturnsLazily((IChromosome[] c, int g, IEnvironment e) => c);
             var stopManager = A.Fake<IStopManager>();
-            A.CallTo(() => stopManager.AddGeneration(A<IChromosome[]>._, A<double[]>._))
-                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForStopManager.Save(c, e));
+            A.CallTo(() => stopManager.AddGeneration(A<Population>._))
+                .Invokes((Population p) => populationUpdatedForStopManager.Save(p));
             var populationRenwalManager = A.Fake<IPopulationRenwalManager>();
-            A.CallTo(() => populationRenwalManager.AddGeneration(A<IChromosome[]>._, A<double[]>._))
-                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForRenewalManager.Save(c, e));
+            A.CallTo(() => populationRenwalManager.AddGeneration(A<Population>._))
+                .Invokes((Population p) => populationUpdatedForRenewalManager.Save(p));
             var mutationManager = A.Fake<IMutationManager>();
-            A.CallTo(() => mutationManager.AddGeneration(A<IChromosome[]>._, A<double[]>._))
-                .Invokes((IChromosome[] c, double[] e) => populationUpdatedForMutationManager.Save(c, e));
+            A.CallTo(() => mutationManager.AddGeneration(A<Population>._))
+                .Invokes((Population p) => populationUpdatedForMutationManager.Save(p));
             var builder = new TestGeneticSearchEngineBuilder(2, generations, populationManager)
                 .AddStopManager(stopManager)
-                .AddPopulationRenwalManager(populationRenwalManager).SetMutationManager(mutationManager)
+                .AddPopulationRenwalManager(populationRenwalManager).SetCustomMutationManager(mutationManager)
                 .SetPopulationConverter(populationConverter);
             return builder;
         }

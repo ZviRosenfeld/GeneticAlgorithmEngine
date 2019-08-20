@@ -14,10 +14,10 @@ namespace GeneticAlgorithm.StopManagers
                 : throw new GeneticAlgorithmException(nameof(generationToStopAt) + " must be greater then zero");
         }
 
-        public bool ShouldStop(IChromosome[] population, double[] evaluations, int generation) =>
+        public bool ShouldStop(Population population, IEnvironment environment, int generation) =>
             generation >= generationToStopAt;
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
             // Do nothing
         }

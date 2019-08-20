@@ -18,10 +18,9 @@ namespace GeneticAlgorithm
             this.mutationManager = mutationManager;
         }
 
-        public IChromosome[] GenerateChildren(Population population, int number, int generation)
+        public IChromosome[] GenerateChildren(Population population, int number, int generation, IEnvironment environment)
         {
-            var mutationProbability = mutationManager.MutationProbability(population.GetChromosomes(),
-                population.GetEvaluations(), generation);
+            var mutationProbability = mutationManager.MutationProbability(population, environment, generation);
 
             if (mutationProbability > 1 || mutationProbability < 0)
                 throw new GeneticAlgorithmException(nameof(mutationProbability) + " must be between 0.0 to 1.0 (including)");

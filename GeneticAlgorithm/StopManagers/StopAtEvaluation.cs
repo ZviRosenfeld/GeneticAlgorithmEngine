@@ -15,10 +15,10 @@ namespace GeneticAlgorithm.StopManagers
             this.evaluationToStopAt = evaluationToStopAt;
         }
 
-        public bool ShouldStop(IChromosome[] population, double[] evaluations, int generation) =>
-            evaluations.Any(evaluation => evaluation >= evaluationToStopAt);
+        public bool ShouldStop(Population population, IEnvironment environment, int generation) =>
+            population.GetEvaluations().Any(evaluation => evaluation >= evaluationToStopAt);
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
             // Do nothing
         }

@@ -21,9 +21,11 @@ namespace GeneticAlgorithm.UnitTests
 
         public override GeneticSearchEngine Build()
         {
+            PreBuildActions();
+
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager, populationConverter);
-            return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator());
+                populationRenwalManagers, elitPercentage, mutationManager, populationConverter, chromosomeEvaluator);
+            return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator(), environment);
         }
     }
 }

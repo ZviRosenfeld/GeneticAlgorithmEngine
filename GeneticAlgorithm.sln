@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticAlgorithm.UnitTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{ACC0D837-C33D-4B41-9ED6-445AAC3EFE5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControls", "UserControls\UserControls.csproj", "{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment", "Environment\Environment.csproj", "{B68B3A55-9825-410A-B892-D710481CE834}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{ACC0D837-C33D-4B41-9ED6-445AAC3EFE5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACC0D837-C33D-4B41-9ED6-445AAC3EFE5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACC0D837-C33D-4B41-9ED6-445AAC3EFE5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B68B3A55-9825-410A-B892-D710481CE834}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B68B3A55-9825-410A-B892-D710481CE834}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B68B3A55-9825-410A-B892-D710481CE834}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B68B3A55-9825-410A-B892-D710481CE834}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

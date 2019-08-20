@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisplayChromosome.cs" />
     <Compile Include="DoubleInputBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -98,6 +97,10 @@
     <ProjectReference Include="..\GreatestVectorTests\NumberVector.csproj">
       <Project>{cb7d02ba-d9c7-4b19-8882-5d091107a60d}</Project>
       <Name>NumberVector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserControls\UserControls.csproj">
+      <Project>{77d37cc0-b19f-46a4-96c0-b9e49c3daf5e}</Project>
+      <Name>UserControls</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

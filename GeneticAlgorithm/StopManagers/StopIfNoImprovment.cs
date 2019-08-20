@@ -20,9 +20,9 @@ namespace GeneticAlgorithm.StopManagers
             this.minImprovment = minImprovment;
         }
 
-        public bool ShouldStop(IChromosome[] population, double[] evaluations, int generation)
+        public bool ShouldStop(Population population, IEnvironment environment, int generation)
         {
-            var currentEvaluation = evaluations.Max();
+            var currentEvaluation = population.GetEvaluations().Max();
             if (oldEvaluations.Count < generations)
                 return false;
             
@@ -32,9 +32,9 @@ namespace GeneticAlgorithm.StopManagers
             return Math.Abs(currentEvaluation - min) <= minImprovment;
         }
 
-        public void AddGeneration(IChromosome[] population, double[] evaluations)
+        public void AddGeneration(Population population)
         {
-            oldEvaluations.Add(evaluations.Max());
+            oldEvaluations.Add(population.GetEvaluations().Max());
         }
     }
 }

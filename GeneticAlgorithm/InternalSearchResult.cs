@@ -1,4 +1,5 @@
 ﻿using System;
+using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
@@ -10,10 +11,13 @@ namespace GeneticAlgorithm
 
         public bool IsCompleted { get; }
 
-        public InternalSearchResult(Population population, TimeSpan searchTime, bool isCompleted)
+        public IEnvironment Environment { get; }
+
+        public InternalSearchResult(Population population, TimeSpan searchTime, bool isCompleted, IEnvironment environment)
         {
             SearchTime = searchTime;
             IsCompleted = isCompleted;
+            Environment = environment;
             Population = population;
         }
     }

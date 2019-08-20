@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using GeneticAlgorithm;
 using GreatestVectorTests;
 
@@ -12,10 +8,7 @@ namespace GUI
     {
         private const int POPULATION_SIZE = 20;
         private const int GENERATION = int.MaxValue;
-
-        private bool shouldPause = false;
-        private readonly object shouldPauseLock = new object(); 
-        private GeneticSearchEngine engine;
+        
 
         public MainForm()
         {
@@ -25,82 +18,16 @@ namespace GUI
 
         private void InitializeEngine()
         {
-            engine = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, new NumberVectorCrossoverManager(),
+            var engineBuilder = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION,
+                    new NumberVectorCrossoverManager(),
                     new NumberVectorBassicPopulationGenerator()).SetMutationProbability(MutationInputBox.GetValue)
-                .SetElitPercentage(ElitismInputBox.GetValue).Build();
-            var result = engine.Next(); // Create the initial population;
-            Update(result);
+                .SetElitPercentage(ElitismInputBox.GetValue);
+            searchRunner1.SetEngineBuilder(engineBuilder);
         }
 
-        private async void RunButton_Click(object sender, System.EventArgs e)
-        {
-            SetButtonsState(EngineState.Running);
-
-            lock (shouldPauseLock)
-                shouldPause = false;
-            
-            while (!shouldPause)
-            {
-                var result = await Task.Run(() => engine.Next());
-                lock (shouldPauseLock)
-                    shouldPause = shouldPause || result.IsCompleted;
-                Update(result);
-            }
-
-            SetButtonsState(EngineState.Puased);
-        }
-        
-        private void SetButtonsState(EngineState engineState)
-        {
-            PuaseButton.Enabled = engineState == EngineState.Running;
-            RunButton.Enabled = engineState == EngineState.Puased;
-            NextButton.Enabled = engineState == EngineState.Puased;
-            RestartButton.Enabled = engineState == EngineState.Puased;
-            RenewPopulationButton.Enabled = engineState == EngineState.Puased;
-        }
-
-        private void NextButton_Click(object sender, System.EventArgs e)
-        {
-            var result = engine.Next();
-            Update(result);
-        }
-
-        private void Update(GeneticSearchResult result)
-        {
-            generationLabel.Text = result.Generations.ToString();
-            generationLabel.Refresh();
-            SearchTimeLable.Text = result.SearchTime.ToString();
-            SearchTimeLable.Refresh();
-            var displayChromosomesCollection = new BindingList<DisplayChromosome>();
-            foreach (var population in result.Population)
-                displayChromosomesCollection.Add(new DisplayChromosome((NumberVectorChromosome) population.Chromosome,
-                    population.Evaluation));
-            chromosomesDisplay.DataSource = displayChromosomesCollection;
-            chromosomesDisplay.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        }
-
-        private void PuaseButton_Click(object sender, System.EventArgs e)
-        {
-            lock (shouldPauseLock)
-                shouldPause = true;
-        }
-
-        private void RestartButton_Click(object sender, System.EventArgs e)
+        private void applyButton_Click(object sender, System.EventArgs e)
         {
             InitializeEngine();
-        }
-
-        private void RenewPopulationButton_Click(object sender, System.EventArgs e)
-        {
-            try
-            {
-                var result = engine.RenewPopulation(double.Parse(RenewPopulationInputBox.Text) / 100);
-                Update(result);
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(exc.Message, "Oops");
-            }
         }
     }
 }
