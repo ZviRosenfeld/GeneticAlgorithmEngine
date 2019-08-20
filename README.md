@@ -164,7 +164,7 @@ var result = searchEngine.Run();
 The IMutationManager class lets you dynamically determine the probability of a mutation based on the current population.
 For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
-That there are no default implementations of IMutationManager. You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
+Please note that there are no default implementations of IMutationManager. You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
 
 Example:
 ```CSharp
