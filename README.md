@@ -202,14 +202,14 @@ The IEnvironment represents the "environment". You can set your own environment.
 
 The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configuration your environment. UpdateEnvierment is guaranteed to be called once per generation.
 
-You can find an example of a custom Environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/Environment/MyEnvironment.cs).
+You can find an example of a custom Environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/EnvironmentGui/MyEnvironment.cs).
 
 ### IChromosomeEvaluator
 
 If you set the IChromosomeEvaluator, the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
 Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use use the information in the environment to evaluate the chromosomes.
 
-You can find an example of a custom ChromosomeEvaluator [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/Environment/ChromosomeEvaluator.cs).
+You can find an example of a custom ChromosomeEvaluator [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/EnvironmentGui/ChromosomeEvaluator.cs).
 
 ### Example
 
