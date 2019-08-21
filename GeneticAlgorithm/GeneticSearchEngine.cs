@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Threading;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
-    public class GeneticSearchEngine
+    public class GeneticSearchEngine : IDisposable
     {
-        private readonly object lockObject = new object();
+        private readonly TimeSpan pauseTimeout = TimeSpan.FromMinutes(1);
+        private readonly object runLock = new object();
+        private readonly object pauseLock = new object();
+        private readonly ManualResetEvent engineFinishedEvent = new ManualResetEvent(true);
         private readonly InternalEngine engine;
         private readonly ResultBuilder resultBuilder;
         private readonly GeneticSearchOptions options;
@@ -34,8 +38,7 @@ namespace GeneticAlgorithm
         /// </summary>
         public GeneticSearchResult Run()
         {
-            TryToStart();
-            try
+            return RunAsCriticalBlock(() =>
             {
                 while (!ShouldPause)
                 {
@@ -45,20 +48,30 @@ namespace GeneticAlgorithm
                     if (lastResult.IsCompleted) break;
                 }
                 return resultBuilder.Build(generation);
-            }
-            finally
-            {
-                IsRunning = false;
-            }
+            });
         }
 
-        private void TryToStart()
+        private T RunAsCriticalBlock<T>(Func<T> func)
         {
-            lock (lockObject)
+            lock (runLock)
             {
                 if (IsRunning)
                     throw new EngineAlreadyRunningException();
                 IsRunning = true;
+            }
+
+            try
+            {
+                engineFinishedEvent.Reset();
+                return func();
+            }
+            finally
+            {
+                lock (runLock)
+                {
+                    IsRunning = false;
+                    engineFinishedEvent.Set();
+                }
             }
         }
 
@@ -67,30 +80,45 @@ namespace GeneticAlgorithm
         /// </summary>
         public GeneticSearchResult Next()
         {
-            TryToStart();
-            try
+            return RunAsCriticalBlock(() =>
             {
                 generation++;
                 lastResult = engine.RunSingleGeneration(lastResult?.Population, generation);
-                resultBuilder.AddGeneration(lastResult);                
+                resultBuilder.AddGeneration(lastResult);
                 return resultBuilder.Build(generation);
-            }
-            finally
-            {
-                IsRunning = false;
-            }
+            });
         }
+        
 
         /// <summary>
-        /// Puases the search (if it is running).
+        /// Pauses the search (if it is running).
+        /// Returns true if the search is running; false otherwise.
         /// </summary>
-        public bool Puase()
+        /// <returns>True if the search is running; false otherwise</returns>
+        public bool Pause()
         {
             if (!IsRunning)
                 return false;
 
-            ShouldPause = true;
-            return true;
+            lock (pauseLock)
+            {
+                if (!IsRunning)
+                    return false;
+
+                try
+                {
+                    ShouldPause = true;
+                    engineFinishedEvent.WaitOne(pauseTimeout);
+                    if (IsRunning)
+                        throw new CouldntStopEngineException();
+
+                    return true;
+                }
+                finally
+                {
+                    ShouldPause = false;
+                }
+            }
         }
 
         /// <summary>
@@ -105,16 +133,13 @@ namespace GeneticAlgorithm
             if (percentageToRenew <= 0 || percentageToRenew > 1)
                 throw new GeneticAlgorithmException($"{nameof(percentageToRenew)} must be between 0 (not including) and 1 (including).");
 
-            lock (lockObject)
+            return RunAsCriticalBlock(() =>
             {
-                if (IsRunning)
-                    throw new EngineAlreadyRunningException();
-
                 generation++;
-                lastResult = engine.RenewPopulationAndUpdatePopulation(percentageToRenew, lastResult.Population);  
+                lastResult = engine.RenewPopulationAndUpdatePopulation(percentageToRenew, lastResult.Population);
                 resultBuilder.AddGeneration(lastResult);
                 return resultBuilder.Build(generation);
-            }
+            });
         }
 
         /// <summary>
@@ -137,16 +162,18 @@ namespace GeneticAlgorithm
             if (newPopulation.Length != options.PopulationSize)
                 throw new GeneticAlgorithmException($"Population size isn't right. Expected {options.PopulationSize}; got {newPopulation.Length}");
 
-            lock (lockObject)
+            return RunAsCriticalBlock(() =>
             {
-                if (IsRunning)
-                    throw new EngineAlreadyRunningException();
-
                 generation++;
                 lastResult = engine.ConvertPopulationAndUpdatePopulation(newPopulation);
                 resultBuilder.AddGeneration(lastResult);
                 return resultBuilder.Build(generation);
-            }
+            });
+        }
+
+        public void Dispose()
+        {
+            engineFinishedEvent?.Dispose();
         }
     }
 }

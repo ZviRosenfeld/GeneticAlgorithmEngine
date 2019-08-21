@@ -23,6 +23,11 @@ namespace UserControls
             chromosomesView.DataSource = displayChromosomesCollection;
             chromosomesView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
+            if (result.Environment == null)
+                environmentPanel.Hide();
+            else
+                environmentPanel.Show();
+
             Refresh();
         }
     }

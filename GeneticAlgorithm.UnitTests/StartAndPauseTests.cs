@@ -44,29 +44,76 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         [DataRow(true)]
         [DataRow(false)]
-        public void PuaseReturnValueTest(bool engineRunning)
+        public void PauseReturnValueTest(bool engineRunning)
         {
             var engine = GetEngine();
             if (engineRunning)
                 Task.Run(() => engine.Run());
 
             Thread.Sleep(10);
-            var running = engine.Puase();
+            var running = engine.Pause();
             Assert.AreEqual(engineRunning, running);
         }
 
         [TestMethod]
-        public void PuaseTest()
+        public void PauseTest()
         {
             var engine = GetEngine();
             Task.Run(() => engine.Run());
 
             Thread.Sleep(10);
-            engine.Puase();
-            Thread.Sleep(10);
+            engine.Pause();
             Assert.AreEqual(false, engine.IsRunning);
 
             Task.Run(() => engine.Run()); // Assert that we can start a new scan
+        }
+
+        [TestMethod]
+        public void RunAfterPauseTest()
+        {
+            var engine = GetEngine();
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+
+            engine.Pause();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+
+            Assert.AreEqual(true, engine.IsRunning, "Engine should be running");
+        }
+
+        [TestMethod]
+        public void RunAfterPauseTest2()
+        {
+            var engine = GetEngine();
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+
+            engine.Pause();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+
+            engine.Pause();
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+
+            Assert.AreEqual(true, engine.IsRunning, "Engine should be running");
+        }
+
+        [TestMethod]
+        public void PauseReturnValueTest()
+        {
+            var engine = GetEngine();
+            var result = engine.Pause();
+            Assert.IsFalse(result, "Engine shouldn't have been running");
+
+            Task.Run(() => engine.Run());
+            Thread.Sleep(10);
+            result = engine.Pause();
+            Assert.IsTrue(result, "Engine should have been running");
         }
 
         private void AssertExceptionIsThrown(Action func, Type exceptionType)
