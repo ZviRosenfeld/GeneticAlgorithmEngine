@@ -58,7 +58,7 @@ namespace GeneticAlgorithm.UnitTests
                 var engine = new GeneticSearchEngineBuilder(1, 2, A.Fake<ICrossoverManager>(), populationGenerator)
                     .Build();
                 engine.Run();
-                Assert.Fail("Should have thrown an exception before this");
+                Assert.Fail("Should have thrown an exception by now");
             }
             catch (AggregateException e)
             {
@@ -86,6 +86,7 @@ namespace GeneticAlgorithm.UnitTests
                     .AddPopulationRenwalManager(populationRenewalManager)
                     .Build();
             engine.Run();
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -100,6 +101,7 @@ namespace GeneticAlgorithm.UnitTests
             engine.Next();
 
             engine.RenewPopulation(percentage);
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -109,6 +111,7 @@ namespace GeneticAlgorithm.UnitTests
             var engine =
                 new TestGeneticSearchEngineBuilder(2, 4, new TestPopulationManager(new double[] { 2, 2 })).Build();
             engine.RenewPopulation(0.5);
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -119,8 +122,10 @@ namespace GeneticAlgorithm.UnitTests
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
             Task.Run(() => engine.Run());
-            Thread.Sleep(50); // give the engine some time to start
+            Thread.Sleep(50); // Give the eingine some time to start
+
             engine.RenewPopulation(0.5);
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -131,8 +136,10 @@ namespace GeneticAlgorithm.UnitTests
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
             Task.Run(() => engine.Run());
-            Thread.Sleep(50); // give the engine some time to start
+            while (!engine.IsRunning) ;
+
             engine.GetCurrentPopulation();
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -143,8 +150,11 @@ namespace GeneticAlgorithm.UnitTests
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
             Task.Run(() => engine.Run());
-            Thread.Sleep(50); // give the engine some time to start
+            while (!engine.IsRunning) ;
+
             engine.SetCurrentPopulation(new double[] { 3 ,3 }.ToChromosomes("Converted"));
+
+            Assert.Fail("Should have thrown an exception by now");
         }
 
         [TestMethod]
@@ -155,8 +165,11 @@ namespace GeneticAlgorithm.UnitTests
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
             Task.Run(() => engine.Run());
-            Thread.Sleep(50); // give the engine some time to start
+            while (!engine.IsRunning) ;
+
             engine.SetCurrentPopulation(new double[] { 3, 3 ,3 }.ToChromosomes("Converted"));
+
+            Assert.Fail("Should have thrown an exception by now");
         }
     }
 }

@@ -89,5 +89,12 @@ namespace GeneticAlgorithm.UnitTests
             for (int i = 0; i < population1.Length; i++)
                 Assert.AreEqual(population1[i].Evaluate(), population2[i].Evaluate());
         }
+
+        public static GeneticSearchEngine GetBassicEngine()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
+            var engineBuilder = new TestGeneticSearchEngineBuilder(5, int.MaxValue, populationManager);
+            return engineBuilder.Build();
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
@@ -13,19 +12,21 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunTwice_ThrowsException()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             Task.Run(() => engine.Run());
+            while (!engine.IsRunning) ;
 
-            AssertExceptionIsThrown(() => Task.Run(() => engine.Run()), typeof(EngineAlreadyRunningException));
+            AssertExceptionIsThrown(() => engine.Run(), typeof(EngineAlreadyRunningException));
         }
 
         [TestMethod]
         public void RunAndThenNext_ThrowsException()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             Task.Run(() => engine.Run());
+            while (!engine.IsRunning) ;
 
-            AssertExceptionIsThrown(() => Task.Run(() => engine.Next()), typeof(EngineAlreadyRunningException));
+            AssertExceptionIsThrown(() => engine.Run(), typeof(EngineAlreadyRunningException));
         }
 
         [TestMethod]
@@ -33,32 +34,18 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(false)]
         public void IsRunningTest(bool engineRunning)
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             if (engineRunning)
                 Task.Run(() => engine.Run());
 
             Thread.Sleep(10);
             Assert.AreEqual(engineRunning, engine.IsRunning);
         }
-
-        [TestMethod]
-        [DataRow(true)]
-        [DataRow(false)]
-        public void PauseReturnValueTest(bool engineRunning)
-        {
-            var engine = GetEngine();
-            if (engineRunning)
-                Task.Run(() => engine.Run());
-
-            Thread.Sleep(10);
-            var running = engine.Pause();
-            Assert.AreEqual(engineRunning, running);
-        }
-
+        
         [TestMethod]
         public void PauseTest()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             Task.Run(() => engine.Run());
 
             Thread.Sleep(10);
@@ -71,7 +58,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunAfterPauseTest()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             Task.Run(() => engine.Run());
             Thread.Sleep(10);
 
@@ -86,7 +73,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunAfterPauseTest2()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             Task.Run(() => engine.Run());
             Thread.Sleep(10);
 
@@ -106,7 +93,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void PauseReturnValueTest()
         {
-            var engine = GetEngine();
+            var engine = TestUtils.GetBassicEngine();
             var result = engine.Pause();
             Assert.IsFalse(result, "Engine shouldn't have been running");
 
@@ -121,18 +108,12 @@ namespace GeneticAlgorithm.UnitTests
             try
             {
                 func();
+                Assert.Fail("Didn't throw an exception");
             }
-            catch (AggregateException e)
+            catch (Exception e)
             {
-                Assert.AreEqual(exceptionType, e.InnerExceptions.First().GetType());
+                Assert.AreEqual(exceptionType, e.GetType());
             }
-        }
-
-        private GeneticSearchEngine GetEngine()
-        {
-            var populationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
-            var engineBuilder = new TestGeneticSearchEngineBuilder(5, int.MaxValue, populationManager);
-            return engineBuilder.Build();
         }
     }
 }
