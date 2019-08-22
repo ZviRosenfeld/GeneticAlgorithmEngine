@@ -51,30 +51,6 @@ namespace GeneticAlgorithm
             });
         }
 
-        private T RunAsCriticalBlock<T>(Func<T> func)
-        {
-            lock (runLock)
-            {
-                if (IsRunning)
-                    throw new EngineAlreadyRunningException();
-                IsRunning = true;
-            }
-
-            try
-            {
-                engineFinishedEvent.Reset();
-                return func();
-            }
-            finally
-            {
-                lock (runLock)
-                {
-                    IsRunning = false;
-                    engineFinishedEvent.Set();
-                }
-            }
-        }
-
         /// <summary>
         /// Creates the next generation.
         /// </summary>
@@ -88,8 +64,32 @@ namespace GeneticAlgorithm
                 return resultBuilder.Build(generation);
             });
         }
-        
 
+        private T RunAsCriticalBlock<T>(Func<T> func)
+        {
+            lock (pauseLock)
+            lock (runLock)
+            {
+                if (IsRunning)
+                    throw new EngineAlreadyRunningException();
+                engineFinishedEvent.Reset();
+                IsRunning = true;
+            }
+
+            try
+            {
+                return func();
+            }
+            finally
+            {
+                lock (runLock)
+                {
+                    IsRunning = false;
+                    engineFinishedEvent.Set();
+                }
+            }
+        }
+        
         /// <summary>
         /// Pauses the search (if it is running).
         /// Returns true if the search is running; false otherwise.
@@ -108,10 +108,8 @@ namespace GeneticAlgorithm
                 try
                 {
                     ShouldPause = true;
-                    engineFinishedEvent.WaitOne(pauseTimeout);
-                    if (IsRunning)
+                    if (!engineFinishedEvent.WaitOne(pauseTimeout))
                         throw new CouldntStopEngineException();
-
                     return true;
                 }
                 finally

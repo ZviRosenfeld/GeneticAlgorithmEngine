@@ -21,6 +21,8 @@ namespace GeneticAlgorithm.UnitTests
         private int puaseSucceedTimes;
         private int runSucceedTimes;
         private int nextSucceedTimes;
+        private int renewPopulationTimes;
+        private int setPopulationTimes;
 
         [TestInitialize]
         public void TestInitialize()
@@ -28,6 +30,29 @@ namespace GeneticAlgorithm.UnitTests
             puaseSucceedTimes = 0;
             runSucceedTimes = 0;
             nextSucceedTimes = 0;
+            renewPopulationTimes = 0;
+            setPopulationTimes = 0;
+        }
+
+        [TestMethod]
+        public void AllCommands()
+        {
+            var engine = TestUtils.GetBassicEngine();
+            engine.Next();
+            var actions = new List<Action>
+            {
+                () => PauseEngine(engine),
+                () => RunEngine(engine),
+                () => EngineNext(engine),
+                () => SetPopulation(engine),
+                () => RenewPopulation(engine)
+            };
+            var engineTasks = RunOverAndOver(actions);
+
+            Thread.Sleep(TEST_TIME); // Give some time for things to run
+
+            PrintResults();
+            WaitOnTasks(engineTasks);
         }
 
         [TestMethod]
@@ -48,6 +73,24 @@ namespace GeneticAlgorithm.UnitTests
             WaitOnTasks(engineTasks);
         }
 
+        [TestMethod]
+        public void ManyRunAndPauseCommands()
+        {
+            var engine = TestUtils.GetBassicEngine();
+            var actions = new List<Action>
+            {
+                () => PauseEngine(engine),
+                () => RunEngine(engine),
+            };
+            var engineTasks = RunOverAndOver(actions);
+
+            Thread.Sleep(TEST_TIME); // Give some time for things to run
+
+            PrintResults();
+            WaitOnTasks(engineTasks);
+            Assert.AreEqual(runSucceedTimes, puaseSucceedTimes, $"{nameof(puaseSucceedTimes)} != {nameof(runSucceedTimes)}");
+        }
+        
         [TestMethod]
         public void ManyNextCommands()
         {
@@ -81,10 +124,28 @@ namespace GeneticAlgorithm.UnitTests
             WaitOnTasks(engineTasks);
         }
 
+        [TestMethod]
+        public void EngineCanOnlyRunOnce()
+        {
+            var engine = TestUtils.GetBassicEngine();
+            var actions = new List<Action>
+            {
+                () => RunEngine(engine),
+            };
+            var engineTasks = RunOverAndOver(actions);
+
+            Thread.Sleep(50); // Give some time for things to run
+
+            WaitOnTasks(engineTasks);
+            engine.Pause();
+
+            Assert.AreEqual(1, runSucceedTimes, "Engine should have only ran once");
+        }
+
         private void PauseEngine(GeneticSearchEngine engine)
         {
             if (engine.Pause())
-                Interlocked.Increment(ref runSucceedTimes);
+                Interlocked.Increment(ref puaseSucceedTimes);
         }
 
         private void EngineNext(GeneticSearchEngine engine)
@@ -113,11 +174,39 @@ namespace GeneticAlgorithm.UnitTests
             }
         }
 
+        private void SetPopulation(GeneticSearchEngine engine)
+        {
+            try
+            {
+                engine.SetCurrentPopulation(new double[]{2,2,2,2,2}.ToChromosomes());
+                Interlocked.Increment(ref setPopulationTimes);
+            }
+            catch (EngineAlreadyRunningException)
+            {
+                // Do nothing
+            }
+        }
+
+        private void RenewPopulation(GeneticSearchEngine engine)
+        {
+            try
+            {
+                engine.RenewPopulation(0.5);
+                Interlocked.Increment(ref renewPopulationTimes);
+            }
+            catch (EngineAlreadyRunningException)
+            {
+                // Do nothing
+            }
+        }
+
         private void PrintResults()
         {
             Console.WriteLine($"{nameof(runSucceedTimes)} = {runSucceedTimes}");
             Console.WriteLine($"{nameof(nextSucceedTimes)} = {nextSucceedTimes}");
             Console.WriteLine($"{nameof(puaseSucceedTimes)} = {puaseSucceedTimes}");
+            Console.WriteLine($"{nameof(setPopulationTimes)} = {setPopulationTimes}");
+            Console.WriteLine($"{nameof(renewPopulationTimes)} = {renewPopulationTimes}");
         }
 
         private List<Task> RunOverAndOver(List<Action> actions)
