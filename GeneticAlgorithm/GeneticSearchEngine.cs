@@ -148,7 +148,7 @@ namespace GeneticAlgorithm
             if (IsRunning)
                 throw new EngineAlreadyRunningException();
 
-            return resultBuilder.Build(generation);
+            return RunAsCriticalBlock(() => resultBuilder.Build(generation));
         }
 
         /// <summary>
