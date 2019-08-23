@@ -1,4 +1,5 @@
-﻿using GreatestVectorTests;
+﻿using GeneticAlgorithm.UnitTests.TestUtils;
+using GreatestVectorTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

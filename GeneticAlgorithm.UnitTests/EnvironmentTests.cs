@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

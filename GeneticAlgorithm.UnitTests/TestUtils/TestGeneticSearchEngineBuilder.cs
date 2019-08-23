@@ -1,6 +1,4 @@
-﻿using GeneticAlgorithm.Interfaces;
-
-namespace GeneticAlgorithm.UnitTests
+﻿namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     class TestGeneticSearchEngineBuilder : GeneticSearchEngineBuilder
     {

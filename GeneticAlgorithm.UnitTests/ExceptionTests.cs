@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

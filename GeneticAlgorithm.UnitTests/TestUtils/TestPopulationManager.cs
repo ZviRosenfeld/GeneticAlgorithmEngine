@@ -2,7 +2,7 @@
 using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 
-namespace GeneticAlgorithm.UnitTests
+namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     class TestPopulationManager
     {

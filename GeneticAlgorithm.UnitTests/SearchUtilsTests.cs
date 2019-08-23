@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests
@@ -93,7 +94,7 @@ namespace GeneticAlgorithm.UnitTests
             var population = new Population(chromosomes);
 
             var populationClone = population.Clone();
-            var fakeChromosome = TestUtils.CreateChromosome(10, "New");
+            var fakeChromosome = TestUtils.TestUtils.CreateChromosome(10, "New");
             populationClone.GetChromosomes()[0] = fakeChromosome;
 
             foreach (var chromosome in population.GetChromosomes())

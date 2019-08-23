@@ -3,7 +3,7 @@ using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GeneticAlgorithm.UnitTests
+namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     static class TestUtils
     {
@@ -29,7 +29,7 @@ namespace GeneticAlgorithm.UnitTests
             return population;
         }
         
-        public static IChromosome CreateChromosome(double evaluation, string tag)
+        public static IChromosome CreateChromosome(this double evaluation, string tag)
         {
             var newChromosome = A.Fake<IChromosome>();
             A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);

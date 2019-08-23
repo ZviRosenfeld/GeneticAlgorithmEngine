@@ -1,4 +1,5 @@
 ﻿using GeneticAlgorithm.MutationManagers;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

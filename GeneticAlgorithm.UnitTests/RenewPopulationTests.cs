@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests

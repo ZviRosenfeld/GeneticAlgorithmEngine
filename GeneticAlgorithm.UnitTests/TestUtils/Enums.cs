@@ -1,4 +1,4 @@
-﻿namespace GeneticAlgorithm.UnitTests
+﻿namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     public enum RunType
     {
