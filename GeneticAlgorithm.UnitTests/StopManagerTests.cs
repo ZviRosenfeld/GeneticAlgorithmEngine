@@ -96,5 +96,26 @@ namespace GeneticAlgorithm.UnitTests
 
             engine.Run(runType);
         }
+
+        [TestMethod]
+        public void AddMultipleStopManagers_AllManagersAreCalled()
+        {
+            bool manager1Called = false, manager2Called = false;
+            var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
+            var managers = new[] { A.Fake<IStopManager>(), A.Fake<IStopManager>() };
+            A.CallTo(() => managers[0].ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._))
+                .Invokes((Population p, IEnvironment e, int g) => manager1Called = true);
+            A.CallTo(() => managers[1].ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._))
+                .Invokes((Population p, IEnvironment e, int g) => manager2Called = true);
+
+            var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
+                .AddStopManagers(managers)
+                .Build();
+
+            engine.Next();
+
+            Assert.IsTrue(manager1Called);
+            Assert.IsTrue(manager2Called);
+        }
     }
 }

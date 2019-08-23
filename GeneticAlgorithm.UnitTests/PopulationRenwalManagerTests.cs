@@ -100,5 +100,26 @@ namespace GeneticAlgorithm.UnitTests
 
             engine.Run(runType);
         }
+
+        [TestMethod]
+        public void AddMultiplePopulationRenewalManagers_AllManagersAreCalled()
+        {
+            bool manager1Called = false, manager2Called = false;
+            var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
+            var managers = new[] { A.Fake<IPopulationRenwalManager>(), A.Fake<IPopulationRenwalManager>() };
+            A.CallTo(() => managers[0].ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._))
+                .Invokes((Population p, IEnvironment e, int g) => manager1Called = true);
+            A.CallTo(() => managers[1].ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._))
+                .Invokes((Population p, IEnvironment e, int g) => manager2Called = true);
+
+            var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
+                .AddPopulationRenwalManagers(managers)
+                .Build();
+
+            engine.Next();
+
+            Assert.IsTrue(manager1Called);
+            Assert.IsTrue(manager2Called);
+        }
     }
 }

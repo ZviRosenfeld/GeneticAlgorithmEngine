@@ -31,6 +31,9 @@ namespace GeneticAlgorithm
             stopManagers.Add(new StopAtGeneration(maxGenerations));
         }
 
+        /// <summary>
+        /// Note that the mutation probability will be ignored if you set a MutationManager 
+        /// </summary>
         public GeneticSearchEngineBuilder SetMutationProbability(double probability)
         {
             mutationProbability = probability;
@@ -77,6 +80,16 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
+        /// The IPopulationConverter interface allows you to add Lamarckian Evolution to your algorithm - 
+        /// that is, let the chromosomes improve themselves before generating the children.
+        /// </summary>
+        public GeneticSearchEngineBuilder AddPopulationConverters(IEnumerable<IPopulationConverter> populationConverters)
+        {
+            this.populationConverters.AddRange(populationConverters);
+            return this;
+        }
+
+        /// <summary>
         /// The "percentage" of the best chromosomes will be passed "as is" to the next generation.
         /// </summary>
         public GeneticSearchEngineBuilder SetElitPercentage(double percentage)
@@ -105,6 +118,17 @@ namespace GeneticAlgorithm
             return this;
         }
 
+        /// <summary>
+        /// StopManagers let you configure when you want the search to stop.
+        /// You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
+        /// Note that there is no limit to the number of StopManagers you can add to your search engine.
+        /// </summary>
+        public GeneticSearchEngineBuilder AddStopManagers(IEnumerable<IStopManager> managers)
+        {
+            stopManagers.AddRange(managers);
+            return this;
+        }
+
         public GeneticSearchEngineBuilder SetCancellationToken(CancellationToken cancellationToken)
         {
             stopManagers.Add(new StopWithCancellationToken(cancellationToken));
@@ -119,6 +143,17 @@ namespace GeneticAlgorithm
         public GeneticSearchEngineBuilder AddPopulationRenwalManager(IPopulationRenwalManager manager)
         {
             populationRenwalManagers.Add(manager);
+            return this;
+        }
+
+        /// <summary>
+        /// PopulationRenwalManagers will renew a certain percentage of the population if some condition is met.
+        /// You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
+        /// Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
+        /// </summary>
+        public GeneticSearchEngineBuilder AddPopulationRenwalManagers(IEnumerable<IPopulationRenwalManager> managers)
+        {
+            populationRenwalManagers.AddRange(managers);
             return this;
         }
 

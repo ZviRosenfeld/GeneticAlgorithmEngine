@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -47,6 +48,38 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
+        public void MultipleConvertPopulationManagers_ManagersCalledAndInOrder()
+        {
+            var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
+            var populationConverter1 = GetOrderedPopulationManager(1);
+            var populationConverter2 = GetOrderedPopulationManager(2);
+            var populationConverter3 = GetOrderedPopulationManager(3);
+            var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
+                .AddPopulationConverter(populationConverter1)
+                .AddPopulationConverter(populationConverter2)
+                .AddPopulationConverter(populationConverter3)
+                .Build();
+
+            var result = engine.Next();
+            foreach (var chromosome in result.Population.GetChromosomes())
+                Assert.AreEqual(4, chromosome.Evaluate(), "Ended up with wrong chromosome");
+        }
+
+        private IPopulationConverter GetOrderedPopulationManager(int number)
+        {
+            var populationConverter = A.Fake<IPopulationConverter>();
+            A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .ReturnsLazily((IChromosome[] c, int g, IEnvironment e) =>
+                {
+                    foreach (var chromosome in c)
+                        Assert.AreEqual(number, chromosome.Evaluate(), "Got wrong chromosome");
+                    
+                    return c.Select(chromosome => chromosome.Evaluate() + 1).ToArray().ToChromosomes();
+                });
+            return populationConverter;
+        }
+        
+        [TestMethod]
         public void ConvertPopulation_PopulationConverted()
         {
             var newPopulationEvaluation = new double[] {2, 2, 2};
@@ -74,6 +107,27 @@ namespace GeneticAlgorithm.UnitTests
 
             newPopulation = engine.Next();
             newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+        }
+
+        [TestMethod]
+        public void AddMultipleConvertPopulationManagers_AllManagersAreCalled()
+        {
+            bool manager1Called = false, manager2Called = false;
+            var testPopulationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
+            var managers = new[] { A.Fake<IPopulationConverter>(), A.Fake<IPopulationConverter>() };
+            A.CallTo(() => managers[0].ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .Invokes((IChromosome[] c, int g, IEnvironment e) => manager1Called = true);
+            A.CallTo(() => managers[1].ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
+                .Invokes((IChromosome[] c, int g, IEnvironment e) => manager2Called = true);
+
+            var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
+                .AddPopulationConverters(managers)
+                .Build();
+
+            engine.Next();
+
+            Assert.IsTrue(manager1Called);
+            Assert.IsTrue(manager2Called);
         }
     }
 }

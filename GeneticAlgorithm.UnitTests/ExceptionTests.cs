@@ -88,46 +88,7 @@ namespace GeneticAlgorithm.UnitTests
             engine.Run();
             Assert.Fail("Should have thrown an exception by now");
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(GeneticAlgorithmException))]
-        [DataRow(0)]
-        [DataRow(1.1)]
-        [DataRow(-1)]
-        public void RenewPopulation_BedPercentage_ThrowException(double percentage)
-        {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, 4, new TestPopulationManager(new double[] { 2, 2 })).Build();
-            engine.Next();
-
-            engine.RenewPopulation(percentage);
-            Assert.Fail("Should have thrown an exception by now");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(GeneticAlgorithmException))]
-        public void RenewPopulation_EngineNotStated_ThrowException()
-        {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, 4, new TestPopulationManager(new double[] { 2, 2 })).Build();
-            engine.RenewPopulation(0.5);
-            Assert.Fail("Should have thrown an exception by now");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EngineAlreadyRunningException))]
-        public void RenewPopulation_EngineRunning_ThrowException()
-        {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
-
-            Task.Run(() => engine.Run());
-            Thread.Sleep(50); // Give the eingine some time to start
-
-            engine.RenewPopulation(0.5);
-            Assert.Fail("Should have thrown an exception by now");
-        }
-
+        
         [TestMethod]
         [ExpectedException(typeof(EngineAlreadyRunningException))]
         public void GetCurrentPopulation_EngineRunning_ThrowException()

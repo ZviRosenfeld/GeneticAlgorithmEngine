@@ -103,11 +103,11 @@ var result = searchEngine.Run();
 Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
-By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability(double probability) method.
+By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability method.
 Note that the mutation probability will be ignored if you set a [MutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine#imutationmanager).
 
 ### CancellationToken
-You can use the GeneticSearchEngineBuilder.SetCancellationToken(CancellationToken cancellationToken) method to add cencellationTokens.
+You can use the GeneticSearchEngineBuilder.SetCancellationToken method to add cencellationTokens.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
 When the cancellation is requested, you'll get the result that was found up till than.
@@ -121,7 +121,6 @@ You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_alg
 
 ### IStopManagers
 [StopManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IStopManager.cs) let you configure when you want the search to stop. 
-StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
 You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
 Note that there is no limit to the number of StopManagers you can add to your search engine.
 
@@ -143,7 +142,6 @@ var result = searchEngine.Run();
 
 ### IPopulationRenwalManagers
 [PopulationRenwalManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. 
-PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
