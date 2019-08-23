@@ -18,7 +18,7 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
 
             return result;
         }
-
+        
         public static IChromosome[] ToChromosomes(this double[] generationEvaluations, string tag = "Chromo", int? number = null)
         {
             var size = number ?? generationEvaluations.Length;

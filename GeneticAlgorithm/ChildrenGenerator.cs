@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
@@ -11,15 +12,21 @@ namespace GeneticAlgorithm
         private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;
         private readonly IMutationManager mutationManager;
+        private readonly ISelectionStrategy selectionStrategy;
 
-        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationManager mutationManager)
+        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationManager mutationManager, ISelectionStrategy selectionStrategy)
         {
             this.crossoverManager = crossoverManager;
             this.mutationManager = mutationManager;
+            this.selectionStrategy = selectionStrategy;
         }
 
         public IChromosome[] GenerateChildren(Population population, int number, int generation, IEnvironment environment)
         {
+            if (number < 1)
+                throw new InternalSearchException("Code 1003 (requested 0 children)");
+
+            selectionStrategy.SetPopulation(population);
             var mutationProbability = mutationManager.MutationProbability(population, environment, generation);
 
             if (mutationProbability > 1 || mutationProbability < 0)
@@ -30,10 +37,8 @@ namespace GeneticAlgorithm
             for (int i = 0; i < number; i++)
                 tasks[i] = Task.Run(() =>
                 {
-                    var evaluation = population.GetEvaluations();
-                    var chromosomes = population.GetChromosomes();
-                    var parent1 = ChooseParent(chromosomes, evaluation);
-                    var parent2 = ChooseParent(chromosomes, evaluation);
+                    var parent1 = selectionStrategy.SelectChromosome();
+                    var parent2 = selectionStrategy.SelectChromosome();
                     var child = crossoverManager.Crossover(parent1, parent2);
                     if (random.NextDouble() < mutationProbability)
                         child.Mutate();
@@ -44,20 +49,6 @@ namespace GeneticAlgorithm
                 task.Wait();
             
             return children.ToArray();
-        }
-
-        private IChromosome ChooseParent(IChromosome[] population, double[] evaluations)
-        {
-            var randomNumber = random.NextDouble();
-            var sum = 0.0;
-            var index = -1;
-            while (sum < randomNumber)
-            {
-                index++;
-                sum += evaluations[index];
-            }
-
-            return population[index];
         }
     }
 }

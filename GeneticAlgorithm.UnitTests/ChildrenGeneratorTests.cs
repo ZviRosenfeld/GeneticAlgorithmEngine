@@ -5,6 +5,7 @@ using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.MutationManagers;
+using GeneticAlgorithm.SelectionStrategies;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests
@@ -19,41 +20,34 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(1)]
         public void TestMutationsHappen(double mutationProbability)
         {
-            const int tries = 1500;
+            const int populationSize = 1500;
             int mutationCounter = 0;
-            var population = GetPopulation(tries, 0.1, 0.1, 0.8, () => Interlocked.Increment(ref mutationCounter));
+            var population = GetPopulation(populationSize, () => Interlocked.Increment(ref mutationCounter));
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._))
                 .ReturnsLazily((IChromosome c1, IChromosome c2) => c1);
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(mutationProbability));
-            childrenGenerator.GenerateChildren(population, tries, 0, null);
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(mutationProbability), new RouletteWheelSelection());
+            childrenGenerator.GenerateChildren(population, populationSize, 0, null);
 
             const double errorMargin = 0.05;
-            Assert.IsTrue(mutationCounter < tries * mutationProbability + errorMargin * tries, $"Too few mutations ({mutationCounter})");
-            Assert.IsTrue(mutationCounter > tries * mutationProbability - errorMargin * tries, $"Too many mutations ({mutationCounter})");
+            Assert.IsTrue(mutationCounter < populationSize * mutationProbability + errorMargin * populationSize, $"Too few mutations ({mutationCounter})");
+            Assert.IsTrue(mutationCounter > populationSize * mutationProbability - errorMargin * populationSize, $"Too many mutations ({mutationCounter})");
         }
 
 
         [TestMethod]
-        public void MostLieklyToChooseBestChromosomeTest()
+        [DataRow(10)]
+        [DataRow(1)]
+        [DataRow(2000)]
+        public void RetusnRightNumberOfChromosomes(int childrenCount)
         {
-            const int tries = 1500;
-            const double chromosome1Probability = 0.1, chromosome2Probability = 0.3, chromosome3Probability = 0.6;
-            var counters = new int[3];
-            var population = GetPopulation(tries, chromosome1Probability, chromosome2Probability, chromosome3Probability);
+            const int count = 1500;
             var crossoverManager = A.Fake<ICrossoverManager>();
-            A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._)).Invokes(
-                (IChromosome c1, IChromosome c2) =>
-                {
-                    UpdateCounters(c1.ToString(), counters);
-                    UpdateCounters(c2.ToString(), counters);
-                });
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0));
-            childrenGenerator.GenerateChildren(population, tries, 0, null);
-
-            AssertIsWithinRange(counters[0], chromosome1Probability, tries, "c1");
-            AssertIsWithinRange(counters[1], chromosome2Probability, tries, "c2");
-            AssertIsWithinRange(counters[2], chromosome3Probability, tries, "c3");
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0), new RouletteWheelSelection());
+            var children = childrenGenerator.GenerateChildren(GetPopulation(count), childrenCount, 0, null);
+            Assert.AreEqual(childrenCount, children.Length, "Didn't get enough children");
+            foreach (var chromosome in children)
+                Assert.IsNotNull(chromosome, "No children should be null");
         }
 
         [TestMethod]
@@ -65,35 +59,31 @@ namespace GeneticAlgorithm.UnitTests
             var mutationManager = A.Fake<IMutationManager>();
             A.CallTo(() => mutationManager.MutationProbability(A<Population>._, A<IEnvironment>._, A<int>._))
                 .Returns(probability);
-
-            var population = GetPopulation(1, 0.1, 0.4, 0.5);
-            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), mutationManager);
-            childrenGenerator.GenerateChildren(population, 1, 1, null);
+            
+            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), mutationManager, new RouletteWheelSelection());
+            childrenGenerator.GenerateChildren(GetPopulation(1), 1, 1, null);
         }
 
-        private void UpdateCounters(string chromosomeName, int[] counters)
+        [TestMethod]
+        [ExpectedException(typeof(InternalSearchException))]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void RequestBadNumberOfChildren_ThrowsException(int childrenCount)
         {
-            if (chromosomeName == "c1")
-                counters[0]++;
-            if (chromosomeName == "c2")
-                counters[1]++;
-            if (chromosomeName == "c3")
-                counters[2]++;
+            var crossoverManager = A.Fake<ICrossoverManager>();
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0), new RouletteWheelSelection());
+            childrenGenerator.GenerateChildren(GetPopulation(1), childrenCount, 0, null);
         }
-
+        
         /// <summary>
-        /// Returns a population with 500 of each chromosome
+        /// Returns a population with count chromosome
         /// </summary>
         /// <returns></returns>
-        private Population GetPopulation(int tries, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability, Action onMutation = null)
+        private Population GetPopulation(int count, Action onMutation = null)
         {
             var chromosomes = new List<IChromosome>();
-            for (int i = 0; i < tries / 3; i++)
-            {
-                chromosomes.Add(CreateNewChromosome("c1", chromosome1Probability, onMutation));
-                chromosomes.Add(CreateNewChromosome("c2", chromosome2Probability, onMutation));
-                chromosomes.Add(CreateNewChromosome("c3", chromosome3Probability, onMutation));
-            }
+            for (int i = 0; i < count / 3; i++)
+                chromosomes.Add(CreateNewChromosome(onMutation));
 
             var population = new Population(chromosomes.ToArray());
             foreach (var chromosome in population)
@@ -102,24 +92,12 @@ namespace GeneticAlgorithm.UnitTests
             return population;
         }
 
-        private IChromosome CreateNewChromosome(string name, double evaluation, Action onMutation)
+        private IChromosome CreateNewChromosome(Action onMutation)
         {
             var chromosome = A.Fake<IChromosome>();
-            A.CallTo(() => chromosome.ToString()).Returns(name);
-            A.CallTo(() => chromosome.Evaluate()).Returns(evaluation);
+            A.CallTo(() => chromosome.Evaluate()).Returns(1);
             A.CallTo(() => chromosome.Mutate()).Invokes(onMutation);
             return chromosome;
-        }
-
-        private void AssertIsWithinRange(int value, double probability, int tries, string valueName)
-        {
-            const double errorMargin = 0.05;
-            var expected = probability * tries * 2;
-            var min = expected - errorMargin * tries * 2;
-            var max = expected + errorMargin * tries * 2;
-
-            Assert.IsTrue(value > min, $"Value ({value}) in smaller than min ({min}) for {valueName}");
-            Assert.IsTrue(value < max, $"Value ({value}) in greater than max ({max}) for {valueName}");
         }
     }
 }

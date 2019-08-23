@@ -2,6 +2,7 @@
 using System.Threading;
 using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.MutationManagers;
+using GeneticAlgorithm.SelectionStrategies;
 using GeneticAlgorithm.StopManagers;
 
 namespace GeneticAlgorithm
@@ -20,6 +21,7 @@ namespace GeneticAlgorithm
         protected double elitPercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
         protected List<IPopulationRenwalManager> populationRenwalManagers = new List<IPopulationRenwalManager>();
+        protected ISelectionStrategy selectionStrategy = new RouletteWheelSelection();
 
         public GeneticSearchEngineBuilder(int populationSize, int maxGenerations, ICrossoverManager crossoverManager,
             IPopulationGenerator populationGenerator)
@@ -157,6 +159,16 @@ namespace GeneticAlgorithm
             return this;
         }
 
+        /// <summary>
+        /// SelectionStrategies tell the engine how to choose the chromosmes that will create the next generation.
+        /// By default, the RouletteWheelSelection strategy will be used
+        /// </summary>
+        public GeneticSearchEngineBuilder SetSelectionStrategy(ISelectionStrategy selectionStrategy)
+        {
+            this.selectionStrategy = selectionStrategy;
+            return this;
+        }
+
         protected void PreBuildActions()
         {
             if (environment == null && chromosomeEvaluator.GetType() != typeof(BassicChromosomeEvaluator))
@@ -172,7 +184,7 @@ namespace GeneticAlgorithm
 
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
                 populationRenwalManagers, elitPercentage, mutationManager, populationConverters, chromosomeEvaluator);
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager);
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager, selectionStrategy);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator, environment);
         }
     }
