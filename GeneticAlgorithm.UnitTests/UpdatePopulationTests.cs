@@ -135,7 +135,7 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => populationConverter.AddGeneration(A<Population>._))
                 .Invokes((Population p) => populationUpdatedForPopulationConverter.Save(p, null));
 
-            var engine = CreateEngineBuilder(populationManager).SetPopulationConverter(populationConverter).Build();
+            var engine = CreateEngineBuilder(populationManager).AddPopulationConverter(populationConverter).Build();
             engine.OnNewGeneration += populationUpdatedOnEvent.Save;
 
             engine.Next();
@@ -173,7 +173,7 @@ namespace GeneticAlgorithm.UnitTests
             var builder = new TestGeneticSearchEngineBuilder(2, generations, populationManager)
                 .AddStopManager(stopManager)
                 .AddPopulationRenwalManager(populationRenwalManager).SetCustomMutationManager(mutationManager)
-                .SetPopulationConverter(populationConverter);
+                .AddPopulationConverter(populationConverter);
             return builder;
         }
     }

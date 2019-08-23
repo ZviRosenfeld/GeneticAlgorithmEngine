@@ -11,10 +11,11 @@ namespace GeneticAlgorithm
         protected readonly ICrossoverManager crossoverManager;
         protected readonly IPopulationGenerator populationGenerator;
         protected readonly int populationSize;
-        protected IMutationManager mutationManager = new BassicMutationManager(0); // By default, mutation probability is 0
+        protected IMutationManager mutationManager = null;
+        private double mutationProbability = 0;
         protected IChromosomeEvaluator chromosomeEvaluator = new BassicChromosomeEvaluator();
         protected IEnvironment environment = null;
-        protected IPopulationConverter populationConverter = null;
+        protected readonly List<IPopulationConverter> populationConverters = new List<IPopulationConverter>();
         protected bool includeAllHistory = false;
         protected double elitPercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
@@ -32,7 +33,7 @@ namespace GeneticAlgorithm
 
         public GeneticSearchEngineBuilder SetMutationProbability(double probability)
         {
-            mutationManager = new BassicMutationManager(probability);
+            mutationProbability = probability;
             return this;
         }
 
@@ -69,9 +70,9 @@ namespace GeneticAlgorithm
         /// The IPopulationConverter interface allows you to add Lamarckian Evolution to your algorithm - 
         /// that is, let the chromosomes improve themselves before generating the children.
         /// </summary>
-        public GeneticSearchEngineBuilder SetPopulationConverter(IPopulationConverter populationConverter)
+        public GeneticSearchEngineBuilder AddPopulationConverter(IPopulationConverter populationConverter)
         {
-            this.populationConverter = populationConverter;
+            populationConverters.Add(populationConverter);
             return this;
         }
 
@@ -125,6 +126,9 @@ namespace GeneticAlgorithm
         {
             if (environment == null && chromosomeEvaluator.GetType() != typeof(BassicChromosomeEvaluator))
                 environment = new DefaultEnvironment();
+
+            if (mutationManager == null)
+                mutationManager = new BassicMutationManager(mutationProbability);
         }
 
         public virtual GeneticSearchEngine Build()
@@ -132,7 +136,7 @@ namespace GeneticAlgorithm
             PreBuildActions();
 
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager, populationConverter, chromosomeEvaluator);
+                populationRenwalManagers, elitPercentage, mutationManager, populationConverters, chromosomeEvaluator);
             var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator, environment);
         }

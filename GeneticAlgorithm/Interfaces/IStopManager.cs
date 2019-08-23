@@ -1,5 +1,8 @@
 ﻿namespace GeneticAlgorithm.Interfaces
 {
+    /// <summary>
+    /// StopManagers lets you configure when the search to stop
+    /// </summary>
     public interface IStopManager
     {
         /// <summary>

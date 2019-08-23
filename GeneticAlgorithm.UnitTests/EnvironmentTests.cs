@@ -113,7 +113,7 @@ namespace GeneticAlgorithm.UnitTests
                 return c;
             });
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
-                .SetEnvironment(new DefaultEnvironment()).SetPopulationConverter(populationConverter).Build();
+                .SetEnvironment(new DefaultEnvironment()).AddPopulationConverter(populationConverter).Build();
 
             engine.Next();
             engine.Next();

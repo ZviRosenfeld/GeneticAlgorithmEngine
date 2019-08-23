@@ -16,7 +16,7 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
                 .Returns(convertedPopulation.ToChromosomes("Converted Chromosomes"));
             var engine = new TestGeneticSearchEngineBuilder(convertedPopulation.Length, 10, testPopulationManager)
-                .SetPopulationConverter(populationConverter).Build();
+                .AddPopulationConverter(populationConverter).Build();
 
             var result = engine.Next();
 
@@ -40,7 +40,7 @@ namespace GeneticAlgorithm.UnitTests
                     return c;
                 });
             var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
-                .SetPopulationConverter(populationConverter).Build();
+                .AddPopulationConverter(populationConverter).Build();
 
             for (int i = 0; i < 5; i++)
                 engine.Next();

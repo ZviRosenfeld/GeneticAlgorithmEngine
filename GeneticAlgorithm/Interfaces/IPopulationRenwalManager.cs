@@ -1,5 +1,8 @@
 ﻿namespace GeneticAlgorithm.Interfaces
 {
+    /// <summary>
+    /// A populationRenwalManager will tell the einge to renew a certain percentage of the population if some condition is met.
+    /// </summary>
     public interface IPopulationRenwalManager
     {
         /// <summary>

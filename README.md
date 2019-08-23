@@ -8,11 +8,11 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
 
 ## Usage
 
-GeneticAlgorithmEngine contains 3 main classes that you'll need to implement.
+GeneticAlgorithmEngine contains 3 classes that you'll need to implement.
 
 ### IChromosome
 
-Your chromosomes will need to implement the IChromosome classes.
+Your chromosomes will need to implement the IChromosome class.
 
 ```CSharp
     public interface IChromosome
@@ -55,7 +55,7 @@ The PopulationGenerator will also renew the population when needed (see [IPopula
 
 ## Creating an Instance of GeneticSearchEngine
 
-It's highly recommended that you use the GeneticSearchEngineBuilder class to create your GeneticSearchEngine. See the following example.
+It's highly recommended that you use the [GeneticSearchEngineBuilder](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/GeneticSearchEngineBuilder.cs) class to create your GeneticSearchEngine. See the following example.
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
@@ -64,18 +64,19 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
-Once you have and instance of an engine you can either use the Run method to run a complete search, or the Next method to run just one more generation.
+Once you have an instance of an engine you can either use the Run method to run a complete search, or the Next method to run just one more generation.
 You can also use the Pause method to pause the search, and then resume it anytime.
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetMutationProbability(0.1).Build();
 	
-searchEngine.Next();
+var result = searchEngine.Next();
 Task.Run(() => searchEngine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
 Thread.Sleep(10); // Give the engine some time to run
 searchEngine.Pause();
-Task.Run(() => searchEngine.Run());
+var task = Task.Run(() => searchEngine.Run());
+var result = task.Result;
 ```
 
 ## Events
@@ -103,12 +104,13 @@ Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability(double probability) method.
+Note that the mutation probability will be ignored if you set a [MutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine#imutationmanager).
 
 ### CancellationToken
 You can use the GeneticSearchEngineBuilder.SetCancellationToken(CancellationToken cancellationToken) method to add cencellationTokens.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
-When the cancellation is requested, you'll get the best results that was found up till than.
+When the cancellation is requested, you'll get the result that was found up till than.
 
 ### IncludeAllHistory
 If this option is turned on (by default it's off) the result will include the entire history of the population.
@@ -118,7 +120,8 @@ Using elitism, you can set a percentage of the best chromosomes that will be pas
 You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_algorithm#Elitism).
 
 ### IStopManagers
-StopManagers let you configure when you want the search to stop. StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
+[StopManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IStopManager.cs) let you configure when you want the search to stop. 
+StopManagers can be added using the GeneticSearchEngineBuilder.AddStopManager(IStopManager manager) method.
 You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
 Note that there is no limit to the number of StopManagers you can add to your search engine.
 
@@ -139,7 +142,8 @@ var result = searchEngine.Run();
 ```
 
 ### IPopulationRenwalManagers
-PopulationRenwalManagers will renew a certain percentage of the population if some condition is met. PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
+[PopulationRenwalManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. 
+PopulationRenwalManagers can be added using the GeneticSearchEngineBuilder.AddPopulationRenwalManager(IPopulationRenwalManager manager) method.
 You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
@@ -161,10 +165,10 @@ var result = searchEngine.Run();
 
 ### IMutationManager
 
-The IMutationManager class lets you dynamically determine the probability of a mutation based on the current population.
+The [IMutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IMutationManager.cs) class lets you dynamically determine the probability of a mutation based on the current population.
 For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
-Please note that there are no default implementations of IMutationManager. You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
+You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
 
 Example:
 ```CSharp
@@ -176,19 +180,21 @@ var result = searchEngine.Run();
 
 ### IPopulationConverter
 
-The IPopulationConverter interface provides you with a very powerful tool for customizing your search.
+The [IPopulationConverter](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IPopulationConverter.cs) interface provides you with a very powerful tool for customizing your search.
 The IPopulationConverter method ConvertPopulation is called every generation after the population is created. In this method you can change the population in any way you want.
 This allows you to add [Lamarckian evolution](https://amitksaha.wordpress.com/2009/12/04/lamarckism-in-genetic-algorithms/) to your algorithm - that is, let the chromosomes improve themselves before generating the children.
+
+There is no limit to the number of PopulationConverters you can add to your search. If you add more than one, they will be called in the order in which they were added.
 
 Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
-	.SetPopulationConverter(new MyPopulationConverter()).Build();
+	.AddPopulationConverter(new MyPopulationConverter()).Build();
 
 var result = searchEngine.Run();
 ```
 
-You can find an exsample of a custom PopulationConverter [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/PopulationConverters/SamplePopulationConverter.cs).
+You can find an example of a custom PopulationConverter [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/PopulationConverters/SamplePopulationConverter.cs).
 
 ## Using an Environment
 
@@ -198,7 +204,8 @@ GeneticAlgorithmEngine provides two classes to deal with this.
 
 ### IEnvironment
 
-The IEnvironment represents the "environment". You can set your own environment. If you don't, we will use the DefaultEnvironment class, which contains the other chromosomes, and the generation number.
+The [IEnvironment](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IEnvironment.cs) represents the "environment". 
+You can set your own environment. If you don't, we will use the [DefaultEnvironment](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/DefaultEnvironment.cs) class, which contains the other chromosomes, and the generation number.
 
 The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configuration your environment. UpdateEnvierment is guaranteed to be called once per generation.
 
@@ -206,8 +213,8 @@ You can find an example of a custom Environment [here](https://github.com/ZviRos
 
 ### IChromosomeEvaluator
 
-If you set the IChromosomeEvaluator, the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
-Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use use the information in the environment to evaluate the chromosomes.
+If you set the [IChromosomeEvaluator](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IChromosomeEvaluator.cs), the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
+Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use the information in the environment to evaluate the chromosomes.
 
 You can find an example of a custom ChromosomeEvaluator [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/EnvironmentGui/ChromosomeEvaluator.cs).
 

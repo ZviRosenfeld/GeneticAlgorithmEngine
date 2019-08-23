@@ -24,7 +24,7 @@ namespace GeneticAlgorithm.UnitTests
             PreBuildActions();
 
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager, populationConverter, chromosomeEvaluator);
+                populationRenwalManagers, elitPercentage, mutationManager, populationConverters, chromosomeEvaluator);
             return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator(), environment);
         }
     }

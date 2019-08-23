@@ -35,8 +35,8 @@ namespace GeneticAlgorithm
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var nextGeneration = CreateNewGeneration(population, generation);
-            if (options.PopulationConverter != null)
-                nextGeneration = options.PopulationConverter.ConvertPopulation(nextGeneration, generation, environment);
+            foreach (var populationConverter in options.PopulationConverters)
+                nextGeneration = populationConverter.ConvertPopulation(nextGeneration, generation, environment);
             population = new Population(nextGeneration);
             environment?.UpdateEnvierment(nextGeneration, generation);
 
@@ -172,8 +172,9 @@ namespace GeneticAlgorithm
                 stopManager.AddGeneration(population);
             foreach (var populationRenwalManager in options.PopulationRenwalManagers)
                 populationRenwalManager.AddGeneration(population);
+            foreach (var populationConverter in options.PopulationConverters)
+                populationConverter.AddGeneration(population);
             options.MutationManager.AddGeneration(population);
-            options.PopulationConverter?.AddGeneration(population);
 
             onNewGeneration(population, environment);
 

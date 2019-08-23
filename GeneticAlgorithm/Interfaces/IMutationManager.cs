@@ -1,5 +1,8 @@
 ﻿namespace GeneticAlgorithm.Interfaces
 {
+    /// <summary>
+    /// IMutationManagers lets you dynamically determine the probability of a mutation based on the current population.
+    /// </summary>
     public interface IMutationManager
     {
         /// <summary>
