@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Interfaces;
+﻿using System;
+using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.SelectionStrategies;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,18 +23,42 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RouletteWheelSelection_MostLieklyToChooseBestChromosome()
         {
-            var rouletteWheelSelection = new RouletteWheelSelection();
-            rouletteWheelSelection.SetPopulation(population);
+            MostLikelyToChooseBestChromosome(new RouletteWheelSelection(), chromosome1Probability,
+                chromosome2Probability, chromosome3Probability);
+        }
+
+        [TestMethod]
+        public void RouletteWheelSelection_OnlyUsesLastPopulation() =>
+            AssertSelectionStrategyUsesLatestPopulation(new RouletteWheelSelection());
+
+        [TestMethod]
+        [DataRow(2)]
+        [DataRow(3)]
+        public void TournamentSelection_MostLieklyToChooseBestChromosome(int tournamentSize)
+        {
+            var probability1 = Math.Pow((double) 1 / 3, tournamentSize);
+            var probability3 = 1 - Math.Pow((double) 2 / 3, tournamentSize);
+            var probability2 = 1 - probability1 - probability3;
+            MostLikelyToChooseBestChromosome(new TournamentSelection(tournamentSize), probability1, probability2, probability3);
+        }
+
+        [TestMethod]
+        public void TournamentSelection_OnlyUsesLastPopulation() =>
+            AssertSelectionStrategyUsesLatestPopulation(new TournamentSelection(2));
+
+        private void MostLikelyToChooseBestChromosome(ISelectionStrategy selection, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability)
+        {
+            selection.SetPopulation(population);
 
             int chromosome1Counter = 0, chromosome2Counter = 0, chromosome3Counter = 0;
             for (int i = 0; i < runs; i++)
             {
-                var chromosome = rouletteWheelSelection.SelectChromosome();
-                if (chromosome.Evaluate() == chromosome1Probability * 2)
+                var chromosome = selection.SelectChromosome();
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome1Probability * 2)
                     chromosome1Counter++;
-                if (chromosome.Evaluate() == chromosome2Probability * 2)
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome2Probability * 2)
                     chromosome2Counter++;
-                if (chromosome.Evaluate() == chromosome3Probability * 2)
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome3Probability * 2)
                     chromosome3Counter++;
             }
 
@@ -41,10 +66,6 @@ namespace GeneticAlgorithm.UnitTests
             AssertIsWithinRange(chromosome2Counter, chromosome2Probability, runs, "Chromosome2");
             AssertIsWithinRange(chromosome3Counter, chromosome3Probability, runs, "Chromosome3");
         }
-
-        [TestMethod]
-        public void RouletteWheelSelection_OnlyUsesLastPopulation() =>
-            AssertSelectionStrategyUsesLatestPopulation(new RouletteWheelSelection());
 
         private void AssertSelectionStrategyUsesLatestPopulation(ISelectionStrategy selectionStrategy)
         {
@@ -61,8 +82,8 @@ namespace GeneticAlgorithm.UnitTests
         {
             const double errorMargin = 0.05;
             var expected = probability * runs;
-            var min = expected - errorMargin * tries * 2;
-            var max = expected + errorMargin * tries * 2;
+            var min = expected - errorMargin * tries;
+            var max = expected + errorMargin * tries;
 
             Assert.IsTrue(value > min, $"Value ({value}) in smaller than min ({min}) for {valueName}");
             Assert.IsTrue(value < max, $"Value ({value}) in greater than max ({max}) for {valueName}");
