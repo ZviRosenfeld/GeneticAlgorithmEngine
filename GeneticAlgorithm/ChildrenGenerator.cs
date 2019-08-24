@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.MutationManagers;
+using GeneticAlgorithm.SelectionStrategies;
 
 namespace GeneticAlgorithm
 {
     public class ChildrenGenerator : IChildrenGenerator
     {
+        private readonly List<Type> officalSelectionStrategies = new List<Type>
+        {
+            typeof(RouletteWheelSelection)
+        };
         private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;
         private readonly IMutationManager mutationManager;
@@ -28,17 +34,15 @@ namespace GeneticAlgorithm
 
             selectionStrategy.SetPopulation(population);
             var mutationProbability = mutationManager.MutationProbability(population, environment, generation);
-
-            if (mutationProbability > 1 || mutationProbability < 0)
-                throw new GeneticAlgorithmException(nameof(mutationProbability) + " must be between 0.0 to 1.0 (including)");
-
+            CheckMuationProbability(mutationProbability);
+            
             var children = new ConcurrentBag<IChromosome>();
             var tasks = new Task[number];
             for (int i = 0; i < number; i++)
                 tasks[i] = Task.Run(() =>
                 {
-                    var parent1 = selectionStrategy.SelectChromosome();
-                    var parent2 = selectionStrategy.SelectChromosome();
+                    var parent1 = AssertNotNull(selectionStrategy.SelectChromosome());
+                    var parent2 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var child = crossoverManager.Crossover(parent1, parent2);
                     if (random.NextDouble() < mutationProbability)
                         child.Mutate();
@@ -49,6 +53,27 @@ namespace GeneticAlgorithm
                 task.Wait();
             
             return children.ToArray();
+        }
+
+        private void CheckMuationProbability(double probability)
+        {
+            if (probability >= 0 && probability <= 1) return;
+
+            if (mutationManager.GetType() == typeof(BassicMutationManager))
+                throw new InternalSearchException(
+                    $"Code 1004 (Bad mutation value for manager {mutationManager.GetType()})");
+            throw new BadMutationProbabilityException(probability);
+        }
+
+        private IChromosome AssertNotNull(IChromosome chromosome)
+        {
+            if (chromosome != null) return chromosome;
+
+            var message = $"Selected chromosome was null. Manager = {mutationManager.GetType()}";
+            if (officalSelectionStrategies.Contains(mutationManager.GetType()))
+                throw new InternalSearchException($"Code 1005 ({message})");
+
+            throw new GeneticAlgorithmException(message);
         }
     }
 }

@@ -6,6 +6,7 @@ using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.MutationManagers;
 using GeneticAlgorithm.SelectionStrategies;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests
@@ -53,7 +54,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         [DataRow(-0.5)]
         [DataRow(1.1)]
-        [ExpectedException(typeof(GeneticAlgorithmException))]
+        [ExpectedException(typeof(BadMutationProbabilityException))]
         public void BadMutationProbability_ThrowException(double probability)
         {
             var mutationManager = A.Fake<IMutationManager>();
@@ -70,11 +71,24 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(-1)]
         public void RequestBadNumberOfChildren_ThrowsException(int childrenCount)
         {
-            var crossoverManager = A.Fake<ICrossoverManager>();
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0), new RouletteWheelSelection());
+            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationManager(0),
+                new RouletteWheelSelection());
             childrenGenerator.GenerateChildren(GetPopulation(1), childrenCount, 0, null);
         }
-        
+
+        [TestMethod]
+        public void SelectionStrategyReturnsNull_ThrowsException()
+        {
+            Assertions.AssertThrowAggretateExceptionOfType(() =>
+            {
+                var selectionStrategy = A.Fake<ISelectionStrategy>();
+                A.CallTo(() => selectionStrategy.SelectChromosome()).Returns(null);
+                var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationManager(0),
+                    selectionStrategy);
+                childrenGenerator.GenerateChildren(GetPopulation(1), 1, 0, null);
+            }, typeof(GeneticAlgorithmException));
+        }
+
         /// <summary>
         /// Returns a population with count chromosome
         /// </summary>

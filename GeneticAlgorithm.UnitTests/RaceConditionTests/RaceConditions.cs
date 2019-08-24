@@ -29,7 +29,7 @@ namespace GeneticAlgorithm.UnitTests.RaceConditionTests
         [TestInitialize]
         public void TestInitialize()
         {
-            engine = TestUtils.TestUtils.GetBassicEngine();
+            engine = TestUtils.Utils.GetBassicEngine();
             runEngine = new EngineRunner("Run", () => engine.Run());
             engineNext = new EngineRunner("Next", () => engine.Next());
             pauseEngine = new PauseEngine("Pause", () => engine.Pause());

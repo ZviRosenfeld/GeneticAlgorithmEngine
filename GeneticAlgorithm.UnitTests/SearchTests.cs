@@ -223,12 +223,12 @@ namespace GeneticAlgorithm.UnitTests
             var result1 = engine.Next();
             var result2 = engine.GetCurrentPopulation();
 
-            TestUtils.TestUtils.AssertAreTheSame(result1, result2);
+            Assertions.AssertAreTheSame(result1, result2);
 
             result1 = engine.Next();
             result2 = engine.GetCurrentPopulation();
 
-            TestUtils.TestUtils.AssertAreTheSame(result1, result2);
+            Assertions.AssertAreTheSame(result1, result2);
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace GeneticAlgorithm.UnitTests
         {
             var expectedPopulation = new double[] {1, 1};
             var engine = new TestGeneticSearchEngineBuilder(2, 10, expectedPopulation).Build();
-            var fakeChromosome = TestUtils.TestUtils.CreateChromosome(10, "ChangedChromosome");
+            var fakeChromosome = ChromosomeFactory.CreateChromosome(10, "ChangedChromosome");
 
             var result = engine.Next();
             result.Population.GetChromosomes()[0] = fakeChromosome;
@@ -251,7 +251,7 @@ namespace GeneticAlgorithm.UnitTests
         {
             var expectedPopulation = new double[] { 1, 1 };
             var engine = new TestGeneticSearchEngineBuilder(2, 10, expectedPopulation).IncludeAllHistory().Build();
-            var fakeChromosome = TestUtils.TestUtils.CreateChromosome(10, "ChangedChromosome");
+            var fakeChromosome = ChromosomeFactory.CreateChromosome(10, "ChangedChromosome");
 
             var result = engine.Next();
             result.History[result.History.Count - 1][0] = fakeChromosome;
