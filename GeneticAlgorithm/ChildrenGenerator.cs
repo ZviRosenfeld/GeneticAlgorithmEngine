@@ -32,7 +32,7 @@ namespace GeneticAlgorithm
             if (number < 1)
                 throw new InternalSearchException("Code 1003 (requested 0 children)");
 
-            selectionStrategy.SetPopulation(population);
+            selectionStrategy.SetPopulation(population, number * 2);
             var mutationProbability = mutationManager.MutationProbability(population, environment, generation);
             CheckMuationProbability(mutationProbability);
             

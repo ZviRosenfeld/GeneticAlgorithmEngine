@@ -6,7 +6,7 @@ using GeneticAlgorithm.Interfaces;
 namespace GeneticAlgorithm.SelectionStrategies
 {
     /// <summary>
-    /// With this strategy, the change of choosing a chromosome is equale to its fitness devided to the total fitness.
+    /// With this strategy, the chance of choosing a chromosome is equale to its fitness devided to the total fitness.
     /// In other words, if we have two chromosomes A and B, where A.Evaluation == 6 and B.Evaluation == 4,
     /// there's a 60% change of choosing A, and a 40% change of choosing B.
     /// </summary>
@@ -16,7 +16,7 @@ namespace GeneticAlgorithm.SelectionStrategies
         private IChromosome[] chromosomes;
         private double[] evaluations;
 
-        public void SetPopulation(Population population)
+        public void SetPopulation(Population population, int requestedChromosomes)
         {
             chromosomes = population.GetChromosomes();
             evaluations = NormilizeEvaluations(population);

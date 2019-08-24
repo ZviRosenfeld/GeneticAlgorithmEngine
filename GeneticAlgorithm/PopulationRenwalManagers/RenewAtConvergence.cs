@@ -2,13 +2,16 @@
 
 namespace GeneticAlgorithm.PopulationRenwalManagers
 {
+    /// <summary>
+    /// Will renew "precentageToRenew" of the population when the difference between the min evaluation and max evaluation is equal to or less than "diff".
+    /// </summary>
     public class RenewAtConvergence : IPopulationRenwalManager
     {
         private readonly double precentageToRenew;
         private readonly IStopManager stopManager;
 
         /// <summary>
-        /// Will renew "precentageToRenew" of the population when the difference between the min evaluation and max evaluation is equal to or less than "diff"
+        /// Will renew "precentageToRenew" of the population when the difference between the min evaluation and max evaluation is equal to or less than "diff".
         /// </summary>
         public RenewAtConvergence(double diff, double precentageToRenew)
         {

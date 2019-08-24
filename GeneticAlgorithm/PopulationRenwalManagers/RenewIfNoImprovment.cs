@@ -3,13 +3,16 @@ using GeneticAlgorithm.StopManagers;
 
 namespace GeneticAlgorithm.PopulationRenwalManagers
 {
+    /// <summary>
+    /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generations" generations.
+    /// </summary>
     public class RenewIfNoImprovment : IPopulationRenwalManager
     {
         private readonly double precentageToRenew;
         private readonly IStopManager stopManager;
 
         /// <summary>
-        /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generations" generations
+        /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generations" generations.
         /// </summary>
         public RenewIfNoImprovment(int generations, double minImprvment,  double precentageToRenew)
         {

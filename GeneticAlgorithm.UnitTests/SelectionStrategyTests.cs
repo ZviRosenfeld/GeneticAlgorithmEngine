@@ -48,7 +48,7 @@ namespace GeneticAlgorithm.UnitTests
 
         private void MostLikelyToChooseBestChromosome(ISelectionStrategy selection, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability)
         {
-            selection.SetPopulation(population);
+            selection.SetPopulation(population, runs);
 
             int chromosome1Counter = 0, chromosome2Counter = 0, chromosome3Counter = 0;
             for (int i = 0; i < runs; i++)
@@ -69,8 +69,8 @@ namespace GeneticAlgorithm.UnitTests
 
         private void AssertSelectionStrategyUsesLatestPopulation(ISelectionStrategy selectionStrategy)
         {
-            selectionStrategy.SetPopulation(population);
-            selectionStrategy.SetPopulation(new Population(new double[]{2, 0, 0}.ToChromosomes()));
+            selectionStrategy.SetPopulation(population, runs);
+            selectionStrategy.SetPopulation(new Population(new double[]{2, 0, 0}.ToChromosomes()), runs);
             for (int i = 0; i < runs; i++)
             {
                 var chromosome = selectionStrategy.SelectChromosome();

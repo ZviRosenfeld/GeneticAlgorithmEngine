@@ -121,16 +121,16 @@ You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_alg
 
 ### IStopManagers
 [StopManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IStopManager.cs) let you configure when you want the search to stop. 
-You can create your own managers by implementing the IStopManager class, or use one of the existing managers.
+You can create your own managers by implementing the IStopManager interface, or use one of the existing managers.
 Note that there is no limit to the number of StopManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
 In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/StopManagers) are some examples of custom StopManagers.
 
 Existing StopManagers:
-- **StopAtEvaluation**: Will cause the search to stop when it reaches some predefined evaluation.
-- **StopAtConvergence**: The search will stop when the difference between chromosomes in the population is too small.
-- **StopIfNoImprovment**: Will stop if the improvement over 'X' generations isn't good enough.
+- [StopAtEvaluation](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/StopManagers/StopAtEvaluation.cs): Will cause the search to stop when it reaches some predefined evaluation.
+- [StopAtConvergence](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/StopManagers/StopAtConvergence.cs): The search will stop when the difference between chromosomes in the population is too small.
+- [StopIfNoImprovment](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/StopManagers/StopIfNoImprovment.cs): Will stop if the improvement over 'X' generations isn't good enough.
 
 Example:
 ```CSharp
@@ -142,16 +142,15 @@ var result = searchEngine.Run();
 
 ### IPopulationRenwalManagers
 [PopulationRenwalManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. 
-You can create your own managers by implementing the IPopulationRenwalManager class, or use one of the existing managers.
+You can create your own managers by implementing the IPopulationRenwalManager interface, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom PopulationRenwalManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
 In addition, [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/master/GeneticAlgorithm/PopulationRenwalManagers) are some examples of custom PopulationRenwalManagers.
 
-
 Existing PopulationRenwalManagers:
-- **RenewAtConvergence**: The search will renew some of the population if the difference between chromosomes in the population is too small.
-- **RenewIfNoImprovment**: Will renew some of the population if the improvement over 'X' generations isn't good enough.
+- [RenewAtConvergence](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/PopulationRenwalManagers/RenewAtConvergence.cs): The search will renew some of the population if the difference between chromosomes in the population is too small.
+- [RenewIfNoImprovment](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/PopulationRenwalManagers/RenewIfNoImprovment.cs): Will renew some of the population if the improvement over 'X' generations isn't good enough.
 
 Example:
 ```CSharp
@@ -163,7 +162,7 @@ var result = searchEngine.Run();
 
 ### IMutationManager
 
-The [IMutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IMutationManager.cs) class lets you dynamically determine the probability of a mutation based on the current population.
+The [IMutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IMutationManager.cs) interface lets you dynamically determine the probability of a mutation based on the current population.
 For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
 You can find an exsample of a custom MutationManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
@@ -193,6 +192,26 @@ var result = searchEngine.Run();
 ```
 
 You can find an example of a custom PopulationConverter [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/PopulationConverters/SamplePopulationConverter.cs).
+
+### ISelectionStrategy
+
+The [ISelectionStrategy](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/Interfaces/ISelectionStrategy.cs) tells the engine how to choose the chromosmes that will create the next generation.
+You can create your own SelectionStrategy by implementing the ISelectionStrategy interface, or use one of the existing strategies.
+By default, the engine will use the RouletteWheelSelection, but you can changed that with the GeneticSearchEngineBuilder's SetSelectionStrategy method.
+
+Existing SelectionStrategies:
+- [RouletteWheelSelection](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/SelectionStrategies/RouletteWheelSelection.cs): With RouletteWheelSelection, the chance of choosing a chromosome is equale to its fitness devided to the total fitness. In other words, if we have two chromosomes A and B, where A.Evaluation == 6 and B.Evaluation == 4, there's a 60% change of choosing A, and a 40% change of choosing B.
+- [TournamentSelection](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/SelectionStrategies/GeneticAlgorithm/SelectionStrategies/TournamentSelection.cs): In TournamentSelection we choose a random n chromosomes from the population, and the one with the highest evaluation is used for the crossover. In TournamentSelection, selection pressure will grow as the tournament size grows. 
+
+You can find examples of ISelectionStrategies [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/tree/SelectionStrategies/GeneticAlgorithm/SelectionStrategies).
+
+Example:
+```CSharp
+var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
+	.SetSelectionStrategy(new TournamentSelection(5)).Build();
+
+var result = searchEngine.Run();
+```
 
 ## Using an Environment
 

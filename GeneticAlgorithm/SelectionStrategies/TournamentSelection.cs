@@ -7,7 +7,7 @@ namespace GeneticAlgorithm.SelectionStrategies
 {
     /// <summary>
     /// In TournamentSelection we choose a random n chromosomes from the population, and the one with the highest evaluation is used for the crossover.
-    /// In TournamentSelection, selection pressure will grow as the tournament size grows 
+    /// In TournamentSelection, selection pressure will grow as the tournament size grows. 
     /// </summary>
     public class TournamentSelection : ISelectionStrategy
     {
@@ -22,7 +22,7 @@ namespace GeneticAlgorithm.SelectionStrategies
                 : throw new GeneticAlgorithmException($"{nameof(tournamentSize)} must be greater then 0");
         }
 
-        public void SetPopulation(Population population)
+        public void SetPopulation(Population population, int requestedChromosomes)
         {
             this.population = population;
         }
