@@ -6,7 +6,7 @@ using GeneticAlgorithm.Interfaces;
 namespace GeneticAlgorithm.SelectionStrategies
 {
     /// <summary>
-    /// In TournamentSelection we choose a random n chromosomes from the population, and the one with the highest evaluation is used for the crossover.
+    /// With TournamentSelection, we choose a random n chromosomes from the population, and of them select the chromosome with the highest evaluation.
     /// In TournamentSelection, selection pressure will grow as the tournament size grows. 
     /// </summary>
     public class TournamentSelection : ISelectionStrategy

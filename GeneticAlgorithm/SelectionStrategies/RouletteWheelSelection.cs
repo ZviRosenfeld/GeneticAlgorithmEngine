@@ -6,8 +6,8 @@ using GeneticAlgorithm.Interfaces;
 namespace GeneticAlgorithm.SelectionStrategies
 {
     /// <summary>
-    /// With this strategy, the chance of choosing a chromosome is equale to its fitness devided to the total fitness.
-    /// In other words, if we have two chromosomes A and B, where A.Evaluation == 6 and B.Evaluation == 4,
+    /// In this strategy, the chance of choosing a chromosome is equal to the chromosome's fitness divided by the total fitness.
+    /// In other words, if we have two chromosomes, A and B, where A.Evaluation == 6 and B.Evaluation == 4,
     /// there's a 60% change of choosing A, and a 40% change of choosing B.
     /// </summary>
     public class RouletteWheelSelection : ISelectionStrategy
