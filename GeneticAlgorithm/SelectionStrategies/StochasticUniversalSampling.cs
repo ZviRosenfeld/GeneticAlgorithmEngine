@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.SelectionStrategies
@@ -11,9 +13,26 @@ namespace GeneticAlgorithm.SelectionStrategies
     {
         private readonly Random random = new Random();
         private ChromosomePool pool;
-        
+        private readonly double percentage;
+
+        public StochasticUniversalSampling()
+        {
+            percentage = 1;
+        }
+
+        /// <param name="percentage">A double between 0 (not including) and 1 (including). If set, the selection will only consider the n-percent best chromosomes (0 means will consider no chromosomes, and 1 means we'll consider all chromosomes).</param>
+        public StochasticUniversalSampling(double percentage)
+        {
+            if (percentage <= 0 || percentage > 1)
+                throw new GeneticAlgorithmException($"{nameof(percentage)} must be between 0 (not including) and 1 (including). Was {percentage}.");
+
+            this.percentage = percentage;
+        }
+
         public void SetPopulation(Population population, int requestedChromosomes)
         {
+            population = population.GetBestChromosomes((int) Math.Ceiling(population.Count() * percentage));
+
             var chromosomes = population.GetChromosomes();
             var evaluations = population.GetNormilizeEvaluations();
 

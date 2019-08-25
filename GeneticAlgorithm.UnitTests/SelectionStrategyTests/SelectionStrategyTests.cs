@@ -32,6 +32,17 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             AssertSelectionStrategyUsesLatestPopulation(new RouletteWheelSelection());
 
         [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        public void RouletteWheelSelection_IgnoreSomeOfPopulation(int chromosomesToIgnore)
+        {
+            var selection = new RouletteWheelSelection(1 - chromosomesToIgnore / 4.0);
+            AssertLowestChromosomesAreIgnored(selection, chromosomesToIgnore);
+        }
+
+        [TestMethod]
         public void RouletteWheelSelection_AssertChromosomesAreScattered() =>
             AssertChromosomesAreScattered(new RouletteWheelSelection());
 
@@ -55,6 +66,17 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             AssertChromosomesAreScattered(new TournamentSelection(2));
 
         [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        public void TournamentSelection_IgnoreSomeOfPopulation(int chromosomesToIgnore)
+        {
+            var selection = new TournamentSelection(2, 1 - chromosomesToIgnore / 4.0);
+            AssertLowestChromosomesAreIgnored(selection, chromosomesToIgnore);
+        }
+
+        [TestMethod]
         public void StochasticUniversalSampling_MostLieklyToChooseBestChromosome()
         {
             MostLikelyToChooseBestChromosome(new StochasticUniversalSampling(), chromosome1Probability,
@@ -68,6 +90,17 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         [TestMethod]
         public void StochasticUniversalSampling_AssertChromosomesAreScattered() =>
             AssertChromosomesAreScattered(new StochasticUniversalSampling());
+
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        public void StochasticUniversalSampling_IgnoreSomeOfPopulation(int chromosomesToIgnore)
+        {
+            var selection = new StochasticUniversalSampling(1 - chromosomesToIgnore / 4.0);
+            AssertLowestChromosomesAreIgnored(selection, chromosomesToIgnore);
+        }
 
         private void MostLikelyToChooseBestChromosome(ISelectionStrategy selection, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability)
         {
@@ -113,7 +146,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         }
 
         /// <summary>
-        /// Requests 8 chromosomes, and makes sure we get all 4 at least once.
+        /// Requests 16 chromosomes, and makes sure we get all 4 at least once.
         /// This test checks that the chromosomes are well distributed.
         /// </summary>
         private void AssertChromosomesAreScattered(ISelectionStrategy selectionStrategy)
@@ -123,7 +156,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             selectionStrategy.SetPopulation(population, 100);
 
             bool chromosome1 = false, chromosome2 = false, chromosome3 = false, chromosome4 = false;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 16; i++)
             {
                 var chromosome = selectionStrategy.SelectChromosome();
                 if (chromosome.Evaluate() == 0.23)
@@ -139,6 +172,50 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             Assert.IsTrue(chromosome1, "Didn't get any " + nameof(chromosome1));
             Assert.IsTrue(chromosome2, "Didn't get any " + nameof(chromosome2));
             Assert.IsTrue(chromosome3, "Didn't get any " + nameof(chromosome3));
+            Assert.IsTrue(chromosome4, "Didn't get any " + nameof(chromosome4));
+        }
+
+        private void AssertLowestChromosomesAreIgnored(ISelectionStrategy selectionStrategy, int chromosomesToIgnore)
+        {
+            var population = new double[] {1, 2, 3, 4}.ToPopulation();
+            population.Evaluate();
+            selectionStrategy.SetPopulation(population, 100);
+
+            bool chromosome1 = false, chromosome2 = false, chromosome3 = false, chromosome4 = false;
+            for (int i = 0; i < 100; i++)
+            {
+                var chromosome = selectionStrategy.SelectChromosome();
+                if (chromosome.Evaluate() == 1)
+                {
+                    if (chromosomesToIgnore > 0)
+                        Assert.Fail($"Shouldn't have return chromosome {chromosome.Evaluate()}");
+                    else
+                        chromosome1 = true;
+                }
+                if (chromosome.Evaluate() == 2)
+                {
+                    if (chromosomesToIgnore > 1)
+                        Assert.Fail($"Shouldn't have return chromosome {chromosome.Evaluate()}");
+                    else
+                        chromosome2 = true;
+                }
+                if (chromosome.Evaluate() == 3)
+                {
+                    if (chromosomesToIgnore > 2)
+                        Assert.Fail($"Shouldn't have return chromosome {chromosome.Evaluate()}");
+                    else
+                        chromosome3 = true;
+                }
+                if (chromosome.Evaluate() == 4)
+                    chromosome4 = true;
+            }
+
+            if (chromosomesToIgnore <= 0)
+                Assert.IsTrue(chromosome1, "Didn't get any " + nameof(chromosome1));
+            if (chromosomesToIgnore <= 1)
+                Assert.IsTrue(chromosome2, "Didn't get any " + nameof(chromosome2));
+            if (chromosomesToIgnore <= 2)
+                Assert.IsTrue(chromosome3, "Didn't get any " + nameof(chromosome3));
             Assert.IsTrue(chromosome4, "Didn't get any " + nameof(chromosome4));
         }
     }
