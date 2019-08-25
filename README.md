@@ -6,6 +6,30 @@ GeneticAlgorithmEngine provides an engine for running a Genetic Algorithm that c
 
 You can find the GeneticAlgorithmEngine library on nuget.org via package name GeneticAlgorithm.
 
+## Table of Content
+
+- [Usage](#usage)
+  - [IChromosome](#ichromosome)
+  - [ICrossoverManager](#icrossovermanager)
+  - [IPopulationGenerator](#ipopulationgenerator)
+    
+- [Events](#events)
+
+- [Search Options](#search-options)
+  - [Mutations](#mutations)
+  - [CancellationToken](#cancellationtoken)
+  - [Include All History](#includeallhistory)
+  - [Elitism](#elitism)
+  - [StopManagers](#istopmanagers)
+  - [PopulationRenwalManagers](#ipopulationrenwalmanagers)
+  - [MutationManager](#imutationmanager)
+  - [PopulationConverters](#ipopulationconverter)
+  - [SelectionStrategies](#iselectionstrategy)
+  
+- [Using An Environment](#using-an-environment)
+  - [IEnvironment](#ienvironment)
+  - [ChromosomeEvaluator](#ichromosomeevaluator)
+  
 ## Usage
 
 GeneticAlgorithmEngine contains 3 classes that you'll need to implement.
@@ -41,7 +65,7 @@ You can read more about corossovers [here](https://en.wikipedia.org/wiki/Crossov
 ### IPopulationGenerator
 
 You'll also need to implement the IPopulationGenerator class. The engine uses this class to create its initial population. 
-The PopulationGenerator will also renew the population when needed (see [IPopulationRenwalManagers](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/README.md#ipopulationrenwalmanagers)).
+The PopulationGenerator will also renew the population when needed (see [IPopulationRenwalManagers](#ipopulationrenwalmanagers)).
 
 ```CSharp
     public interface IPopulationGenerator
@@ -104,7 +128,7 @@ Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability method.
-Note that the mutation probability will be ignored if you set a [MutationManager](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine#imutationmanager).
+Note that the mutation probability will be ignored if you set a [MutationManager](#imutationmanager).
 
 ### CancellationToken
 You can use the GeneticSearchEngineBuilder.SetCancellationToken method to add cencellationTokens.
