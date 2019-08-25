@@ -13,7 +13,9 @@ namespace GeneticAlgorithm
     {
         private readonly List<Type> officalSelectionStrategies = new List<Type>
         {
-            typeof(RouletteWheelSelection)
+            typeof(RouletteWheelSelection),
+            typeof(StochasticUniversalSampling),
+            typeof(TournamentSelection)
         };
         private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;

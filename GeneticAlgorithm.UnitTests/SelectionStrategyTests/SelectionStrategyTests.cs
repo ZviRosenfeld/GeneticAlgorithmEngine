@@ -1,4 +1,5 @@
 ﻿using System;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.SelectionStrategies;
 using GeneticAlgorithm.UnitTests.TestUtils;
@@ -47,6 +48,14 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             AssertChromosomesAreScattered(new RouletteWheelSelection());
 
         [TestMethod]
+        [DataRow(-1)]
+        [DataRow(1.1)]
+        [DataRow(0)]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void RouletteWheelSelection_BadPercentage_ThrowException(double percentage) =>
+            new RouletteWheelSelection(percentage);
+
+        [TestMethod]
         [DataRow(2)]
         [DataRow(3)]
         public void TournamentSelection_MostLieklyToChooseBestChromosome(int tournamentSize)
@@ -77,6 +86,21 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         }
 
         [TestMethod]
+        [DataRow(-1)]
+        [DataRow(1.1)]
+        [DataRow(0)]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void TournamentSelection_BadPercentage_ThrowException(double percentage) =>
+            new TournamentSelection(2, percentage);
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void TournamentSelection_BadTournamentSize_ThrowException(int tournamentSize) =>
+            new TournamentSelection(tournamentSize);
+
+        [TestMethod]
         public void StochasticUniversalSampling_MostLieklyToChooseBestChromosome()
         {
             MostLikelyToChooseBestChromosome(new StochasticUniversalSampling(), chromosome1Probability,
@@ -101,6 +125,14 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             var selection = new StochasticUniversalSampling(1 - chromosomesToIgnore / 4.0);
             AssertLowestChromosomesAreIgnored(selection, chromosomesToIgnore);
         }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(1.1)]
+        [DataRow(0)]
+        [ExpectedException(typeof(GeneticAlgorithmException))]
+        public void StochasticUniversalSampling_BadPercentage_ThrowException(double percentage) =>
+            new StochasticUniversalSampling(percentage);
 
         private void MostLikelyToChooseBestChromosome(ISelectionStrategy selection, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability)
         {
