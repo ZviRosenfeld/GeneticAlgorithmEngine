@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.SelectionStrategies
@@ -19,7 +17,7 @@ namespace GeneticAlgorithm.SelectionStrategies
         public void SetPopulation(Population population, int requestedChromosomes)
         {
             chromosomes = population.GetChromosomes();
-            evaluations = NormilizeEvaluations(population);
+            evaluations = population.GetNormilizeEvaluations();
         }
 
         public IChromosome SelectChromosome()
@@ -34,17 +32,6 @@ namespace GeneticAlgorithm.SelectionStrategies
             }
 
             return chromosomes[index];
-        }
-
-        private double[] NormilizeEvaluations(Population population)
-        {
-            population = population.Clone();
-            var total = population.GetEvaluations().Sum();
-            Parallel.ForEach(population, chromosome =>
-            {
-                chromosome.Evaluation = chromosome.Evaluation / total;
-            });
-            return population.GetEvaluations();
         }
     }
 }

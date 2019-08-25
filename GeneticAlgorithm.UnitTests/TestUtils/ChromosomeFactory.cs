@@ -5,6 +5,9 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     public static class ChromosomeFactory
     {
+        public static Population ToPopulation(this double[] generationEvaluations, string tag = "Chromo", int? number = null) =>
+            new Population(generationEvaluations.ToChromosomes(tag, number));
+
         public static IChromosome[] ToChromosomes(this double[] generationEvaluations, string tag = "Chromo", int? number = null)
         {
             var size = number ?? generationEvaluations.Length;

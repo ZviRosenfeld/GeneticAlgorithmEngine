@@ -4,7 +4,7 @@ using GeneticAlgorithm.SelectionStrategies;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GeneticAlgorithm.UnitTests
+namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
 {
     [TestClass]
     public class SelectionStrategyTests
@@ -16,8 +16,8 @@ namespace GeneticAlgorithm.UnitTests
         [TestInitialize]
         public void TestInitialize()
         {
-            population = new Population(new [] { chromosome1Probability * 2, chromosome2Probability * 2, chromosome3Probability * 2}.ToChromosomes());
-            population.Evaluate();
+            population = ChromosomeFactory.ToPopulation(new [] { chromosome1Probability * 2, chromosome2Probability * 2, chromosome3Probability * 2});
+            Utils.Evaluate(population);
         }
 
         [TestMethod]
@@ -30,6 +30,10 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RouletteWheelSelection_OnlyUsesLastPopulation() =>
             AssertSelectionStrategyUsesLatestPopulation(new RouletteWheelSelection());
+
+        [TestMethod]
+        public void RouletteWheelSelection_AssertChromosomesAreScattered() =>
+            AssertChromosomesAreScattered(new RouletteWheelSelection());
 
         [TestMethod]
         [DataRow(2)]
@@ -45,6 +49,25 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void TournamentSelection_OnlyUsesLastPopulation() =>
             AssertSelectionStrategyUsesLatestPopulation(new TournamentSelection(2));
+
+        [TestMethod]
+        public void TournamentSelection_AssertChromosomesAreScattered() =>
+            AssertChromosomesAreScattered(new TournamentSelection(2));
+
+        [TestMethod]
+        public void StochasticUniversalSampling_MostLieklyToChooseBestChromosome()
+        {
+            MostLikelyToChooseBestChromosome(new StochasticUniversalSampling(), chromosome1Probability,
+                chromosome2Probability, chromosome3Probability);
+        }
+
+        [TestMethod]
+        public void StochasticUniversalSampling_OnlyUsesLastPopulation() =>
+            AssertSelectionStrategyUsesLatestPopulation(new StochasticUniversalSampling());
+
+        [TestMethod]
+        public void StochasticUniversalSampling_AssertChromosomesAreScattered() =>
+            AssertChromosomesAreScattered(new StochasticUniversalSampling());
 
         private void MostLikelyToChooseBestChromosome(ISelectionStrategy selection, double chromosome1Probability, double chromosome2Probability, double chromosome3Probability)
         {
@@ -67,6 +90,17 @@ namespace GeneticAlgorithm.UnitTests
             AssertIsWithinRange(chromosome3Counter, chromosome3Probability, runs, "Chromosome3");
         }
 
+        private void AssertIsWithinRange(int value, double probability, int tries, string valueName)
+        {
+            const double errorMargin = 0.05;
+            var expected = probability * runs;
+            var min = expected - errorMargin * tries;
+            var max = expected + errorMargin * tries;
+
+            Assert.IsTrue(value > min, $"Value ({value}) in smaller than min ({min}) for {valueName}");
+            Assert.IsTrue(value < max, $"Value ({value}) in greater than max ({max}) for {valueName}");
+        }
+
         private void AssertSelectionStrategyUsesLatestPopulation(ISelectionStrategy selectionStrategy)
         {
             selectionStrategy.SetPopulation(population, runs);
@@ -78,15 +112,34 @@ namespace GeneticAlgorithm.UnitTests
             }
         }
 
-        private void AssertIsWithinRange(int value, double probability, int tries, string valueName)
+        /// <summary>
+        /// Requests 8 chromosomes, and makes sure we get all 4 at least once.
+        /// This test checks that the chromosomes are well distributed.
+        /// </summary>
+        private void AssertChromosomesAreScattered(ISelectionStrategy selectionStrategy)
         {
-            const double errorMargin = 0.05;
-            var expected = probability * runs;
-            var min = expected - errorMargin * tries;
-            var max = expected + errorMargin * tries;
+            var population = new[] { 0.23, 0.24, 0.26, 0.27 }.ToPopulation();
+            population.Evaluate();
+            selectionStrategy.SetPopulation(population, 100);
 
-            Assert.IsTrue(value > min, $"Value ({value}) in smaller than min ({min}) for {valueName}");
-            Assert.IsTrue(value < max, $"Value ({value}) in greater than max ({max}) for {valueName}");
+            bool chromosome1 = false, chromosome2 = false, chromosome3 = false, chromosome4 = false;
+            for (int i = 0; i < 8; i++)
+            {
+                var chromosome = selectionStrategy.SelectChromosome();
+                if (chromosome.Evaluate() == 0.23)
+                    chromosome1 = true;
+                if (chromosome.Evaluate() == 0.24)
+                    chromosome2 = true;
+                if (chromosome.Evaluate() == 0.26)
+                    chromosome3 = true;
+                if (chromosome.Evaluate() == 0.27)
+                    chromosome4 = true;
+            }
+
+            Assert.IsTrue(chromosome1, "Didn't get any " + nameof(chromosome1));
+            Assert.IsTrue(chromosome2, "Didn't get any " + nameof(chromosome2));
+            Assert.IsTrue(chromosome3, "Didn't get any " + nameof(chromosome3));
+            Assert.IsTrue(chromosome4, "Didn't get any " + nameof(chromosome4));
         }
     }
 }

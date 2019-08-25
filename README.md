@@ -226,6 +226,7 @@ By default, the engine will use the RouletteWheelSelection, but you can changed 
 Existing SelectionStrategies:
 - [RouletteWheelSelection](/GeneticAlgorithm/SelectionStrategies/RouletteWheelSelection.cs): With RouletteWheelSelection, the chance of choosing a chromosome is equal to the chromosome's fitness divided by the total fitness. In other words, if we have two chromosomes, A and B, where A.Evaluation == 6 and B.Evaluation == 4, there's a 60% change of choosing A, and a 40% change of choosing B.
 - [TournamentSelection](/GeneticAlgorithm/SelectionStrategies/TournamentSelection.cs): With TournamentSelection, we choose a random n chromosomes from the population, and of them select the chromosome with the highest evaluation. In TournamentSelection, selection pressure will grow as the tournament size grows. See [this](https://en.wikipedia.org/wiki/Tournament_selection) link for more information.
+- [StochasticUniversalSampling](/GeneticAlgorithm/SelectionStrategies/StochasticUniversalSampling.cs): StochasticUniversalSampling (SUS) is very similar to RouletteWheelSelection. For more information look [here](https://en.wikipedia.org/wiki/Stochastic_universal_sampling).
 
 You can find examples of ISelectionStrategies [here](/GeneticAlgorithm/SelectionStrategies).
 
