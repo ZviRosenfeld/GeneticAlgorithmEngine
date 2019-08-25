@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests
 {
     [TestClass]
-    public class BassicTests
+    public class NumberVectorTests
     {
         private const int POPULATION_SIZE = 100;
 
@@ -15,7 +15,8 @@ namespace GeneticAlgorithm.UnitTests
         public void BassicTest(RunType runType)
         {
             var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
-                new NumberVectorBassicPopulationGenerator()).Build();
+                    new NumberVectorBassicPopulationGenerator())
+                .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper()).Build();
 
             var result = searchEngine.Run(runType);
 
@@ -29,12 +30,28 @@ namespace GeneticAlgorithm.UnitTests
         public void MutationTest(RunType runType)
         {
             var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
-                new NumberVectorBassicPopulationGenerator()).SetMutationProbability(0.1).Build();
+                    new NumberVectorBassicPopulationGenerator())
+                .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper())
+                .SetMutationProbability(0.1)
+                .Build();
 
             var result = searchEngine.Run(runType);
 
             Assert.IsTrue(NumberVectorBassicPopulationGenerator.VECTOR_SIZE < result.BestChromosome.Evaluate(),
                 $"best result ({result.BestChromosome.Evaluate()}) should have been greater than {NumberVectorBassicPopulationGenerator.VECTOR_SIZE}");
+        }
+
+        [TestMethod]
+        [DataRow(0.1)]
+        [DataRow(0.5)]
+        [DataRow(0.219)]
+        public void RequestedChromosomesIsRightWithElite(double elite)
+        {
+            var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
+                    new NumberVectorBassicPopulationGenerator()).SetElitePercentage(elite)
+                .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper()).Build();
+
+            searchEngine.Next();
         }
     }
 }

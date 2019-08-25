@@ -88,8 +88,7 @@ namespace GeneticAlgorithm
 
         private IChromosome[] GenerateChildren(Population population, int generation)
         {
-            NormilizeEvaluations(population);
-            var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
+            var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitePercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
             var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation, environment);
             var elite = GetBestChromosomes(eliteChromosomes, population);
@@ -153,16 +152,7 @@ namespace GeneticAlgorithm
                 chromosome.Evaluation = evaluation;
             });
         }
-
-        private void NormilizeEvaluations(Population population)
-        {
-            var total = population.GetEvaluations().Sum();
-            Parallel.ForEach(population, chromosome =>
-            {
-                chromosome.Evaluation = chromosome.Evaluation / total;
-            });
-        }
-
+        
         /// <summary>
         /// Update everyone that needs to know about the new generation
         /// </summary>

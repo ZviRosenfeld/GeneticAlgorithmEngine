@@ -1,39 +1,50 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.MutationManagers;
+using GeneticAlgorithm.SelectionStrategies;
 
 namespace GeneticAlgorithm
 {
     public class ChildrenGenerator : IChildrenGenerator
     {
+        private readonly List<Type> officalSelectionStrategies = new List<Type>
+        {
+            typeof(RouletteWheelSelection),
+            typeof(StochasticUniversalSampling),
+            typeof(TournamentSelection)
+        };
         private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;
         private readonly IMutationManager mutationManager;
+        private readonly ISelectionStrategy selectionStrategy;
 
-        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationManager mutationManager)
+        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationManager mutationManager, ISelectionStrategy selectionStrategy)
         {
             this.crossoverManager = crossoverManager;
             this.mutationManager = mutationManager;
+            this.selectionStrategy = selectionStrategy;
         }
 
         public IChromosome[] GenerateChildren(Population population, int number, int generation, IEnvironment environment)
         {
+            if (number < 1)
+                throw new InternalSearchException("Code 1003 (requested 0 children)");
+
+            selectionStrategy.SetPopulation(population, number * 2);
             var mutationProbability = mutationManager.MutationProbability(population, environment, generation);
-
-            if (mutationProbability > 1 || mutationProbability < 0)
-                throw new GeneticAlgorithmException(nameof(mutationProbability) + " must be between 0.0 to 1.0 (including)");
-
+            CheckMuationProbability(mutationProbability);
+            
             var children = new ConcurrentBag<IChromosome>();
             var tasks = new Task[number];
             for (int i = 0; i < number; i++)
                 tasks[i] = Task.Run(() =>
                 {
-                    var evaluation = population.GetEvaluations();
-                    var chromosomes = population.GetChromosomes();
-                    var parent1 = ChooseParent(chromosomes, evaluation);
-                    var parent2 = ChooseParent(chromosomes, evaluation);
+                    var parent1 = AssertNotNull(selectionStrategy.SelectChromosome());
+                    var parent2 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var child = crossoverManager.Crossover(parent1, parent2);
                     if (random.NextDouble() < mutationProbability)
                         child.Mutate();
@@ -46,18 +57,25 @@ namespace GeneticAlgorithm
             return children.ToArray();
         }
 
-        private IChromosome ChooseParent(IChromosome[] population, double[] evaluations)
+        private void CheckMuationProbability(double probability)
         {
-            var randomNumber = random.NextDouble();
-            var sum = 0.0;
-            var index = -1;
-            while (sum < randomNumber)
-            {
-                index++;
-                sum += evaluations[index];
-            }
+            if (probability >= 0 && probability <= 1) return;
 
-            return population[index];
+            if (mutationManager.GetType() == typeof(BassicMutationManager))
+                throw new InternalSearchException(
+                    $"Code 1004 (Bad mutation value for manager {mutationManager.GetType()})");
+            throw new BadMutationProbabilityException(probability);
+        }
+
+        private IChromosome AssertNotNull(IChromosome chromosome)
+        {
+            if (chromosome != null) return chromosome;
+
+            var message = $"Selected chromosome was null. Manager = {mutationManager.GetType()}";
+            if (officalSelectionStrategies.Contains(mutationManager.GetType()))
+                throw new InternalSearchException($"Code 1005 ({message})");
+
+            throw new GeneticAlgorithmException(message);
         }
     }
 }

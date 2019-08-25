@@ -21,7 +21,7 @@ namespace GUI
             var engineBuilder = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION,
                     new NumberVectorCrossoverManager(),
                     new NumberVectorBassicPopulationGenerator()).SetMutationProbability(MutationInputBox.GetValue)
-                .SetElitPercentage(ElitismInputBox.GetValue);
+                .SetElitePercentage(ElitismInputBox.GetValue);
             searchRunner1.SetEngineBuilder(engineBuilder);
         }
 

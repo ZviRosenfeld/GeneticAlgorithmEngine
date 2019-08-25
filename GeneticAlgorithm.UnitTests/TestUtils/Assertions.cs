@@ -1,48 +1,12 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using System;
+using System.Collections.Generic;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests.TestUtils
 {
-    static class TestUtils
+    public static class Assertions
     {
-        public static GeneticSearchResult Run(this GeneticSearchEngine engine, RunType runType)
-        {
-            if (runType == RunType.Run)
-                return engine.Run();
-
-            GeneticSearchResult result = null;
-            while (result == null || !result.IsCompleted)
-                result = engine.Next();
-
-            return result;
-        }
-
-        public static IChromosome[] ToChromosomes(this double[] generationEvaluations, string tag = "Chromo", int? number = null)
-        {
-            var size = number ?? generationEvaluations.Length;
-            var population = new IChromosome[size];
-            for (int i = 0; i < size; i++)
-                population[i] = CreateChromosome(generationEvaluations[i], tag);
-            
-            return population;
-        }
-        
-        public static IChromosome CreateChromosome(this double evaluation, string tag)
-        {
-            var newChromosome = A.Fake<IChromosome>();
-            A.CallTo(() => newChromosome.Evaluate()).Returns(evaluation);
-            A.CallTo(() => newChromosome.ToString()).Returns($"{tag} (Eval={evaluation})");
-            return newChromosome;
-        }
-
-        public static  void Evaluate(this Population population)
-        {
-            foreach (var chromosome in population)
-                chromosome.Evaluation = chromosome.Chromosome.Evaluate();
-        }
-
         public static void AssertHasEvaluation(this List<IChromosome[]> chromosomes, double[][] evaluations)
         {
             for (int i = 0; i < chromosomes.Count; i++)
@@ -74,14 +38,14 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             Assert.AreEqual(result1.SearchTime, result2.SearchTime, "Diffrent searchTime");
             result1.Population.AssertIsSame(result2.Population);
 
-            for (int i = 0 ; i < result1.History.Count; i++)
+            for (int i = 0; i < result1.History.Count; i++)
                 result1.History[i].AssertIsSame(result2.History[i]);
         }
 
         public static void AssertIsSame(this Population population1, Population population2)
         {
             for (int i = 0; i < population1.GetChromosomes().Length; i++)
-                Assert.AreEqual(population1[i].Evaluation, population2[i].Evaluation); 
+                Assert.AreEqual(population1[i].Evaluation, population2[i].Evaluation);
         }
 
         private static void AssertIsSame(this IChromosome[] population1, IChromosome[] population2)
@@ -90,11 +54,17 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
                 Assert.AreEqual(population1[i].Evaluate(), population2[i].Evaluate());
         }
 
-        public static GeneticSearchEngine GetBassicEngine()
+        public static void AssertThrowAggretateExceptionOfType(Action action, Type exceptionType)
         {
-            var populationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
-            var engineBuilder = new TestGeneticSearchEngineBuilder(5, int.MaxValue, populationManager);
-            return engineBuilder.Build();
+            try
+            {
+                action();
+                Assert.Fail("Didn't throw exception of type " + exceptionType);
+            }
+            catch (AggregateException e)
+            {
+                Assert.AreEqual(exceptionType, e.InnerExceptions[0].GetType());
+            }
         }
     }
 }

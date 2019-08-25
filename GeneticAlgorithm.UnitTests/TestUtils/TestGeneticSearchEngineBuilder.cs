@@ -22,7 +22,7 @@
             PreBuildActions();
 
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager, populationConverters, chromosomeEvaluator);
+                populationRenwalManagers, elitePercentage, mutationManager, populationConverters, chromosomeEvaluator);
             return new GeneticSearchEngine(options, populationGenerator, populationManager.GetChildrenGenerator(), environment);
         }
     }

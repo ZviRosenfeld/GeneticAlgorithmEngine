@@ -12,7 +12,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunTwice_ThrowsException()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             Task.Run(() => engine.Run());
             while (!engine.IsRunning) ;
 
@@ -22,7 +22,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunAndThenNext_ThrowsException()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             Task.Run(() => engine.Run());
             while (!engine.IsRunning) ;
 
@@ -34,7 +34,7 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(false)]
         public void IsRunningTest(bool engineRunning)
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             if (engineRunning)
                 Task.Run(() => engine.Run());
 
@@ -45,7 +45,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void PauseTest()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             Task.Run(() => engine.Run());
 
             Thread.Sleep(10);
@@ -58,7 +58,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunAfterPauseTest()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             Task.Run(() => engine.Run());
             Thread.Sleep(10);
 
@@ -73,7 +73,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void RunAfterPauseTest2()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             Task.Run(() => engine.Run());
             Thread.Sleep(10);
 
@@ -93,7 +93,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void PauseReturnValueTest()
         {
-            var engine = TestUtils.TestUtils.GetBassicEngine();
+            var engine = TestUtils.Utils.GetBassicEngine();
             var result = engine.Pause();
             Assert.IsFalse(result, "Engine shouldn't have been running");
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GeneticAlgorithm.UnitTests.RaceConditionTests
@@ -28,7 +29,7 @@ namespace GeneticAlgorithm.UnitTests.RaceConditionTests
         [TestInitialize]
         public void TestInitialize()
         {
-            engine = TestUtils.GetBassicEngine();
+            engine = TestUtils.Utils.GetBassicEngine();
             runEngine = new EngineRunner("Run", () => engine.Run());
             engineNext = new EngineRunner("Next", () => engine.Next());
             pauseEngine = new PauseEngine("Pause", () => engine.Pause());

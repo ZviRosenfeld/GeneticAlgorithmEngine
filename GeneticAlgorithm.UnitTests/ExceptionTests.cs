@@ -42,7 +42,7 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(1.1)]
         public void SetIllegalElitPercentage_ThrowsException(double percentage) =>
             new GeneticSearchEngineBuilder(2, 2, A.Fake<ICrossoverManager>(), A.Fake<IPopulationGenerator>())
-                .SetElitPercentage(percentage).Build();
+                .SetElitePercentage(percentage).Build();
 
         [TestMethod]
         public void NagitiveEvaluation_ThrowException()
