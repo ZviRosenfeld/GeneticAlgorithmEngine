@@ -18,7 +18,7 @@ namespace GeneticAlgorithm
         protected IEnvironment environment = null;
         protected readonly List<IPopulationConverter> populationConverters = new List<IPopulationConverter>();
         protected bool includeAllHistory = false;
-        protected double elitPercentage = 0;
+        protected double elitePercentage = 0;
         protected List<IStopManager> stopManagers = new List<IStopManager>();
         protected List<IPopulationRenwalManager> populationRenwalManagers = new List<IPopulationRenwalManager>();
         protected ISelectionStrategy selectionStrategy = new RouletteWheelSelection();
@@ -94,9 +94,9 @@ namespace GeneticAlgorithm
         /// <summary>
         /// The "percentage" of the best chromosomes will be passed "as is" to the next generation.
         /// </summary>
-        public GeneticSearchEngineBuilder SetElitPercentage(double percentage)
+        public GeneticSearchEngineBuilder SetElitePercentage(double percentage)
         {
-            elitPercentage = percentage;
+            elitePercentage = percentage;
             return this;
         }
 
@@ -183,7 +183,7 @@ namespace GeneticAlgorithm
             PreBuildActions();
 
             var options = new GeneticSearchOptions(populationSize, stopManagers, includeAllHistory,
-                populationRenwalManagers, elitPercentage, mutationManager, populationConverters, chromosomeEvaluator);
+                populationRenwalManagers, elitePercentage, mutationManager, populationConverters, chromosomeEvaluator);
             var childrenGenerator = new ChildrenGenerator(crossoverManager, mutationManager, selectionStrategy);
             return new GeneticSearchEngine(options, populationGenerator, childrenGenerator, environment);
         }

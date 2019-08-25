@@ -7,13 +7,13 @@ namespace GeneticAlgorithm
     public class GeneticSearchOptions
     {
         public GeneticSearchOptions(int populationSize,List<IStopManager> stopManagers, bool includeAllHistory,
-            List<IPopulationRenwalManager> populationRenwalManagers, double elitPercentage, IMutationManager mutationManager, List<IPopulationConverter> populationConverters, IChromosomeEvaluator chromosomeEvaluator)
+            List<IPopulationRenwalManager> populationRenwalManagers, double elitePercentage, IMutationManager mutationManager, List<IPopulationConverter> populationConverters, IChromosomeEvaluator chromosomeEvaluator)
         {
             StopManagers = stopManagers;
             IncludeAllHistory = includeAllHistory;
             PopulationRenwalManagers = populationRenwalManagers;
-            AssertIsBetweenZeroAndOne(elitPercentage, nameof(elitPercentage));
-            ElitPercentage = elitPercentage;
+            AssertIsBetweenZeroAndOne(elitePercentage, nameof(elitePercentage));
+            ElitePercentage = elitePercentage;
             MutationManager = mutationManager;
             PopulationConverters = populationConverters;
             ChromosomeEvaluator = chromosomeEvaluator;
@@ -33,7 +33,7 @@ namespace GeneticAlgorithm
         
         public bool IncludeAllHistory { get; }
 
-        public double ElitPercentage { get; }
+        public double ElitePercentage { get; }
 
         public List<IStopManager> StopManagers { get; }
 

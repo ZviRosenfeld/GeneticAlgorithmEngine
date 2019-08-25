@@ -47,7 +47,7 @@ namespace GeneticAlgorithm.UnitTests
                 new TestPopulationManager(
                     new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 }, c => c.Evaluate() - 1);
             var engine = new TestGeneticSearchEngineBuilder(populationSize, 10, populationManager)
-                .SetElitPercentage(eilentPrecentage).IncludeAllHistory().Build();
+                .SetElitePercentage(eilentPrecentage).IncludeAllHistory().Build();
             
             var result = engine.Run(runType);
             var maxEvaluation = result.BestChromosome.Evaluate();

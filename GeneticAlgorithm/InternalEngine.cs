@@ -88,7 +88,7 @@ namespace GeneticAlgorithm
 
         private IChromosome[] GenerateChildren(Population population, int generation)
         {
-            var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitPercentage);
+            var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitePercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
             var children = childrenGenerator.GenerateChildren(population, numberOfChildren, generation, environment);
             var elite = GetBestChromosomes(eliteChromosomes, population);
