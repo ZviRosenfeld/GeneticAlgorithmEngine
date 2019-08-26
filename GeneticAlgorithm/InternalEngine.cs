@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ namespace GeneticAlgorithm
         private readonly IPopulationGenerator populationGenerator;
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
-        private readonly List<IChromosome[]> history = new List<IChromosome[]>();
         private readonly Action<Population, IEnvironment> onNewGeneration;
         private readonly IEnvironment environment;
 
@@ -167,9 +165,6 @@ namespace GeneticAlgorithm
             options.MutationManager.AddGeneration(population);
 
             onNewGeneration(population, environment);
-
-            if (options.IncludeAllHistory)
-                history.Add(population.GetChromosomes());
         }
     }
 }
