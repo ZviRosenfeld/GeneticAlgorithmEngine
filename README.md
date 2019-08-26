@@ -36,7 +36,7 @@ GeneticAlgorithmEngine contains 3 interfaces that you'll need to implement.
 
 ### IChromosome
 
-Your chromosomes will need to implement the [IChromosome](/NumberVector/IChromosome.cs) interface.
+Your chromosomes will need to implement the [IChromosome](/GeneticAlgorithm/Interfaces/IChromosome.cs) interface.
 
 ```CSharp
     public interface IChromosome
