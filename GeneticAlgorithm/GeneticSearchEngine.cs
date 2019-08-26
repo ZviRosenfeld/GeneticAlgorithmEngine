@@ -12,7 +12,7 @@ namespace GeneticAlgorithm
         private readonly object pauseLock = new object();
         private readonly ManualResetEvent engineFinishedEvent = new ManualResetEvent(true);
         private readonly InternalEngine engine;
-        private readonly ResultBuilder resultBuilder;
+        private readonly SearchContext resultBuilder;
         private readonly GeneticSearchOptions options;
         private readonly IEnvironment environment;
 
@@ -25,8 +25,8 @@ namespace GeneticAlgorithm
         {
             this.options = options;
             this.environment = environment;
-            resultBuilder = new ResultBuilder(options.IncludeAllHistory);
-            engine = new InternalEngine(populationGenerator, childrenGenerator, options, (p, e) => OnNewGeneration?.Invoke(p, e), environment);
+            resultBuilder = new SearchContext(options.IncludeAllHistory);
+            engine = new InternalEngine(populationGenerator, childrenGenerator, options);
         }
         
         private InternalSearchResult lastResult = null;
@@ -43,12 +43,12 @@ namespace GeneticAlgorithm
             {
                 while (!ShouldPause)
                 {
-                    lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation);
+                    lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation, environment);
                     UpdateNewGeneration(lastResult.Population);
                     resultBuilder.AddGeneration(lastResult);
                     if (lastResult.IsCompleted) break;
                 }
-                return resultBuilder.Build();
+                return resultBuilder.BuildResult();
             });
         }
 
@@ -59,10 +59,10 @@ namespace GeneticAlgorithm
         {
             return RunAsCriticalBlock(() =>
             {
-                lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation);
+                lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation, environment);
                 UpdateNewGeneration(lastResult.Population);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build();
+                return resultBuilder.BuildResult();
             });
         }
 
@@ -134,10 +134,10 @@ namespace GeneticAlgorithm
 
             return RunAsCriticalBlock(() =>
             {
-                lastResult = engine.RenewPopulationAndUpdatePopulation(percentageToRenew, lastResult.Population);
+                lastResult = engine.RenewPopulation(percentageToRenew, lastResult.Population, environment);
                 UpdateNewGeneration(lastResult.Population);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build();
+                return resultBuilder.BuildResult();
             });
         }
 
@@ -149,7 +149,7 @@ namespace GeneticAlgorithm
             if (IsRunning)
                 throw new EngineAlreadyRunningException();
 
-            return RunAsCriticalBlock(() => resultBuilder.Build());
+            return RunAsCriticalBlock(() => resultBuilder.BuildResult());
         }
 
         /// <summary>
@@ -163,10 +163,10 @@ namespace GeneticAlgorithm
 
             return RunAsCriticalBlock(() =>
             {
-                lastResult = engine.ConvertPopulationAndUpdatePopulation(newPopulation);
+                lastResult = engine.ConvertPopulation(newPopulation, environment);
                 UpdateNewGeneration(lastResult.Population);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build();
+                return resultBuilder.BuildResult();
             });
         }
 

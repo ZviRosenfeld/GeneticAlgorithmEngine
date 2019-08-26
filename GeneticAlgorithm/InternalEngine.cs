@@ -15,30 +15,26 @@ namespace GeneticAlgorithm
         private readonly IPopulationGenerator populationGenerator;
         private readonly IChildrenGenerator childrenGenerator;
         private readonly GeneticSearchOptions options;
-        private readonly Action<Population, IEnvironment> onNewGeneration;
-        private readonly IEnvironment environment;
 
         public InternalEngine(IPopulationGenerator populationGenerator, IChildrenGenerator childrenGenerator,
-            GeneticSearchOptions options, Action<Population, IEnvironment> onNewGeneration, IEnvironment environment)
+            GeneticSearchOptions options)
         {
             this.populationGenerator = populationGenerator;
             this.childrenGenerator = childrenGenerator;
             this.options = options;
-            this.onNewGeneration = onNewGeneration;
-            this.environment = environment;
         }
 
-        public InternalSearchResult RunSingleGeneration(Population population, int generation)
+        public InternalSearchResult RunSingleGeneration(Population population, int generation, IEnvironment environment)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var nextGeneration = CreateNewGeneration(population, generation);
+            var nextGeneration = CreateNewGeneration(population, generation, environment);
             foreach (var populationConverter in options.PopulationConverters)
                 nextGeneration = populationConverter.ConvertPopulation(nextGeneration, generation, environment);
             population = new Population(nextGeneration);
             environment?.UpdateEnvierment(nextGeneration, generation);
 
-            EvaluatePopulation(population);
+            EvaluatePopulation(population, environment);
 
             if (options.StopManagers.Any(stopManager =>
                 stopManager.ShouldStop(population, environment, generation)))
@@ -47,40 +43,40 @@ namespace GeneticAlgorithm
                 return new InternalSearchResult(population, stopwatch.Elapsed, true, environment);
             }
 
-            var populationToRenew = GetPopulationToRenew(population, generation);
+            var populationToRenew = GetPopulationToRenew(population, generation, environment);
             if (populationToRenew > 0)
             {
                 population = RenewPopulation(populationToRenew, population);
-                EvaluatePopulation(population);
+                EvaluatePopulation(population, environment);
             }
             
             stopwatch.Stop();
             return new InternalSearchResult(population, stopwatch.Elapsed, false, environment);
         }
 
-        public InternalSearchResult RenewPopulationAndUpdatePopulation(double percantage, Population population)
+        public InternalSearchResult RenewPopulation(double percantage, Population population, IEnvironment environment)
         {
             var chromosomesToRenew = (int)Math.Ceiling(options.PopulationSize * percantage);
             var newPopulation = RenewPopulation(chromosomesToRenew, population);
-            EvaluatePopulation(newPopulation);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
+            EvaluatePopulation(newPopulation, environment);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
         }
 
-        public InternalSearchResult ConvertPopulationAndUpdatePopulation(IChromosome[] population)
+        public InternalSearchResult ConvertPopulation(IChromosome[] population, IEnvironment environment)
         {
             var newPopulation = new Population(population);
-            EvaluatePopulation(newPopulation);
+            EvaluatePopulation(newPopulation, environment);
             return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
-        private IChromosome[] CreateNewGeneration(Population population, int generation)
+        private IChromosome[] CreateNewGeneration(Population population, int generation, IEnvironment environment)
         {
             return generation == 0
                 ? populationGenerator.GeneratePopulation(options.PopulationSize).ToArray()
-                : GenerateChildren(population, generation);
+                : GenerateChildren(population, generation, environment);
         }
 
-        private IChromosome[] GenerateChildren(Population population, int generation)
+        private IChromosome[] GenerateChildren(Population population, int generation, IEnvironment environment)
         {
             var eliteChromosomes = (int)Math.Ceiling(options.PopulationSize * options.ElitePercentage);
             var numberOfChildren = options.PopulationSize - eliteChromosomes;
@@ -89,7 +85,7 @@ namespace GeneticAlgorithm
             return SearchUtils.Combine(children, elite);
         }
 
-        private int GetPopulationToRenew(Population population, int generation)
+        private int GetPopulationToRenew(Population population, int generation, IEnvironment environment)
         {
             if (!options.PopulationRenwalManagers.Any())
                 return 0;
@@ -134,7 +130,7 @@ namespace GeneticAlgorithm
             throw new InternalSearchException("Code 1000 (not enough best chromosomes found)");
         }
 
-        private void EvaluatePopulation(Population population)
+        private void EvaluatePopulation(Population population, IEnvironment environment)
         {
             options.ChromosomeEvaluator.SetEnvierment(environment);
 

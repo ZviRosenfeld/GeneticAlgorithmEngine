@@ -6,7 +6,7 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
-    class ResultBuilder
+    class SearchContext
     {
         private readonly bool includeHistory;
 
@@ -18,7 +18,7 @@ namespace GeneticAlgorithm
 
         public int Generation { get; private set; }
 
-        public ResultBuilder(bool includeHistory)
+        public SearchContext(bool includeHistory)
         {
             this.includeHistory = includeHistory;
         }
@@ -34,7 +34,7 @@ namespace GeneticAlgorithm
             environment = internalResult.Environment;
         }
 
-        public GeneticSearchResult Build()
+        public GeneticSearchResult BuildResult()
         {
             if (lastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
