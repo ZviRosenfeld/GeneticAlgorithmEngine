@@ -40,7 +40,7 @@ namespace GeneticAlgorithm
             {
                 while (!ShouldPause)
                 {
-                    var lastResult = engine.RunSingleGeneration(searchContext?.LastGeneration, searchContext.Generation, searchContext.Environment);
+                    var lastResult = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
                     UpdateNewGeneration(lastResult.Population);
                     searchContext.AddGeneration(lastResult);
                     if (lastResult.IsCompleted) break;
@@ -56,7 +56,7 @@ namespace GeneticAlgorithm
         {
             return RunAsCriticalBlock(() =>
             {
-                var lastResult = engine.RunSingleGeneration(searchContext?.LastGeneration, searchContext.Generation, searchContext.Environment);
+                var lastResult = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
                 UpdateNewGeneration(lastResult.Population);
                 searchContext.AddGeneration(lastResult);
                 return searchContext.BuildResult();
@@ -123,7 +123,7 @@ namespace GeneticAlgorithm
         ///  </summary>
         public GeneticSearchResult RenewPopulation(double percentageToRenew)
         {
-            if (searchContext?.LastGeneration == null)
+            if (searchContext.LastGeneration == null)
                 throw new GeneticAlgorithmException("Can renew population before the search started.");
 
             if (percentageToRenew <= 0 || percentageToRenew > 1)
