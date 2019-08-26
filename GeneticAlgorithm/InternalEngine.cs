@@ -40,7 +40,7 @@ namespace GeneticAlgorithm
                 stopManager.ShouldStop(population, environment, generation)))
             {
                 stopwatch.Stop();
-                return new InternalSearchResult(population, stopwatch.Elapsed, true, environment);
+                return new InternalSearchResult(population, stopwatch.Elapsed, true);
             }
 
             var populationToRenew = GetPopulationToRenew(population, generation, environment);
@@ -51,7 +51,7 @@ namespace GeneticAlgorithm
             }
             
             stopwatch.Stop();
-            return new InternalSearchResult(population, stopwatch.Elapsed, false, environment);
+            return new InternalSearchResult(population, stopwatch.Elapsed, false);
         }
 
         public InternalSearchResult RenewPopulation(double percantage, Population population, IEnvironment environment)
@@ -66,7 +66,7 @@ namespace GeneticAlgorithm
         {
             var newPopulation = new Population(population);
             EvaluatePopulation(newPopulation, environment);
-            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
+            return new InternalSearchResult(newPopulation, TimeSpan.Zero, false);
         }
 
         private IChromosome[] CreateNewGeneration(Population population, int generation, IEnvironment environment)

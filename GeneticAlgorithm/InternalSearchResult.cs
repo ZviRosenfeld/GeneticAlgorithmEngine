@@ -10,14 +10,11 @@ namespace GeneticAlgorithm
         public TimeSpan SearchTime { get; }
 
         public bool IsCompleted { get; }
-
-        public IEnvironment Environment { get; }
-
-        public InternalSearchResult(Population population, TimeSpan searchTime, bool isCompleted, IEnvironment environment)
+        
+        public InternalSearchResult(Population population, TimeSpan searchTime, bool isCompleted)
         {
             SearchTime = searchTime;
             IsCompleted = isCompleted;
-            Environment = environment;
             Population = population;
         }
     }

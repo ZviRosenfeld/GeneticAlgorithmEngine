@@ -13,14 +13,17 @@ namespace GeneticAlgorithm
         private TimeSpan searchTime = TimeSpan.Zero;
         private List<IChromosome[]> history = new List<IChromosome[]>();
         private bool isComplated = false;
-        private Population lastGeneration = null;
-        private IEnvironment environment = null;
+
+        public  Population LastGeneration { get; private set; }
+
+        public IEnvironment Environment { get; }
 
         public int Generation { get; private set; }
 
-        public SearchContext(bool includeHistory)
+        public SearchContext(bool includeHistory, IEnvironment environment)
         {
             this.includeHistory = includeHistory;
+            Environment = environment;
         }
 
         public void AddGeneration(InternalSearchResult internalResult)
@@ -30,16 +33,15 @@ namespace GeneticAlgorithm
             if (includeHistory)
                 history.Add(internalResult.Population.GetChromosomes().ToArray());
             isComplated = isComplated || internalResult.IsCompleted;
-            lastGeneration = internalResult.Population;
-            environment = internalResult.Environment;
+            LastGeneration = internalResult.Population;
         }
 
         public GeneticSearchResult BuildResult()
         {
-            if (lastGeneration == null)
+            if (LastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
 
-            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.Clone(), history, searchTime, Generation, isComplated, environment);
+            return new GeneticSearchResult(LastGeneration.ChooseBest(), LastGeneration.Clone(), history, searchTime, Generation, isComplated, Environment);
         }
     }
 }
