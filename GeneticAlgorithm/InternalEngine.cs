@@ -43,7 +43,6 @@ namespace GeneticAlgorithm
             if (options.StopManagers.Any(stopManager =>
                 stopManager.ShouldStop(population, environment, generation)))
             {
-                UpdateNewGeneration(population);
                 stopwatch.Stop();
                 return new InternalSearchResult(population, stopwatch.Elapsed, true, environment);
             }
@@ -54,8 +53,7 @@ namespace GeneticAlgorithm
                 population = RenewPopulation(populationToRenew, population);
                 EvaluatePopulation(population);
             }
-
-            UpdateNewGeneration(population);
+            
             stopwatch.Stop();
             return new InternalSearchResult(population, stopwatch.Elapsed, false, environment);
         }
@@ -65,7 +63,6 @@ namespace GeneticAlgorithm
             var chromosomesToRenew = (int)Math.Ceiling(options.PopulationSize * percantage);
             var newPopulation = RenewPopulation(chromosomesToRenew, population);
             EvaluatePopulation(newPopulation);
-            UpdateNewGeneration(newPopulation);
             return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
@@ -73,7 +70,6 @@ namespace GeneticAlgorithm
         {
             var newPopulation = new Population(population);
             EvaluatePopulation(newPopulation);
-            UpdateNewGeneration(newPopulation);
             return new InternalSearchResult(newPopulation, TimeSpan.Zero, false, environment);
         }
 
@@ -149,22 +145,6 @@ namespace GeneticAlgorithm
                     throw new NegativeEvaluationException();
                 chromosome.Evaluation = evaluation;
             });
-        }
-        
-        /// <summary>
-        /// Update everyone that needs to know about the new generation
-        /// </summary>
-        private void UpdateNewGeneration(Population population)
-        {
-            foreach (var stopManager in options.StopManagers)
-                stopManager.AddGeneration(population);
-            foreach (var populationRenwalManager in options.PopulationRenwalManagers)
-                populationRenwalManager.AddGeneration(population);
-            foreach (var populationConverter in options.PopulationConverters)
-                populationConverter.AddGeneration(population);
-            options.MutationManager.AddGeneration(population);
-
-            onNewGeneration(population, environment);
         }
     }
 }
