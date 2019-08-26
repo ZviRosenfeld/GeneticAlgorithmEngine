@@ -94,8 +94,8 @@
       <Project>{5fadb04c-ee9d-4169-81a1-441ff61da671}</Project>
       <Name>GeneticAlgorithm</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GreatestVectorTests\NumberVector.csproj">
-      <Project>{cb7d02ba-d9c7-4b19-8882-5d091107a60d}</Project>
+    <ProjectReference Include="..\NumberVector\NumberVector.csproj">
+      <Project>{e84d6bd7-ff0d-4125-9e5c-36462247613a}</Project>
       <Name>NumberVector</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserControls\UserControls.csproj">

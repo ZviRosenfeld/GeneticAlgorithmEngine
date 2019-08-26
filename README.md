@@ -32,11 +32,11 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
   
 ## Usage
 
-GeneticAlgorithmEngine contains 3 classes that you'll need to implement.
+GeneticAlgorithmEngine contains 3 interfaces that you'll need to implement.
 
 ### IChromosome
 
-Your chromosomes will need to implement the IChromosome class.
+Your chromosomes will need to implement the [IChromosome](/NumberVector/IChromosome.cs) interface.
 
 ```CSharp
     public interface IChromosome
@@ -50,10 +50,12 @@ Your chromosomes will need to implement the IChromosome class.
     }
 ```
 
+You can find a sample Chromosome [here](/NumberVector/NumberVectorChromosome.cs).
+
 ### ICrossoverManager
 
-You'll need to implement the ICrossoverManager class. This tells the engine how to perform crossovers for your chromosomes.
-You can read more about corossovers [here](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
+You'll need to implement the [ICrossoverManager](/GeneticAlgorithm/Interfaces/ICrossoverManager.cs) interface. This tells the engine how to perform crossovers for your chromosomes.
+You can read more about crossovers [here](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
 
 ```CSharp
     public interface ICrossoverManager
@@ -62,9 +64,11 @@ You can read more about corossovers [here](https://en.wikipedia.org/wiki/Crossov
     }
 ```
 
+You can find a sample CrossoverManager [here](/NumberVector/NumberVectorCrossoverManager.cs).
+
 ### IPopulationGenerator
 
-You'll also need to implement the IPopulationGenerator class. The engine uses this class to create its initial population. 
+You'll also need to implement the [IPopulationGenerator](/GeneticAlgorithm/Interfaces/IPopulationGenerator.cs) interface. The engine uses this class to create its initial population. 
 The PopulationGenerator will also renew the population when needed (see [IPopulationRenwalManagers](#ipopulationrenwalmanagers)).
 
 ```CSharp
@@ -76,6 +80,8 @@ The PopulationGenerator will also renew the population when needed (see [IPopula
         IEnumerable<IChromosome> GeneratePopulation(int size);
     }
 ```
+
+You can find a sample PopulationGenerator [here](/NumberVector/NumberVectorPopulationGenerator.cs).
 
 ## Creating an Instance of GeneticSearchEngine
 

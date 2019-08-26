@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GeneticAlgorithm\GeneticAlgorithm.csproj" />
-    <ProjectReference Include="..\GreatestVectorTests\NumberVector.csproj" />
+    <ProjectReference Include="..\NumberVector\NumberVector.csproj" />
   </ItemGroup>
 
 </Project>

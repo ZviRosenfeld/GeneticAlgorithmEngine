@@ -7,7 +7,7 @@ namespace GreatestVectorTests
     /// <summary>
     /// Returns 10 vectors, where each has 10 in one cell, and one in all the others
     /// </summary>
-    public class NumberVectorBassicPopulationGenerator : IPopulationGenerator
+    public class NumberVectorPopulationGenerator : IPopulationGenerator
     {
         private readonly Random random = new Random();
         public const int VECTOR_SIZE = 10;

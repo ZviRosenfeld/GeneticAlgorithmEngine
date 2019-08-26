@@ -15,12 +15,12 @@ namespace GeneticAlgorithm.UnitTests
         public void BassicTest(RunType runType)
         {
             var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
-                    new NumberVectorBassicPopulationGenerator())
+                    new NumberVectorPopulationGenerator())
                 .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper()).Build();
 
             var result = searchEngine.Run(runType);
 
-            Assert.AreEqual(NumberVectorBassicPopulationGenerator.VECTOR_SIZE, result.BestChromosome.Evaluate());
+            Assert.AreEqual(NumberVectorPopulationGenerator.VECTOR_SIZE, result.BestChromosome.Evaluate());
             Assert.AreEqual(50, result.Generations, "Wrong number of generations");
         }
 
@@ -30,15 +30,15 @@ namespace GeneticAlgorithm.UnitTests
         public void MutationTest(RunType runType)
         {
             var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
-                    new NumberVectorBassicPopulationGenerator())
+                    new NumberVectorPopulationGenerator())
                 .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper())
                 .SetMutationProbability(0.1)
                 .Build();
 
             var result = searchEngine.Run(runType);
 
-            Assert.IsTrue(NumberVectorBassicPopulationGenerator.VECTOR_SIZE < result.BestChromosome.Evaluate(),
-                $"best result ({result.BestChromosome.Evaluate()}) should have been greater than {NumberVectorBassicPopulationGenerator.VECTOR_SIZE}");
+            Assert.IsTrue(NumberVectorPopulationGenerator.VECTOR_SIZE < result.BestChromosome.Evaluate(),
+                $"best result ({result.BestChromosome.Evaluate()}) should have been greater than {NumberVectorPopulationGenerator.VECTOR_SIZE}");
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace GeneticAlgorithm.UnitTests
         public void RequestedChromosomesIsRightWithElite(double elite)
         {
             var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, new NumberVectorCrossoverManager(),
-                    new NumberVectorBassicPopulationGenerator()).SetElitePercentage(elite)
+                    new NumberVectorPopulationGenerator()).SetElitePercentage(elite)
                 .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper()).Build();
 
             searchEngine.Next();

@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticAlgorithm", "GeneticAlgorithm\GeneticAlgorithm.csproj", "{5FADB04C-EE9D-4169-81A1-441FF61DA671}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NumberVector", "GreatestVectorTests\NumberVector.csproj", "{CB7D02BA-D9C7-4B19-8882-5D091107A60D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarking", "Banchmarking\Benchmarking.csproj", "{2522F7FA-EB00-4DFA-B5A2-3DF4D2EB95B4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticAlgorithm.UnitTests", "GeneticAlgorithm.UnitTests\GeneticAlgorithm.UnitTests.csproj", "{628681F9-A9A5-457E-82D7-BC13D07FB2D6}"
@@ -16,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControls", "UserControls\UserControls.csproj", "{77D37CC0-B19F-46A4-96C0-B9E49C3DAF5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentGui", "EnvironmentGui\EnvironmentGui.csproj", "{B68B3A55-9825-410A-B892-D710481CE834}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NumberVector", "NumberVector\NumberVector.csproj", "{E84D6BD7-FF0D-4125-9E5C-36462247613A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{5FADB04C-EE9D-4169-81A1-441FF61DA671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FADB04C-EE9D-4169-81A1-441FF61DA671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FADB04C-EE9D-4169-81A1-441FF61DA671}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB7D02BA-D9C7-4B19-8882-5D091107A60D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB7D02BA-D9C7-4B19-8882-5D091107A60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB7D02BA-D9C7-4B19-8882-5D091107A60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB7D02BA-D9C7-4B19-8882-5D091107A60D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2522F7FA-EB00-4DFA-B5A2-3DF4D2EB95B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2522F7FA-EB00-4DFA-B5A2-3DF4D2EB95B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2522F7FA-EB00-4DFA-B5A2-3DF4D2EB95B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{B68B3A55-9825-410A-B892-D710481CE834}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B68B3A55-9825-410A-B892-D710481CE834}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B68B3A55-9825-410A-B892-D710481CE834}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E84D6BD7-FF0D-4125-9E5C-36462247613A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E84D6BD7-FF0D-4125-9E5C-36462247613A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E84D6BD7-FF0D-4125-9E5C-36462247613A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E84D6BD7-FF0D-4125-9E5C-36462247613A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
