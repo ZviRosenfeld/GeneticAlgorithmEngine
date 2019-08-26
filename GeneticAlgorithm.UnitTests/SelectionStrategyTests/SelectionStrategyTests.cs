@@ -72,7 +72,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
 
         [TestMethod]
         public void TournamentSelection_AssertChromosomesAreScattered() =>
-            AssertChromosomesAreScattered(new TournamentSelection(2));
+            AssertChromosomesAreScattered(new TournamentSelection(1));
 
         [TestMethod]
         [DataRow(0)]

@@ -26,7 +26,7 @@ namespace GeneticAlgorithm.StopManagers
             if (oldEvaluations.Count < generations)
                 return false;
             
-            var min = oldEvaluations.Skip(generation - generations - 1).Take(generations).Min();
+            var min = oldEvaluations.Skip(generation - generations).Take(generations).Min();
             oldEvaluations.Add(currentEvaluation);
 
             return Math.Abs(currentEvaluation - min) <= minImprovment;

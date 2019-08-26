@@ -79,7 +79,7 @@ namespace GeneticAlgorithm
 
         private IChromosome[] CreateNewGeneration(Population population, int generation)
         {
-            return generation == 1
+            return generation == 0
                 ? populationGenerator.GeneratePopulation(options.PopulationSize).ToArray()
                 : GenerateChildren(population, generation);
         }

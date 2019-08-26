@@ -25,12 +25,12 @@ namespace GeneticAlgorithm.UnitTests
             var environment = A.Fake<IEnvironment>();
             A.CallTo(() => environment.UpdateEnvierment(A<IChromosome[]>._, A<int>._)).Invokes((IChromosome[] c, int g) =>
             {
-                counter++;
                 Assert.AreEqual(counter, g, "Wrong generation provided");
                 foreach (var chromosome in c)
                     Assert.AreEqual(counter, chromosome.Evaluate(), "Wrong chromosome provided");
+                counter++;
             });
-            var populationManager = new TestPopulationManager(new double[] {1, 1}, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] {0, 0}, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetEnvironment(environment).Build();
 
             engine.Next();
@@ -47,10 +47,10 @@ namespace GeneticAlgorithm.UnitTests
             var chromosomeEvaluator = A.Fake<IChromosomeEvaluator>();
             A.CallTo(() => chromosomeEvaluator.SetEnvierment(A<IEnvironment>._)).Invokes((IEnvironment e) =>
             {
-                counter++;
                 AssertIsRightEnvironment(e, counter);
+                counter++;
             });
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(chromosomeEvaluator).Build();
 
             engine.Next();
@@ -64,12 +64,12 @@ namespace GeneticAlgorithm.UnitTests
         public void OnNewGenerationEventGetsRightEnvironment()
         {
             var counter = 0;
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(A.Fake<IChromosomeEvaluator>()).Build();
             engine.OnNewGeneration += (p, en) =>
             {
-                counter++;
                 AssertIsRightEnvironment(en, counter);
+                counter++;
             };
             
             engine.Next();
@@ -83,12 +83,12 @@ namespace GeneticAlgorithm.UnitTests
         public void StopManagerGetsRightEnvironment()
         {
             var counter = 0;
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var stopManager = A.Fake<IStopManager>();
             A.CallTo(() => stopManager.ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes((Population p, IEnvironment e, int g) =>
             {
-                counter++;
                 AssertIsRightEnvironment(e, counter);
+                counter++;
             });
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
                 .SetEnvironment(new DefaultEnvironment()).AddStopManager(stopManager).Build();
@@ -104,12 +104,12 @@ namespace GeneticAlgorithm.UnitTests
         public void PopulationConverterGetsRightEnvironment()
         {
             var counter = 0;
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var populationConverter = A.Fake<IPopulationConverter>();
             A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._)).ReturnsLazily((IChromosome[] c, int g, IEnvironment e) =>
             {
                 if (counter > 0)
-                    AssertIsRightEnvironment(e, counter);
+                    AssertIsRightEnvironment(e, counter - 1);
                 counter++;
                 return c;
             });
@@ -127,12 +127,12 @@ namespace GeneticAlgorithm.UnitTests
         public void PopulationRenwalManagerGetsRightEnvironment()
         {
             var counter = 0;
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var renwalManager = A.Fake<IPopulationRenwalManager>();
             A.CallTo(() => renwalManager.ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes((Population p, IEnvironment e, int g) =>
             {
-                counter++;
                 AssertIsRightEnvironment(e, counter);
+                counter++;
             });
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager)
                 .SetEnvironment(new DefaultEnvironment()).AddPopulationRenwalManager(renwalManager).Build();
@@ -147,11 +147,11 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void ResultGetsRightEnvironment()
         {
-            var populationManager = new TestPopulationManager(new double[] { 1, 1 }, c => c.Evaluate() + 1);
+            var populationManager = new TestPopulationManager(new double[] { 0, 0 }, c => c.Evaluate() + 1);
             var engine = new TestGeneticSearchEngineBuilder(2, 10, populationManager).SetCustomChromosomeEvaluator(A.Fake<IChromosomeEvaluator>()).Build();
 
             int i;
-            for (i = 1; i < 4; i++)
+            for (i = 0; i < 4; i++)
             {
                 var result = engine.Next();
                 AssertIsRightEnvironment(result.Environment, i);

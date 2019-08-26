@@ -27,7 +27,6 @@ namespace GeneticAlgorithm
             engine = new InternalEngine(populationGenerator, childrenGenerator, options, (p, e) => OnNewGeneration?.Invoke(p, e), environment);
         }
         
-        private int generation = 0;
         private InternalSearchResult lastResult = null;
         private bool ShouldPause = false;
         
@@ -42,12 +41,11 @@ namespace GeneticAlgorithm
             {
                 while (!ShouldPause)
                 {
-                    generation++;
-                    lastResult = engine.RunSingleGeneration(lastResult?.Population, generation);
+                    lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation);
                     resultBuilder.AddGeneration(lastResult);
                     if (lastResult.IsCompleted) break;
                 }
-                return resultBuilder.Build(generation);
+                return resultBuilder.Build();
             });
         }
 
@@ -58,10 +56,9 @@ namespace GeneticAlgorithm
         {
             return RunAsCriticalBlock(() =>
             {
-                generation++;
-                lastResult = engine.RunSingleGeneration(lastResult?.Population, generation);
+                lastResult = engine.RunSingleGeneration(lastResult?.Population, resultBuilder.Generation);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build(generation);
+                return resultBuilder.Build();
             });
         }
 
@@ -133,10 +130,9 @@ namespace GeneticAlgorithm
 
             return RunAsCriticalBlock(() =>
             {
-                generation++;
                 lastResult = engine.RenewPopulationAndUpdatePopulation(percentageToRenew, lastResult.Population);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build(generation);
+                return resultBuilder.Build();
             });
         }
 
@@ -148,7 +144,7 @@ namespace GeneticAlgorithm
             if (IsRunning)
                 throw new EngineAlreadyRunningException();
 
-            return RunAsCriticalBlock(() => resultBuilder.Build(generation));
+            return RunAsCriticalBlock(() => resultBuilder.Build());
         }
 
         /// <summary>
@@ -162,10 +158,9 @@ namespace GeneticAlgorithm
 
             return RunAsCriticalBlock(() =>
             {
-                generation++;
                 lastResult = engine.ConvertPopulationAndUpdatePopulation(newPopulation);
                 resultBuilder.AddGeneration(lastResult);
-                return resultBuilder.Build(generation);
+                return resultBuilder.Build();
             });
         }
 

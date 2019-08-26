@@ -22,9 +22,9 @@ namespace GeneticAlgorithm.UnitTests
 
         [TestMethod]
         [ExpectedException(typeof(GeneticAlgorithmException))]
-        [DataRow(0)]
+        [DataRow(1)]
         [DataRow(-2)]
-        public void SetNegativeMaxGenerationsSize_ThrowsException(int size) =>
+        public void BadNumberOfGenerations_ThrowsException(int size) =>
             new GeneticSearchEngineBuilder(2, size, A.Fake<ICrossoverManager>(), A.Fake<IPopulationGenerator>())
                 .Build();
 

@@ -9,13 +9,13 @@ namespace GeneticAlgorithm.StopManagers
 
         public StopAtGeneration(int generationToStopAt)
         {
-            this.generationToStopAt = generationToStopAt > 0
+            this.generationToStopAt = generationToStopAt > 1
                 ? generationToStopAt
-                : throw new GeneticAlgorithmException(nameof(generationToStopAt) + " must be greater then zero");
+                : throw new GeneticAlgorithmException(nameof(generationToStopAt) + " must be greater then one");
         }
 
         public bool ShouldStop(Population population, IEnvironment environment, int generation) =>
-            generation >= generationToStopAt;
+            generation >= generationToStopAt - 1;
 
         public void AddGeneration(Population population)
         {

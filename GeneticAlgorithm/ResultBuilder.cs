@@ -16,6 +16,8 @@ namespace GeneticAlgorithm
         private Population lastGeneration = null;
         private IEnvironment environment = null;
 
+        public int Generation { get; private set; }
+
         public ResultBuilder(bool includeHistory)
         {
             this.includeHistory = includeHistory;
@@ -23,6 +25,7 @@ namespace GeneticAlgorithm
 
         public void AddGeneration(InternalSearchResult internalResult)
         {
+            Generation++;
             searchTime += internalResult.SearchTime;
             if (includeHistory)
                 history.Add(internalResult.Population.GetChromosomes().ToArray());
@@ -31,12 +34,12 @@ namespace GeneticAlgorithm
             environment = internalResult.Environment;
         }
 
-        public GeneticSearchResult Build(int generations)
+        public GeneticSearchResult Build()
         {
             if (lastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
 
-            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.Clone(), history, searchTime, generations, isComplated, environment);
+            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.Clone(), history, searchTime, Generation, isComplated, environment);
         }
     }
 }

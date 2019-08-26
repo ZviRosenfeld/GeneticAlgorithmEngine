@@ -77,16 +77,16 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(RunType.Next)]
         public void StopManagerGetsRightInfoTest(RunType runType)
         {
-            var generation = 1;
+            var generation = 0;
             var stopManager = A.Fake<IStopManager>();
             A.CallTo(() => stopManager.ShouldStop(A<Population>._, A<IEnvironment>._, A<int>._)).Invokes(
                 (Population p, IEnvironment e, int g) =>
                 {
                     Assert.AreEqual(generation, g, "Wrong generation");
                     foreach (var chromosome in p.GetChromosomes())
-                        Assert.AreEqual(generation, chromosome.Evaluate(), "Wrong chromosome");
+                        Assert.AreEqual(generation + 1, chromosome.Evaluate(), "Wrong chromosome");
                     foreach (var evaluation in p.GetEvaluations())
-                        Assert.AreEqual(generation, evaluation, "Wrong evaluation");
+                        Assert.AreEqual(generation + 1, evaluation, "Wrong evaluation");
                     generation++;
 
                 });
