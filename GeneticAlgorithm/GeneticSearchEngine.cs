@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
@@ -7,13 +6,11 @@ namespace GeneticAlgorithm
 {
     public class GeneticSearchEngine : IDisposable
     {
-        private readonly TimeSpan pauseTimeout = TimeSpan.FromMinutes(1);
-        private readonly object runLock = new object();
-        private readonly object pauseLock = new object();
-        private readonly ManualResetEvent engineFinishedEvent = new ManualResetEvent(true);
+        private readonly RunAndPauseManager runAndPauseManager;
         private readonly InternalEngine engine;
         private readonly SearchContext searchContext;
         private readonly GeneticSearchOptions options;
+        private readonly TimeSpan pauseTimeout = TimeSpan.FromMinutes(1);
 
         /// <summary>
         /// This event is risen once for every new generation.
@@ -25,25 +22,24 @@ namespace GeneticAlgorithm
             this.options = options;
             searchContext = new SearchContext(options.IncludeAllHistory, environment);
             engine = new InternalEngine(populationGenerator, childrenGenerator, options);
+            runAndPauseManager = new RunAndPauseManager(pauseTimeout);
         }
-        
-        private bool ShouldPause = false;
-        
-        public bool IsRunning { get; private set; }
+
+        public bool IsRunning => runAndPauseManager.IsRunning;
 
         /// <summary>
         /// Run's a complete search.
         /// </summary>
         public GeneticSearchResult Run()
         {
-            return RunAsCriticalBlock(() =>
+            return runAndPauseManager.RunAsCriticalBlock(() =>
             {
-                while (!ShouldPause)
+                while (!runAndPauseManager.ShouldPause)
                 {
-                    var lastResult = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
-                    UpdateNewGeneration(lastResult.Population);
-                    searchContext.AddGeneration(lastResult);
-                    if (lastResult.IsCompleted) break;
+                    var result = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
+                    UpdateNewGeneration(result.Population);
+                    searchContext.AddGeneration(result);
+                    if (result.IsCompleted) break;
                 }
                 return searchContext.BuildResult();
             });
@@ -54,68 +50,21 @@ namespace GeneticAlgorithm
         /// </summary>
         public GeneticSearchResult Next()
         {
-            return RunAsCriticalBlock(() =>
+            return runAndPauseManager.RunAsCriticalBlock(() =>
             {
-                var lastResult = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
-                UpdateNewGeneration(lastResult.Population);
-                searchContext.AddGeneration(lastResult);
+                var result = engine.RunSingleGeneration(searchContext.LastGeneration, searchContext.Generation, searchContext.Environment);
+                UpdateNewGeneration(result.Population);
+                searchContext.AddGeneration(result);
                 return searchContext.BuildResult();
             });
         }
 
-        private T RunAsCriticalBlock<T>(Func<T> func)
-        {
-            lock (pauseLock)
-            lock (runLock)
-            {
-                if (IsRunning)
-                    throw new EngineAlreadyRunningException();
-                engineFinishedEvent.Reset();
-                IsRunning = true;
-            }
-
-            try
-            {
-                return func();
-            }
-            finally
-            {
-                lock (runLock)
-                {
-                    IsRunning = false;
-                    engineFinishedEvent.Set();
-                }
-            }
-        }
-        
         /// <summary>
         /// Pauses the search (if it is running).
         /// Returns true if the search is running; false otherwise.
         /// </summary>
         /// <returns>True if the search is running; false otherwise</returns>
-        public bool Pause()
-        {
-            if (!IsRunning)
-                return false;
-
-            lock (pauseLock)
-            {
-                if (!IsRunning)
-                    return false;
-
-                try
-                {
-                    ShouldPause = true;
-                    if (!engineFinishedEvent.WaitOne(pauseTimeout))
-                        throw new CouldntStopEngineException();
-                    return true;
-                }
-                finally
-                {
-                    ShouldPause = false;
-                }
-            }
-        }
+        public bool Pause() => runAndPauseManager.Pause();
 
         /// <summary>
         /// Renews a certain percentage of the population. This can only be called while the engine is paused.
@@ -129,7 +78,7 @@ namespace GeneticAlgorithm
             if (percentageToRenew <= 0 || percentageToRenew > 1)
                 throw new GeneticAlgorithmException($"{nameof(percentageToRenew)} must be between 0 (not including) and 1 (including).");
 
-            return RunAsCriticalBlock(() =>
+            return runAndPauseManager.RunAsCriticalBlock(() =>
             {
                 var lastResult = engine.RenewPopulation(percentageToRenew, searchContext.LastGeneration, searchContext.Environment);
                 UpdateNewGeneration(lastResult.Population);
@@ -146,7 +95,7 @@ namespace GeneticAlgorithm
             if (IsRunning)
                 throw new EngineAlreadyRunningException();
 
-            return RunAsCriticalBlock(() => searchContext.BuildResult());
+            return runAndPauseManager.RunAsCriticalBlock(() => searchContext.BuildResult());
         }
 
         /// <summary>
@@ -158,7 +107,7 @@ namespace GeneticAlgorithm
             if (newPopulation.Length != options.PopulationSize)
                 throw new GeneticAlgorithmException($"Population size isn't right. Expected {options.PopulationSize}; got {newPopulation.Length}");
 
-            return RunAsCriticalBlock(() =>
+            return runAndPauseManager.RunAsCriticalBlock(() =>
             {
                 var lastResult = engine.ConvertPopulation(newPopulation, searchContext.Environment);
                 UpdateNewGeneration(lastResult.Population);
@@ -185,7 +134,7 @@ namespace GeneticAlgorithm
 
         public void Dispose()
         {
-            engineFinishedEvent?.Dispose();
+            runAndPauseManager.Dispose();
         }
     }
 }
