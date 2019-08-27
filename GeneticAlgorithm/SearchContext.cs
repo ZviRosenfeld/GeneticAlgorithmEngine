@@ -6,37 +6,42 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
 {
-    class ResultBuilder
+    class SearchContext
     {
         private readonly bool includeHistory;
 
         private TimeSpan searchTime = TimeSpan.Zero;
         private List<IChromosome[]> history = new List<IChromosome[]>();
         private bool isComplated = false;
-        private Population lastGeneration = null;
-        private IEnvironment environment = null;
 
-        public ResultBuilder(bool includeHistory)
+        public  Population LastGeneration { get; private set; }
+
+        public IEnvironment Environment { get; }
+
+        public int Generation { get; private set; }
+
+        public SearchContext(bool includeHistory, IEnvironment environment)
         {
             this.includeHistory = includeHistory;
+            Environment = environment;
         }
 
         public void AddGeneration(InternalSearchResult internalResult)
         {
+            Generation++;
             searchTime += internalResult.SearchTime;
             if (includeHistory)
                 history.Add(internalResult.Population.GetChromosomes().ToArray());
             isComplated = isComplated || internalResult.IsCompleted;
-            lastGeneration = internalResult.Population;
-            environment = internalResult.Environment;
+            LastGeneration = internalResult.Population;
         }
 
-        public GeneticSearchResult Build(int generations)
+        public GeneticSearchResult BuildResult()
         {
-            if (lastGeneration == null)
+            if (LastGeneration == null)
                 throw new InternalSearchException("Code 1001 (called build before adding any generations)");
 
-            return new GeneticSearchResult(lastGeneration.ChooseBest(), lastGeneration.Clone(), history, searchTime, generations, isComplated, environment);
+            return new GeneticSearchResult(LastGeneration.ChooseBest(), LastGeneration.Clone(), history, searchTime, Generation, isComplated, Environment);
         }
     }
 }

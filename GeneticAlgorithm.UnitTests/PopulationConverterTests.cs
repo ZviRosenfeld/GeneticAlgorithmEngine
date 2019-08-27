@@ -35,10 +35,10 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => populationConverter.ConvertPopulation(A<IChromosome[]>._, A<int>._, A<IEnvironment>._))
                 .ReturnsLazily((IChromosome[] c, int g, IEnvironment e) =>
                 {
-                    generation++;
                     Assert.AreEqual(generation, g, "We got the wrong generation");
                     foreach (var chromosome in c)
                         Assert.AreEqual(1 , chromosome.Evaluate(), "Got wrong chromosome");
+                    generation++;
                     return c;
                 });
             var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
