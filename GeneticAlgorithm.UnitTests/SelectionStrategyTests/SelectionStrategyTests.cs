@@ -169,7 +169,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         private void AssertSelectionStrategyUsesLatestPopulation(ISelectionStrategy selectionStrategy)
         {
             selectionStrategy.SetPopulation(population, runs);
-            selectionStrategy.SetPopulation(new Population(new double[]{2, 0, 0}.ToChromosomes()), runs);
+            selectionStrategy.SetPopulation(new Population(new double[]{2, 2, 2}.ToChromosomes()), runs);
             for (int i = 0; i < runs; i++)
             {
                 var chromosome = selectionStrategy.SelectChromosome();

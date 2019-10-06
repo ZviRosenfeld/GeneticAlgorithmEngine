@@ -26,8 +26,8 @@ namespace GeneticAlgorithm.SelectionStrategies
             if (n == population.Count())
                 return population;
 
-            if (n <= 0)
-                throw new InternalSearchException($"Code 1006 (requested {n} best chromosomes)");
+            if (n <= 0 || n > population.Count())
+                throw new InternalSearchException($"Code 1006 (requested {n} best chromosomes; population size is {population.Count()})");
 
             var min = population.GetEvaluations().OrderByDescending(x => x).Take(n).Last();
             var bestChromosomes = new IChromosome[n];

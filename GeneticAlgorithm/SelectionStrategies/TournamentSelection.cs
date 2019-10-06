@@ -42,7 +42,7 @@ namespace GeneticAlgorithm.SelectionStrategies
 
         public IChromosome SelectChromosome()
         {
-            ChromosomeEvaluationPair bestChromosome = population[0];
+            ChromosomeEvaluationPair bestChromosome = null;
             for (int i = 0; i < tournamentSize; i++)
             {
                 var chromosome = population[random.Next(0, population.Count())];
