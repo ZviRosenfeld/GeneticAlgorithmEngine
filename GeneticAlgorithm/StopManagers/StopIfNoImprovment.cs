@@ -7,28 +7,27 @@ namespace GeneticAlgorithm.StopManagers
 {
     public class StopIfNoImprovment : IStopManager
     {
-        private readonly int generations;
+        private readonly int generationsToConsider;
         private readonly double minImprovment;
         private readonly List<double> oldEvaluations = new List<double>();
 
         /// <summary>
-        /// Stop if there isn't an improvement of at least "minImprovment" after "generations" generations
+        /// Stop if there isn't an improvement of at least "minImprovment" after "generationsToConsider" generations
         /// </summary>
-        public StopIfNoImprovment(int generations, double minImprovment)
+        public StopIfNoImprovment(int generationsToConsider, double minImprovment)
         {
-            this.generations = generations;
+            this.generationsToConsider = generationsToConsider;
             this.minImprovment = minImprovment;
         }
 
         public bool ShouldStop(Population population, IEnvironment environment, int generation)
         {
             var currentEvaluation = population.GetEvaluations().Max();
-            if (oldEvaluations.Count < generations)
+            if (oldEvaluations.Count < generationsToConsider)
                 return false;
             
-            var min = oldEvaluations.Skip(generation - generations).Take(generations).Min();
-            oldEvaluations.Add(currentEvaluation);
-
+            var min = oldEvaluations.Skip(generation - generationsToConsider).Take(generationsToConsider).Min();
+            
             return Math.Abs(currentEvaluation - min) <= minImprovment;
         }
 

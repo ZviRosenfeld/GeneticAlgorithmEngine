@@ -4,7 +4,7 @@ using GeneticAlgorithm.StopManagers;
 namespace GeneticAlgorithm.PopulationRenwalManagers
 {
     /// <summary>
-    /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generations" generations.
+    /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generationsToConsider" generations.
     /// </summary>
     public class RenewIfNoImprovment : IPopulationRenwalManager
     {
@@ -12,12 +12,12 @@ namespace GeneticAlgorithm.PopulationRenwalManagers
         private readonly IStopManager stopManager;
 
         /// <summary>
-        /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generations" generations.
+        /// Will renew "precentageToRenew" of the population when there isn't an improvement of at least "minImprovment" after "generationsToConsider" generations.
         /// </summary>
-        public RenewIfNoImprovment(int generations, double minImprvment,  double precentageToRenew)
+        public RenewIfNoImprovment(int generationsToConsider, double minImprvment,  double precentageToRenew)
         {
             this.precentageToRenew = precentageToRenew;
-            stopManager = new StopIfNoImprovment(generations, minImprvment);
+            stopManager = new StopIfNoImprovment(generationsToConsider, minImprvment);
         }
 
         public double ShouldRenew(Population population, IEnvironment environment, int generation) =>

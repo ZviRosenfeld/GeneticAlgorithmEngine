@@ -75,6 +75,24 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         [DataRow(RunType.Run)]
         [DataRow(RunType.Next)]
+        public void StopIfNoImprovmentTest3(RunType runType)
+        {
+            var populationManager = new TestPopulationManager(new[]
+            {
+                new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}, new double[] {4, 4, 4},
+                new double[] {4, 4, 4}, new double[] {4, 4, 4}
+            });
+            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                .AddStopManager(new StopIfNoImprovment(2, 0.9)).IncludeAllHistory().Build();
+
+            var result = engine.Run(runType);
+
+            Assert.AreEqual(6, result.Generations);
+        }
+
+        [TestMethod]
+        [DataRow(RunType.Run)]
+        [DataRow(RunType.Next)]
         public void StopManagerGetsRightInfoTest(RunType runType)
         {
             var generation = 0;
