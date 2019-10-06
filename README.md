@@ -246,23 +246,24 @@ var result = searchEngine.Run();
 
 ## Using an Environment
 
-Sometimes, it's impossible to evaluate a chromosome without knowing information about it's surroundings, such as the rest of the population. (This, by the way, in the case in nature - where the fitness an individual depends on its envierment and the way it interacts with the other individuals).
+Sometimes, it's impossible to evaluate a chromosome without knowing information about it's surroundings, such as the rest of the population. (This, by the way, in the case in nature - where the fitness an individual depends on its environment and the way it interacts with the other individuals).
 
 GeneticAlgorithmEngine provides two classes to deal with this.
 
 ### IEnvironment
 
 The [IEnvironment](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/blob/master/GeneticAlgorithm/Interfaces/IEnvironment.cs) represents the "environment". 
-You can set your own environment. If you don't, we will use the [DefaultEnvironment](/GeneticAlgorithm/DefaultEnvironment.cs) class, which contains the other chromosomes, and the generation number.
+You can create your own environment by implementing the IEnvironment interface. If you don't, we will use the [DefaultEnvironment](/GeneticAlgorithm/DefaultEnvironment.cs) class, which contains the other chromosomes, and the generation number.
 
-The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configuration your environment. UpdateEnvierment is guaranteed to be called once per generation.
+The environment's UpdateEnvierment is called before the evaluation of a generation begins, which lets you configure your environment based on the current population.
+UpdateEnvierment is guaranteed to be called once per generation.
 
 You can find an example of a custom Environment [here](/EnvironmentGui/MyEnvironment.cs).
 
 ### IChromosomeEvaluator
 
 If you set the [IChromosomeEvaluator](/GeneticAlgorithm/Interfaces/IChromosomeEvaluator.cs), the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
-Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation starts, your ChromosomeEvaluator can use the information in the environment to evaluate the chromosomes.
+Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation begins, your ChromosomeEvaluator can use the information in the environment to evaluate the chromosomes.
 
 You can find an example of a custom ChromosomeEvaluator [here](/EnvironmentGui/ChromosomeEvaluator.cs).
 
