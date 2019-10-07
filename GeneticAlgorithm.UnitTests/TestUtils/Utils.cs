@@ -16,10 +16,12 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             return result;
         }
 
-        public static  void Evaluate(this Population population)
+        public static  Population Evaluate(this Population population)
         {
             foreach (var chromosome in population)
                 chromosome.Evaluation = chromosome.Chromosome.Evaluate();
+
+            return population;
         }
 
         public static GeneticSearchEngine GetBassicEngine()

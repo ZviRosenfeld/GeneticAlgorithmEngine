@@ -5,7 +5,7 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.SelectionStrategies
 {
-    static class SelectionStrategyUtils
+    public static class SelectionStrategyUtils
     {
         public static double[] GetNormilizeEvaluations(this Population population)
         {
@@ -19,7 +19,7 @@ namespace GeneticAlgorithm.SelectionStrategies
         }
 
         /// <summary>
-        /// Returns a new population object with only the best n chromosomes
+        /// Returns a population object with only the best n chromosomes
         /// </summary>
         public static Population GetBestChromosomes(this Population population, int n)
         {

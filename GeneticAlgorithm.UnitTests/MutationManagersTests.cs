@@ -12,11 +12,8 @@ namespace GeneticAlgorithm.UnitTests
         {
             var convergenceMutationManager = new ConvergenceMutationManager();
 
-            var homogeneousPopulation = new Population(new double[] {2, 2, 2, 2, 2 }.ToChromosomes());
-            homogeneousPopulation.Evaluate();
-
-            var diversifiedPopulation = new Population(new double[] { 1, 2, 3, 4, 5 }.ToChromosomes());
-            diversifiedPopulation.Evaluate();
+            var homogeneousPopulation = new double[] {2, 2, 2, 2, 2 }.ToPopulation().Evaluate();
+            var diversifiedPopulation = new double[] { 1, 2, 3, 4, 5 }.ToPopulation().Evaluate();
 
             convergenceMutationManager.AddGeneration(homogeneousPopulation);
 

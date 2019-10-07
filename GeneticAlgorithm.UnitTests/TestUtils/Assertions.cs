@@ -33,9 +33,9 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
 
         public static void AssertAreTheSame(GeneticSearchResult result1, GeneticSearchResult result2)
         {
-            Assert.AreEqual(result1.Generations, result2.Generations, "Diffrent number of generations");
-            Assert.AreEqual(result1.IsCompleted, result2.IsCompleted, "Diffrent 'IsComplate' value");
-            Assert.AreEqual(result1.SearchTime, result2.SearchTime, "Diffrent searchTime");
+            Assert.AreEqual(result1.Generations, result2.Generations, "Different number of generations");
+            Assert.AreEqual(result1.IsCompleted, result2.IsCompleted, "Different 'IsComplate' value");
+            Assert.AreEqual(result1.SearchTime, result2.SearchTime, "Different searchTime");
             result1.Population.AssertIsSame(result2.Population);
 
             for (int i = 0; i < result1.History.Count; i++)

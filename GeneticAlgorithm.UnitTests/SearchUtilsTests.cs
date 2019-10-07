@@ -27,8 +27,7 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => chromosome2.Evaluate()).Returns(8);
             A.CallTo(() => chromosome3.Evaluate()).Returns(0.5);
 
-            var population = new Population(new[] {chromosome1, chromosome2, chromosome3});
-            population.Evaluate();
+            var population = new Population(new[] {chromosome1, chromosome2, chromosome3}).Evaluate();
             var best = population.ChooseBest();
 
             Assert.AreEqual(chromosome2, best);
@@ -74,13 +73,9 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
-        public void ClonePopulation_IfPopulationCloned()
+        public void ClonePopulation_PopulationCloned()
         {
-            var evaluations = new double[] {1, 2, 1, 3};
-            var chromosomes = evaluations.ToChromosomes("Chromosomes");
-            var population = new Population(chromosomes);
-            population.Evaluate();
-
+            var population = (new double[] { 1, 2, 1, 3 }).ToPopulation("Chromosomes").Evaluate();
             var populationClone = population.Clone();
 
             population.AssertIsSame(populationClone);
@@ -89,9 +84,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void ClonePopulation_ChangingCloneDosntChangeOriginal()
         {
-            var evaluations = new double[] { 1, 1, 1, 1 };
-            var chromosomes = evaluations.ToChromosomes("Chromosomes");
-            var population = new Population(chromosomes);
+            var population = (new double[] { 1, 1, 1, 1 }).ToPopulation("Chromosomes");
 
             var populationClone = population.Clone();
             var fakeChromosome = ChromosomeFactory.CreateChromosome(10, "New");

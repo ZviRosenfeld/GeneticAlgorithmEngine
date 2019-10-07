@@ -17,8 +17,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         [TestInitialize]
         public void TestInitialize()
         {
-            population = ChromosomeFactory.ToPopulation(new [] { chromosome1Probability * 2, chromosome2Probability * 2, chromosome3Probability * 2});
-            Utils.Evaluate(population);
+            population = new [] { chromosome1Probability * 2, chromosome2Probability * 2, chromosome3Probability * 2}.ToPopulation().Evaluate();
         }
 
         [TestMethod]
@@ -183,8 +182,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         /// </summary>
         private void AssertChromosomesAreScattered(ISelectionStrategy selectionStrategy)
         {
-            var population = new[] { 0.23, 0.24, 0.26, 0.27 }.ToPopulation();
-            population.Evaluate();
+            var population = new[] { 0.23, 0.24, 0.26, 0.27 }.ToPopulation().Evaluate();
             selectionStrategy.SetPopulation(population, 100);
 
             bool chromosome1 = false, chromosome2 = false, chromosome3 = false, chromosome4 = false;
@@ -209,8 +207,7 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
 
         private void AssertLowestChromosomesAreIgnored(ISelectionStrategy selectionStrategy, int chromosomesToIgnore)
         {
-            var population = new double[] {1, 2, 3, 4}.ToPopulation();
-            population.Evaluate();
+            var population = new double[] {1, 2, 3, 4}.ToPopulation().Evaluate();
             selectionStrategy.SetPopulation(population, 100);
 
             bool chromosome1 = false, chromosome2 = false, chromosome3 = false, chromosome4 = false;
