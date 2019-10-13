@@ -1,6 +1,8 @@
-﻿using GeneticAlgorithm.Exceptions;
+﻿using System.Collections.Generic;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace GeneticAlgorithm.UnitTests
 {
@@ -36,5 +38,30 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(InternalSearchException), "code 1008")]
         public void P_ExceptionsTest(double probability) =>
             ProbabilityUtils.P(probability);
+
+        [TestMethod]
+        [DataRow(5, 5)]
+        [DataRow(10, 1)]
+        [DataRow(10, 3)]
+        public void SelectKRandomNumbers_KNumbersSelectedTillTill(int till, int k)
+        {
+            var numbers = ProbabilityUtils.SelectKRandomNumbers(till, k);
+
+            Assert.AreEqual(k, numbers.Count, "Didn't get enough numbers");
+            foreach (var number in numbers)
+                Assert.AreEqual(1, numbers.Count(n => n == number), "Found the same index more then once");
+        }
+
+        [TestMethod]
+        public void SelectKRandomNumbers_NumbersAreRandom()
+        {
+            var till = 20;
+            var allNumbers = new List<int>();
+            for (int i = 0; i < till * 5; i++)
+                allNumbers.AddRange(ProbabilityUtils.SelectKRandomNumbers(till, 2));
+
+            for (int i = 0; i < till; i++)
+                Assert.IsTrue(allNumbers.Contains(i), $"{nameof(allNumbers)} dosn't contain {i}");
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace GeneticAlgorithm.Components.Interfaces
 {
-    public interface IMutationManager
+    public interface IMutationManager<T>
     {
-        int[] Mutate(int[] vector);
+        T[] Mutate(T[] vector);
     }
 }

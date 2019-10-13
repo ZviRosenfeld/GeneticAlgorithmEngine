@@ -1,14 +1,15 @@
 ﻿using GeneticAlgorithm.Components.Interfaces;
+using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.Chromosomes
 {
-    public class VectorChromosome : IVectorChromosome
+    public class VectorChromosome<T> : IChromosome
     {
-        private int[] vector;
-        private readonly IMutationManager mutationManager;
+        private T[] vector;
+        private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 
-        public VectorChromosome(int[] vector, IMutationManager mutationManager, IEvaluator evaluator)
+        public VectorChromosome(T[] vector, IMutationManager<T> mutationManager, IEvaluator evaluator)
         {
             this.vector = vector;
             this.mutationManager = mutationManager;
@@ -19,6 +20,6 @@ namespace GeneticAlgorithm.Components.Chromosomes
 
         public void Mutate() => vector = mutationManager.Mutate(vector);
 
-        public int[] GetVector() => vector;
+        public T[] GetVector() => vector;
     }
 }

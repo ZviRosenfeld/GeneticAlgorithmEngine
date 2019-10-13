@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Components.PopulationGenerators;
 using GeneticAlgorithm.Exceptions;
@@ -15,13 +16,13 @@ namespace GeneticAlgorithm.UnitTests.Components
         [DataRow(0)]
         [ExpectedException(typeof(GeneticAlgorithmException))]
         public void VectorChromosomePopulationGenerator_BadChromosomeSize_ThrowException(int chromosomeSize) =>
-            new VectorChromosomePopulationGenerator(chromosomeSize, 0, 10, A.Fake<IMutationManager>(),
+            new IntVectorChromosomePopulationGenerator(chromosomeSize, 0, 10, A.Fake<IMutationManager<int>>(),
                 A.Fake<IEvaluator>());
 
         [TestMethod]
         [ExpectedException(typeof(GeneticAlgorithmException))]
         public void VectorChromosomePopulationGenerator_MinGenomeSmallerThanMaxGenome_ThrowException() =>
-            new VectorChromosomePopulationGenerator(10, 10, 0, A.Fake<IMutationManager>(),
+            new IntVectorChromosomePopulationGenerator(10, 10, 0, A.Fake<IMutationManager<int>>(),
                 A.Fake<IEvaluator>());
 
         [TestMethod]
@@ -30,8 +31,8 @@ namespace GeneticAlgorithm.UnitTests.Components
         public void VectorChromosomePopulationGenerator_CreatesChromosomeOfRightSize(int chromosomeSize)
         {
             var populationGenerator =
-                new VectorChromosomePopulationGenerator(chromosomeSize, 0, 10, A.Fake<IMutationManager>(), A.Fake<IEvaluator>());
-            var vector = (IVectorChromosome) populationGenerator.GeneratePopulation(1).First();
+                new IntVectorChromosomePopulationGenerator(chromosomeSize, 0, 10, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            var vector = (VectorChromosome<int>) populationGenerator.GeneratePopulation(1).First();
             Assert.AreEqual(chromosomeSize, vector.GetVector().Length);
         }
 
@@ -40,11 +41,11 @@ namespace GeneticAlgorithm.UnitTests.Components
         public void VectorChromosomePopulationGenerator_CreatesChromosomeOfWithRightValues(int minGenome, int maxGenome)
         {
             var populationGenerator =
-                new VectorChromosomePopulationGenerator(10, minGenome, maxGenome, A.Fake<IMutationManager>(), A.Fake<IEvaluator>());
+                new IntVectorChromosomePopulationGenerator(10, minGenome, maxGenome, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
             var chromosomes = populationGenerator.GeneratePopulation(1000);
             foreach (var chromosome in chromosomes)
             {
-                var vectorChromosome = (IVectorChromosome) chromosome;
+                var vectorChromosome = (VectorChromosome<int>) chromosome;
                 foreach (var genome in vectorChromosome.GetVector())
                 {
                     Assert.IsTrue(genome >= minGenome, $"Got a genome smaller than {minGenome}");
@@ -57,11 +58,11 @@ namespace GeneticAlgorithm.UnitTests.Components
         public void BinaryVectorChromosomePopulationGenerator_CreatesChromosomeOfWithRightValues()
         {
             var populationGenerator =
-                new BinaryVectorChromosomePopulationGenerator(10, A.Fake<IMutationManager>(), A.Fake<IEvaluator>());
+                new BinaryVectorChromosomePopulationGenerator(10, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
             var chromosomes = populationGenerator.GeneratePopulation(1000);
             foreach (var chromosome in chromosomes)
             {
-                var vectorChromosome = (IVectorChromosome)chromosome;
+                var vectorChromosome = (VectorChromosome<int>)chromosome;
                 foreach (var genome in vectorChromosome.GetVector())
                 {
                     Assert.IsTrue(genome >= 0, $"Got a genome smaller than {0}");

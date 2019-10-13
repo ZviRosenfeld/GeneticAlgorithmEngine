@@ -5,7 +5,7 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// <summary>
     /// This mutation operator replaces the genome with either lower or upper bound randomly.
     /// </summary>
-    public class BoundaryMutationManager : IMutationManager
+    public class BoundaryMutationManager : IMutationManager<int>
     {
         private readonly int minValue;
         private readonly int maxValue;

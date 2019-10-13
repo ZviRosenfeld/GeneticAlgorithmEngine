@@ -7,16 +7,16 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.PopulationGenerators
 {
-    public class VectorChromosomePopulationGenerator : IPopulationGenerator
+    public class IntVectorChromosomePopulationGenerator : IPopulationGenerator
     {
         private readonly Random random = new Random();
         private readonly int vectorSize;
         private readonly int minGenome;
         private readonly int maxGenome;
-        private readonly IMutationManager mutationManager;
+        private readonly IMutationManager<int> mutationManager;
         private readonly IEvaluator evaluator;
 
-        public VectorChromosomePopulationGenerator(int vectorSize, int minGenome, int maxGenome, IMutationManager mutationManager, IEvaluator evaluator)
+        public IntVectorChromosomePopulationGenerator(int vectorSize, int minGenome, int maxGenome, IMutationManager<int> mutationManager, IEvaluator evaluator)
         {
             if (vectorSize <= 0)
                 throw new GeneticAlgorithmException($"{nameof(vectorSize)} must be bigger than 0. It was {vectorSize}");
@@ -40,13 +40,13 @@ namespace GeneticAlgorithm.Components.PopulationGenerators
             return population;
         }
 
-        private VectorChromosome GetChromosome()
+        private VectorChromosome<int> GetChromosome()
         {
             var vector = new int[vectorSize];
             for (int i = 0; i < vectorSize; i++)
                 vector[i] = random.Next(minGenome, maxGenome + 1);
 
-            return new VectorChromosome(vector, mutationManager, evaluator);
+            return new VectorChromosome<int>(vector, mutationManager, evaluator);
         }
     }
 }
