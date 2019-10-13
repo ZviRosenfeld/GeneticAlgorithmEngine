@@ -66,5 +66,11 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
                 Assert.AreEqual(exceptionType, e.InnerExceptions[0].GetType());
             }
         }
+
+        public static void AssertIsWithinRange(this int value, double min, double max)
+        {
+            Assert.IsTrue(value >= min, $"Value ({value}) is smaller then min ({min})");
+            Assert.IsTrue(value <= max, $"Value ({value}) is greater then max ({max})");
+        }
     }
 }

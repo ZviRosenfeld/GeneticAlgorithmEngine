@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeneticAlgorithm;
 using GeneticAlgorithm.Interfaces;
 
 namespace GreatestVectorTests
@@ -9,7 +10,6 @@ namespace GreatestVectorTests
     /// </summary>
     public class NumberVectorPopulationGenerator : IPopulationGenerator
     {
-        private readonly Random random = new Random();
         public const int VECTOR_SIZE = 10;
 
         public IEnumerable<IChromosome> GeneratePopulation(int size)
@@ -26,7 +26,7 @@ namespace GreatestVectorTests
         {
             var vector = new int[VECTOR_SIZE];
             for (int i = 0; i < VECTOR_SIZE; i++)
-                vector[i] = random.NextDouble() < 0.5 ? 0 : 1;
+                vector[i] = ProbabilityUtils.P(0.5) ? 0 : 1;
             
             return new NumberVectorChromosome(vector);
         }

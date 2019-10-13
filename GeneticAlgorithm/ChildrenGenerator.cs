@@ -17,7 +17,6 @@ namespace GeneticAlgorithm
             typeof(StochasticUniversalSampling),
             typeof(TournamentSelection)
         };
-        private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;
         private readonly IMutationProbabilityManager mutationManager;
         private readonly ISelectionStrategy selectionStrategy;
@@ -46,7 +45,7 @@ namespace GeneticAlgorithm
                     var parent1 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var parent2 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var child = crossoverManager.Crossover(parent1, parent2);
-                    if (random.NextDouble() < mutationProbability)
+                    if (ProbabilityUtils.P(mutationProbability))
                         child.Mutate();
                     children.Add(child);
                 });
