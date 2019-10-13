@@ -27,7 +27,7 @@ namespace GeneticAlgorithm.UnitTests
             var crossoverManager = A.Fake<ICrossoverManager>();
             A.CallTo(() => crossoverManager.Crossover(A<IChromosome>._, A<IChromosome>._))
                 .ReturnsLazily((IChromosome c1, IChromosome c2) => c1);
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(mutationProbability), new RouletteWheelSelection());
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationProbabilityManager(mutationProbability), new RouletteWheelSelection());
             childrenGenerator.GenerateChildren(population, populationSize, 0, null);
 
             const double errorMargin = 0.05;
@@ -44,7 +44,7 @@ namespace GeneticAlgorithm.UnitTests
         {
             const int count = 1500;
             var crossoverManager = A.Fake<ICrossoverManager>();
-            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationManager(0), new RouletteWheelSelection());
+            var childrenGenerator = new ChildrenGenerator(crossoverManager, new BassicMutationProbabilityManager(0), new RouletteWheelSelection());
             var children = childrenGenerator.GenerateChildren(GetPopulation(count), childrenCount, 0, null);
             Assert.AreEqual(childrenCount, children.Length, "Didn't get enough children");
             foreach (var chromosome in children)
@@ -57,7 +57,7 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(BadMutationProbabilityException))]
         public void BadMutationProbability_ThrowException(double probability)
         {
-            var mutationManager = A.Fake<IMutationManager>();
+            var mutationManager = A.Fake<IMutationProbabilityManager>();
             A.CallTo(() => mutationManager.MutationProbability(A<Population>._, A<IEnvironment>._, A<int>._))
                 .Returns(probability);
             
@@ -71,7 +71,7 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(-1)]
         public void RequestBadNumberOfChildren_ThrowsException(int childrenCount)
         {
-            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationManager(0),
+            var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationProbabilityManager(0),
                 new RouletteWheelSelection());
             childrenGenerator.GenerateChildren(GetPopulation(1), childrenCount, 0, null);
         }
@@ -83,7 +83,7 @@ namespace GeneticAlgorithm.UnitTests
             {
                 var selectionStrategy = A.Fake<ISelectionStrategy>();
                 A.CallTo(() => selectionStrategy.SelectChromosome()).Returns(null);
-                var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationManager(0),
+                var childrenGenerator = new ChildrenGenerator(A.Fake<ICrossoverManager>(), new BassicMutationProbabilityManager(0),
                     selectionStrategy);
                 childrenGenerator.GenerateChildren(GetPopulation(1), 1, 0, null);
             }, typeof(GeneticAlgorithmException));

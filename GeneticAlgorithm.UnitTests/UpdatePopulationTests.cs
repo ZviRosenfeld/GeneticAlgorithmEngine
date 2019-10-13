@@ -168,12 +168,12 @@ namespace GeneticAlgorithm.UnitTests
             var populationRenwalManager = A.Fake<IPopulationRenwalManager>();
             A.CallTo(() => populationRenwalManager.AddGeneration(A<Population>._))
                 .Invokes((Population p) => populationUpdatedForRenewalManager.Save(p));
-            var mutationManager = A.Fake<IMutationManager>();
+            var mutationManager = A.Fake<IMutationProbabilityManager>();
             A.CallTo(() => mutationManager.AddGeneration(A<Population>._))
                 .Invokes((Population p) => populationUpdatedForMutationManager.Save(p));
             var builder = new TestGeneticSearchEngineBuilder(2, generations, populationManager)
                 .AddStopManager(stopManager)
-                .AddPopulationRenwalManager(populationRenwalManager).SetCustomMutationManager(mutationManager)
+                .AddPopulationRenwalManager(populationRenwalManager).SetCustomMutationProbabilityManager(mutationManager)
                 .AddPopulationConverter(populationConverter);
             return builder;
         }

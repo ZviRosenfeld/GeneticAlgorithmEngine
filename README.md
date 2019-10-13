@@ -22,7 +22,7 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
   - [Elitism](#elitism)
   - [StopManagers](#istopmanagers)
   - [PopulationRenwalManagers](#ipopulationrenwalmanagers)
-  - [MutationManager](#imutationmanager)
+  - [MutationProbabilityManager](#imutationprobabilitymanager)
   - [PopulationConverters](#ipopulationconverter)
   - [SelectionStrategies](#iselectionstrategy)
   
@@ -190,17 +190,17 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
-### IMutationManager
+### IMutationProbabilityManager
 
-The [IMutationManager](/GeneticAlgorithm/Interfaces/IMutationManager.cs) interface lets you dynamically determine the probability of a mutation based on the current population.
+The [IMutationProbabilityManager](/GeneticAlgorithm/Interfaces/IMutationProbabilityManager.cs) interface lets you dynamically determine the probability of a mutation based on the current population.
 For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
 
-You can find an exsample of a custom MutationManager [here](/GeneticAlgorithm/MutationManagers/ConvergenceMutationManager.cs).
+You can find an exsample of a custom MutationManager [here](/GeneticAlgorithm/MutationProbabilityManagers/ConvergenceMutationProbabilityManager.cs).
 
 Example:
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
-	.SetCustomMutationManager(new MyMutationManager()).Build();
+	.SetCustomMutationProbabilityManager(new MyMutationProbabilityManager()).Build();
 
 var result = searchEngine.Run();
 ```

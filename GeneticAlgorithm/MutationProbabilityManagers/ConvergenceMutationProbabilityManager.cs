@@ -8,7 +8,7 @@ namespace GeneticAlgorithm.MutationManagers
     /// A MutationManager that will return a mutation based on the population's convergence.
     /// The more homogeneous the population is, the higher the mutation probability will be.
     /// </summary>
-    public class ConvergenceMutationManager : IMutationManager
+    public class ConvergenceMutationProbabilityManager : IMutationProbabilityManager
     {
         private double previousConvergence;
 
