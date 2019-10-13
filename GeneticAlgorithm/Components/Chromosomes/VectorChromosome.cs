@@ -4,26 +4,20 @@ namespace GeneticAlgorithm.Components.Chromosomes
 {
     public class VectorChromosome : IVectorChromosome
     {
-        private readonly int minValue;
-        private readonly int maxValue;
-        private readonly int[] vector;
+        private int[] vector;
+        private readonly IMutationManager mutationManager;
+        private readonly IEvaluator evaluator;
 
-        public VectorChromosome(int[] vector, int minValue, int maxValue)
+        public VectorChromosome(int[] vector, IMutationManager mutationManager, IEvaluator evaluator)
         {
             this.vector = vector;
-            this.minValue = minValue;
-            this.maxValue = maxValue;
+            this.mutationManager = mutationManager;
+            this.evaluator = evaluator;
         }
 
-        public double Evaluate()
-        {
-            return 0;
-        }
+        public double Evaluate() => evaluator.Evaluate(this);
 
-        public virtual void Mutate()
-        {
-            
-        }
+        public void Mutate() => vector = mutationManager.Mutate(vector);
 
         public int[] GetVector() => vector;
     }
