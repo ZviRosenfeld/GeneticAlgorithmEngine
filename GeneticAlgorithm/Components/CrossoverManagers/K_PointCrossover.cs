@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
@@ -34,6 +35,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             }
 
             var crossoverPionts = ChooseCrossoverPoints(k, shortVectorChromosome.GetVector().Length);
+
             var takingFromShortChromosome = true;
             var newVector = new T[longVectorChromosome.GetVector().Length];
             var index = 0;
@@ -53,8 +55,8 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
 
         private List<int> ChooseCrossoverPoints(int k, int length)
         {
-            var crossoverPoints = k <= length ? k : length;
-            return new List<int>();
+            var crossoverPoints = k < length ? k : length - 1;
+            return ProbabilityUtils.SelectKRandomNumbers(length - 1, crossoverPoints);
         }
     }
 }

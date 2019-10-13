@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Components.Interfaces;
+﻿using System.Text;
+using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.Chromosomes
@@ -21,5 +22,16 @@ namespace GeneticAlgorithm.Components.Chromosomes
         public void Mutate() => vector = mutationManager.Mutate(vector);
 
         public T[] GetVector() => vector;
+
+        public T this[int index] => vector[index];
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var value in vector)
+                stringBuilder.Append(value + ", ");
+            
+            return stringBuilder.ToString();
+        }
     }
 }
