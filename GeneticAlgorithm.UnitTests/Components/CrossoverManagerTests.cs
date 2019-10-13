@@ -85,6 +85,22 @@ namespace GeneticAlgorithm.UnitTests.Components
                 Assert.IsTrue(crossoverPoints.Contains(i), $"{nameof(crossoverPoints)} dosn't contain {i}");
         }
 
+        [TestMethod]
+        public void SinglePointCrossoverManagerTest()
+        {
+            var crossoverManager = new SinglePointCrossoverManager<int>(A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            for (int i = 0; i < TEST_RUNS; i++)
+            {
+                var chromosome1 = (VectorChromosome<int>)smallPopulationGenerator1.GeneratePopulation(1).First();
+                var chromosome2 = (VectorChromosome<int>)smallPopulationGenerator2.GeneratePopulation(1).First();
+                var newChromosome = (VectorChromosome<int>)crossoverManager.Crossover(chromosome1, chromosome2);
+
+                var crossoverPoints = K_CrossoverGetCrossoverPoints(newChromosome, chromosome2, chromosome1);
+                Assert.AreEqual(1, crossoverPoints.Count,
+                    $"Found wrong number of crossoverPoints. 1: {chromosome1}; 2 {chromosome2}; newChromosome {newChromosome}");
+            }
+        }
+
         private static List<int> K_CrossoverGetCrossoverPoints(VectorChromosome<int> newChromosome, VectorChromosome<int> chromosome2,
             VectorChromosome<int> chromosome1)
         {
