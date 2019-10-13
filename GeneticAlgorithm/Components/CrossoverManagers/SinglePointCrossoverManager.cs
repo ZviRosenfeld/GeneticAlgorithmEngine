@@ -9,11 +9,11 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// </summary>
     public class SinglePointCrossoverManager<T> : ICrossoverManager
     {
-        private readonly K_PointCrossover<T> kPointCrossover;
+        private readonly K_PointCrossoverManager<T> kPointCrossover;
 
         public SinglePointCrossoverManager(IMutationManager<T> mutationManager, IEvaluator evaluator)
         {
-            kPointCrossover = new K_PointCrossover<T>(1, mutationManager, evaluator);
+            kPointCrossover = new K_PointCrossoverManager<T>(1, mutationManager, evaluator);
         }
 
         public IChromosome Crossover(IChromosome chromosome1, IChromosome chromosome2) =>

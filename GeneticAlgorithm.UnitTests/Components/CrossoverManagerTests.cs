@@ -34,14 +34,14 @@ namespace GeneticAlgorithm.UnitTests.Components
         [DataRow(SMALL_CHROMOSOME_SIZE - 1)]
         public void K_PointCrossoverTest(int k)
         {
-            var crossoverManager = new K_PointCrossover<int>(k, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            var crossoverManager = new K_PointCrossoverManager<int>(k, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
             for (int i = 0; i < TEST_RUNS; i++)
             {
                 var chromosome1 = (VectorChromosome<int>) smallPopulationGenerator1.GeneratePopulation(1).First();
                 var chromosome2 = (VectorChromosome<int>) smallPopulationGenerator2.GeneratePopulation(1).First();
                 var newChromosome = (VectorChromosome<int>) crossoverManager.Crossover(chromosome1, chromosome2);
 
-                var crossoverPoints = K_CrossoverGetCrossoverPoints(newChromosome, chromosome2, chromosome1);
+                var crossoverPoints = K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(newChromosome, chromosome2, chromosome1);
                 Assert.AreEqual(k, crossoverPoints.Count,
                     $"Found wrong number of crossoverPoints. 1: {chromosome1}; 2 {chromosome2}; newChromosome {newChromosome}");
             }
@@ -54,14 +54,14 @@ namespace GeneticAlgorithm.UnitTests.Components
         [DataRow(SMALL_CHROMOSOME_SIZE - 1)]
         public void K_PointCrossover_ShortAndLongChromosomes(int k)
         {
-            var crossoverManager = new K_PointCrossover<int>(k, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            var crossoverManager = new K_PointCrossoverManager<int>(k, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
             for (int i = 0; i < TEST_RUNS; i++)
             {
                 var chromosome1 = (VectorChromosome<int>)smallPopulationGenerator1.GeneratePopulation(1).First();
                 var chromosome2 = (VectorChromosome<int>)largePopulationGenerator.GeneratePopulation(1).First();
                 var newChromosome = (VectorChromosome<int>)crossoverManager.Crossover(chromosome1, chromosome2);
 
-                var crossoverPoints = K_CrossoverGetCrossoverPoints(newChromosome, chromosome2, chromosome1);
+                var crossoverPoints = K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(newChromosome, chromosome2, chromosome1);
                 Assert.AreEqual(k, crossoverPoints.Count,
                     $"Found wrong number of crossoverPoints. 1: {chromosome1}; 2 {chromosome2}; newChromosome {newChromosome}");
             }
@@ -71,14 +71,14 @@ namespace GeneticAlgorithm.UnitTests.Components
         public void K_PointCrossover_CrossoverPointsAreDiffrent()
         {
             var crossoverPoints = new List<int>();
-            var crossoverManager = new K_PointCrossover<int>(2, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            var crossoverManager = new K_PointCrossoverManager<int>(2, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
             for (int i = 0; i < 100; i++)
             {
                 var chromosome1 = (VectorChromosome<int>)smallPopulationGenerator1.GeneratePopulation(1).First();
                 var chromosome2 = (VectorChromosome<int>)smallPopulationGenerator2.GeneratePopulation(1).First();
                 var newChromosome = (VectorChromosome<int>)crossoverManager.Crossover(chromosome1, chromosome2);
 
-                crossoverPoints.AddRange(K_CrossoverGetCrossoverPoints(newChromosome, chromosome2, chromosome1));        
+                crossoverPoints.AddRange(K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(newChromosome, chromosome2, chromosome1));        
             }
 
             for (int i = 1; i < SMALL_CHROMOSOME_SIZE; i++)
@@ -95,13 +95,27 @@ namespace GeneticAlgorithm.UnitTests.Components
                 var chromosome2 = (VectorChromosome<int>)smallPopulationGenerator2.GeneratePopulation(1).First();
                 var newChromosome = (VectorChromosome<int>)crossoverManager.Crossover(chromosome1, chromosome2);
 
-                var crossoverPoints = K_CrossoverGetCrossoverPoints(newChromosome, chromosome2, chromosome1);
+                var crossoverPoints = K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(newChromosome, chromosome2, chromosome1);
                 Assert.AreEqual(1, crossoverPoints.Count,
                     $"Found wrong number of crossoverPoints. 1: {chromosome1}; 2 {chromosome2}; newChromosome {newChromosome}");
             }
         }
 
-        private static List<int> K_CrossoverGetCrossoverPoints(VectorChromosome<int> newChromosome, VectorChromosome<int> chromosome2,
+        [TestMethod]
+        public void UniformCrossoverManagerTest()
+        {
+            var crossoverManager = new UniformCrossoverManager<int>(A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
+            for (int i = 0; i < TEST_RUNS; i++)
+            {
+                var chromosome1 = (VectorChromosome<int>)smallPopulationGenerator1.GeneratePopulation(1).First();
+                var chromosome2 = (VectorChromosome<int>)smallPopulationGenerator2.GeneratePopulation(1).First();
+                var newChromosome = (VectorChromosome<int>)crossoverManager.Crossover(chromosome1, chromosome2);
+
+                K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(newChromosome, chromosome2, chromosome1);
+            }
+        }
+
+        private static List<int> K_CrossoverGetCrossoverPointsAndAssertThatGenomesAreRight(VectorChromosome<int> newChromosome, VectorChromosome<int> chromosome2,
             VectorChromosome<int> chromosome1)
         {
             var crossoverPoints = new List<int>();

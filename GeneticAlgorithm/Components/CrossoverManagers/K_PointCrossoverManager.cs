@@ -9,13 +9,13 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// K crossover points are picked randomly from the parent chromosomes. The bits in between these points are swapped between the parent organisms.
     /// See: https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover
     /// </summary>
-    public class K_PointCrossover<T> : ICrossoverManager
+    public class K_PointCrossoverManager<T> : ICrossoverManager
     {
         private readonly int k;
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 
-        public K_PointCrossover(int k, IMutationManager<T> mutationManager, IEvaluator evaluator)
+        public K_PointCrossoverManager(int k, IMutationManager<T> mutationManager, IEvaluator evaluator)
         {
             this.k = k;
             this.mutationManager = mutationManager;
@@ -24,14 +24,8 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
 
         public IChromosome Crossover(IChromosome chromosome1, IChromosome chromosome2)
         {
-            var shortVectorChromosome = (VectorChromosome<T>)chromosome1;
-            var longVectorChromosome = (VectorChromosome<T>)chromosome2;
-            if (shortVectorChromosome.GetVector().Length > longVectorChromosome.GetVector().Length)
-            {
-                var tempChromosome = longVectorChromosome;
-                longVectorChromosome = shortVectorChromosome;
-                shortVectorChromosome = tempChromosome;
-            }
+            (var shortVectorChromosome, var longVectorChromosome) =
+                Utils.OrderChromosomes<T>(chromosome1, chromosome2);
 
             var crossoverPionts = ChooseCrossoverPoints(k, shortVectorChromosome.GetVector().Length);
 
