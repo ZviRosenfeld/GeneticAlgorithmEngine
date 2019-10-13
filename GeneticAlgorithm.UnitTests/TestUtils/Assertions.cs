@@ -67,10 +67,10 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             }
         }
 
-        public static void AssertIsWithinRange(this int value, double min, double max)
+        public static void AssertIsWithinRange(this int value, double expactedValue, double margenOfError)
         {
-            Assert.IsTrue(value >= min, $"Value ({value}) is smaller then min ({min})");
-            Assert.IsTrue(value <= max, $"Value ({value}) is greater then max ({max})");
+            Assert.IsTrue(value >= expactedValue - margenOfError, $"Value ({value}) is too small (expacted value = {expactedValue})");
+            Assert.IsTrue(value <= expactedValue + margenOfError, $"Value ({value}) is too big (expacted value = {expactedValue})");
         }
     }
 }

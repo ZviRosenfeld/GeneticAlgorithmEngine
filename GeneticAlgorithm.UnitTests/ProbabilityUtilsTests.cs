@@ -26,8 +26,8 @@ namespace GeneticAlgorithm.UnitTests
                     falseCount++;
             }
 
-            trueCount.AssertIsWithinRange(attempts * probability - margernOnError, attempts * probability + margernOnError);
-            falseCount.AssertIsWithinRange(attempts * (1 - probability) - margernOnError, attempts * (1 - probability) + margernOnError);
+            trueCount.AssertIsWithinRange(attempts * probability, margernOnError);
+            falseCount.AssertIsWithinRange(attempts * (1 - probability), margernOnError);
         }
 
         [TestMethod]

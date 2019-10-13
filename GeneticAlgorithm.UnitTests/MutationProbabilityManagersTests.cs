@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests
 {
     [TestClass]
-    public class MutationManagersTests
+    public class MutationProbabilityManagersTests
     {
         [TestMethod]
         public void ConvergenceMutationManagerTest()
