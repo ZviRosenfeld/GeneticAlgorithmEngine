@@ -301,7 +301,8 @@ The CrossoverManagers are implementations of the [ICrossoverManager](#icrossover
 
 PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulationgenerator) interface.
 
-- [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<int> within some min and max bounds. 
+- [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<int> within some min and max bounds.
+- [DoubleVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/DoubleVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<double> within some min and max bounds. 
 - [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome<int> with all ones and zeros).
 
 ### Example of Using Components
