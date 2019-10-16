@@ -20,7 +20,7 @@ namespace GeneticAlgorithm.UnitTests
         
         public NumberVectorTests()
         {
-            mutationManager = new UniformMutationManager(0, 100);
+            mutationManager = new IntUniformMutationManager(0, 100);
             evaluator = new BasicEvaluator();
             populationGenerator = new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 1, mutationManager, evaluator);
             crossoverManager = new SinglePointCrossoverManager<int>(mutationManager, evaluator);

@@ -21,7 +21,7 @@ namespace GUI
 
         private void InitializeEngine()
         {
-            var mutationManager = new UniformMutationManager(0, 100);
+            var mutationManager = new IntUniformMutationManager(0, 100);
             var evaluator = new BasicEvaluator();
             var populationGenerator =
                 new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 1, mutationManager, evaluator);

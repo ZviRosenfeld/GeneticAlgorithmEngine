@@ -285,9 +285,9 @@ You can create your own MutationManager by implementing the IMutationManager<T> 
 
 Existing managers:
 - [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes. It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
-- [BoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/BoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
-- [UniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/UniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
-- [GaussianMutationManager](/GeneticAlgorithm/Components/MutationManagers/GaussianMutationManager.cs): This operator adds a unit Gaussian distributed random value to the chosen gene (works only on integer-vector chromosomes). If it falls outside of the user-specified lower or upper bounds for that gene, the new gene value is clipped.
+- [IntBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
+- [IntUniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntUniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
+- [IntGaussianMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntGaussianMutationManager.cs): This operator adds a unit Gaussian distributed random value to the chosen gene (works only on integer-vector chromosomes). If it falls outside of the user-specified lower or upper bounds for that gene, the new gene value is clipped.
 
 ### CrossoverManagers
 

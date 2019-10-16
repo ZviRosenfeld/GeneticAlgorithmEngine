@@ -6,20 +6,20 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// This operator adds a unit Gaussian distributed random value to the chosen gene. 
     /// If it falls outside of the user-specified lower or upper bounds for that gene, the new gene value is clipped.
     /// </summary>
-    public class GaussianMutationManager : IMutationManager<int>
+    public class IntGaussianMutationManager : IMutationManager<int>
     {
         private readonly int minValue;
         private readonly int maxValue;
         private readonly double variance;
 
-        public GaussianMutationManager(int minValue, int maxValue)
+        public IntGaussianMutationManager(int minValue, int maxValue)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
             variance = (maxValue - minValue) / 2.0;
         }
 
-        public GaussianMutationManager(int minValue, int maxValue, double variance)
+        public IntGaussianMutationManager(int minValue, int maxValue, double variance)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;

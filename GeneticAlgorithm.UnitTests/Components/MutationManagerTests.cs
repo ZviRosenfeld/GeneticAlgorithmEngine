@@ -15,11 +15,11 @@ namespace GeneticAlgorithm.UnitTests.Components
         private const int attempts = 1000;
 
         [TestMethod]
-        public void BoundaryMutationManagerTest()
+        public void IntBoundaryMutationManagerTest()
         {
             var minGenomes = 0;
             var maxGenomes = 0;
-            var mutationManager = new BoundaryMutationManager(-1, 1);
+            var mutationManager = new IntBoundaryMutationManager(-1, 1);
             for (int i = 0; i < attempts; i++)
             {
                 var newChromosome = mutationManager.Mutate(new[] {0, 0, 0, 0, 0});
@@ -35,52 +35,52 @@ namespace GeneticAlgorithm.UnitTests.Components
         }
 
         [TestMethod]
-        public void UniformMutationManagerTest()
+        public void IntUniformMutationManagerTest()
         {
-            var mutationManager = new UniformMutationManager(-100, 100);
+            var mutationManager = new IntUniformMutationManager(-100, 100);
             CheckMutationsHappenWithRightProbability(mutationManager, g => g != 0);
         }
 
         [TestMethod]
-        public void UniformMutationManager_AllValuesGenerated()
+        public void IntUniformMutationManager_AllValuesGenerated()
         {
             var minValue = -5;
             var maxValue = 5;
-            var mutationManager = new UniformMutationManager(minValue, maxValue);
+            var mutationManager = new IntUniformMutationManager(minValue, maxValue);
             AssertAllValuesAreGenerated(maxValue, minValue, mutationManager);
         }
         
         [TestMethod]
-        public void UniformMutationManager_AllValuesWithinRange()
+        public void IntUniformMutationManager_AllValuesWithinRange()
         {
             var minValue = -5;
             var maxValue = 5;
-            var mutationManager = new UniformMutationManager(minValue, maxValue);
+            var mutationManager = new IntUniformMutationManager(minValue, maxValue);
             AssertAllValuesAreWithinRange(mutationManager, maxValue, minValue);
         }
 
         [TestMethod]
-        public void GaussianMutationManagerTest()
+        public void IntGaussianMutationManagerTest()
         {
-            var mutationManager = new GaussianMutationManager(-100, 100);
+            var mutationManager = new IntGaussianMutationManager(-100, 100);
             CheckMutationsHappenWithRightProbability(mutationManager, g => g != 0);
         }
 
         [TestMethod]
-        public void GaussianMutationManager_AllValuesGenerated()
+        public void IntGaussianMutationManager_AllValuesGenerated()
         {
             var minValue = -5;
             var maxValue = 5;
-            var mutationManager = new GaussianMutationManager(minValue, maxValue);
+            var mutationManager = new IntGaussianMutationManager(minValue, maxValue);
             AssertAllValuesAreGenerated(maxValue, minValue, mutationManager);
         }
 
         [TestMethod]
-        public void GaussianMutationManager_AllValuesWithinRange()
+        public void IntGaussianMutationManager_AllValuesWithinRange()
         {
             var minValue = -5;
             var maxValue = 5;
-            var mutationManager = new GaussianMutationManager(minValue, maxValue);
+            var mutationManager = new IntGaussianMutationManager(minValue, maxValue);
             AssertAllValuesAreWithinRange(mutationManager, maxValue, minValue);
         }
 
