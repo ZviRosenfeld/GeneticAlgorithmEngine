@@ -26,6 +26,13 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
   - [PopulationConverters](#ipopulationconverter)
   - [SelectionStrategies](#iselectionstrategy)
   
+- [Ready-Made Components](#ready-made-components)
+  - [Chromosomes](#chromosomes)
+  - [MutationManagers](#mutationmanagers)
+  - [CrossoverManagers](#crossovermanagers)
+  - [PopulationGenerators](#populationgenerators)
+  - [Example of Using Components](#example-of-using-components)
+  
 - [Using An Environment](#using-an-environment)
   - [IEnvironment](#ienvironment)
   - [ChromosomeEvaluator](#ichromosomeevaluator)
@@ -50,7 +57,7 @@ Your chromosomes will need to implement the [IChromosome](/GeneticAlgorithm/Inte
     }
 ```
 
-You can find a sample Chromosome [here](/NumberVector/NumberVectorChromosome.cs).
+You can find a sample Chromosome [here](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs).
 
 ### ICrossoverManager
 
@@ -64,7 +71,7 @@ You can read more about crossovers [here](https://en.wikipedia.org/wiki/Crossove
     }
 ```
 
-You can find a sample CrossoverManager [here](/NumberVector/NumberVectorCrossoverManager.cs).
+You can find some sample CrossoverManagers [here](/GeneticAlgorithm/Components/CrossoverManagers).
 
 ### IPopulationGenerator
 
@@ -81,7 +88,7 @@ The PopulationGenerator will also renew the population when needed (see [IPopula
     }
 ```
 
-You can find a sample PopulationGenerator [here](/NumberVector/NumberVectorPopulationGenerator.cs).
+You can find some sample PopulationGenerators [here](/GeneticAlgorithm/Components/PopulationGenerators).
 
 ## Creating an Instance of GeneticSearchEngine
 
@@ -225,7 +232,7 @@ You can find an example of a custom PopulationConverter [here](/GeneticAlgorithm
 
 ### ISelectionStrategy
 
-The [ISelectionStrategy](/GeneticAlgorithm/Interfaces/ISelectionStrategy.cs) tells the engine how to choose the chromosmes that will create the next generation.
+The [ISelectionStrategy](/GeneticAlgorithm/Interfaces/ISelectionStrategy.cs) tells the engine how to choose the chromosomes that will create the next generation.
 You can create your own SelectionStrategy by implementing the ISelectionStrategy interface, or use one of the existing strategies.
 By default, the engine will use the RouletteWheelSelection, but you can changed that with the GeneticSearchEngineBuilder's SetSelectionStrategy method.
 
@@ -242,6 +249,82 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 	.SetSelectionStrategy(new TournamentSelection(5)).Build();
 
 var result = searchEngine.Run();
+```
+
+## Ready-Made Components
+
+Components are ready-made implementations of commonly used genetic components (such as CrossoverManagers, MutationManagers and chromosomes).
+
+### Chromosomes
+
+The [VectorChromosome<T>](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs) is an implementation of the IChromosome interface.
+It holds a generic vector, which is set in its constructor and can be retrieved via the GetVector method.
+
+VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvaluator](/GeneticAlgorithm/Components/Interfaces/IEvaluator.cs) in its constructor, which tell it how to preform mutations and evaluate itself.
+
+```CSharp
+    class BasicEvaluator : IEvaluator
+    {
+        public double Evaluate(IChromosome chromosome) =>
+            ((VectorChromosome<int>) chromosome).GetVector().Sum();
+    }
+	
+	class UseVectorChromosome
+	{
+	    IMutationManager mutationManager = new UniformMutationManager(0, 10);
+        IEvaluator evaluator = new BasicEvaluator();
+		int[] vector = new int[] {1, 3, 2, 8};
+        VectorChromosome<int> = new VectorChromosome<int>(vector, mutationManager, evaluator);
+	}
+```
+
+### MutationManagers
+
+[IMutationManager<T>](/GeneticAlgorithm/Components/Interfaces/IMutationManager.cs) tells the VectorChromosome<T> how to preform mutations.
+You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
+
+Existing managers:
+- [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes. It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / <vector-length>.
+- [BoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/BoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / <vector-length>.
+- [UniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/UniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / <vector-length>.
+
+### CrossoverManagers
+
+The CrossoverManagers are implementations of the [ICrossoverManager](#icrossovermanager) interface.
+
+- [SinglePointCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/SinglePointCrossoverManager.cs): A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover) for more information.
+- [K_PointCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/K_PointCrossoverManager.cs): Similar to SinglePointCrossoverManager, only that K points are chosen instead of one. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover) for more information.
+- [UniformCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/UniformCrossoverManager.cs): In uniform crossover, each bit is chosen from either parent with equal probability.
+
+### PopulationGenerators
+
+PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulationgenerator) interface.
+
+- [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<int> within some min and max bounds. 
+- [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome<int> with all ones and zeros).
+
+### Example of Using Components
+
+Following is an example of using components:
+
+```CSharp
+    class BasicEvaluator : IEvaluator
+    {
+        public double Evaluate(IChromosome chromosome) =>
+            ((VectorChromosome<int>) chromosome).GetVector().Sum();
+    }
+	
+	class UseComponents
+	{
+	    IMutationManager mutationManager = new UniformMutationManager(0, 10);
+        IEvaluator evaluator = new BasicEvaluator();
+        IPopulationGenerator populationGenerator =
+                new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 10, mutationManager, evaluator);
+        ICrossoverManager crossoverManager = new SinglePointCrossoverManager<int>(mutationManager, evaluator);
+        GeneticSearchEngine engine =
+            new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, crossoverManager, populationGenerator).Build();
+        SearchReasult result = engine.Run();
+	}
 ```
 
 ## Using an Environment
@@ -267,7 +350,7 @@ Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation b
 
 You can find an example of a custom ChromosomeEvaluator [here](/EnvironmentGui/ChromosomeEvaluator.cs).
 
-### Example
+### Example of Using an Environment
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)

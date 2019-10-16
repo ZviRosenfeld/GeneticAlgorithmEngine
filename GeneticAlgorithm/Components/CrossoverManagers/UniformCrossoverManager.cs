@@ -4,6 +4,9 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.CrossoverManagers
 {
+    /// <summary>
+    /// In uniform crossover, each bit is chosen from either parent with equal probability.
+    /// </summary>
     public class UniformCrossoverManager<T> : ICrossoverManager
     {
         private readonly IMutationManager<T> mutationManager;
