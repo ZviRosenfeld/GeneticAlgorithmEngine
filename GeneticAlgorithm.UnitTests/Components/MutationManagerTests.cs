@@ -17,9 +17,9 @@ namespace GeneticAlgorithm.UnitTests.Components
         [TestMethod]
         public void IntBoundaryMutationManagerTest()
         {
+            var mutationManager = new IntBoundaryMutationManager(-1, 1);
             var minGenomes = 0;
             var maxGenomes = 0;
-            var mutationManager = new IntBoundaryMutationManager(-1, 1);
             for (int i = 0; i < attempts; i++)
             {
                 var newChromosome = mutationManager.Mutate(new[] {0, 0, 0, 0, 0});
@@ -27,6 +27,26 @@ namespace GeneticAlgorithm.UnitTests.Components
                 {
                     if (genome == -1) minGenomes++;
                     if (genome == 1) maxGenomes++;
+                }
+            }
+
+            minGenomes.AssertIsWithinRange(attempts / 2.0, attempts * 0.1);
+            maxGenomes.AssertIsWithinRange(attempts / 2.0, attempts * 0.1);
+        }
+
+        [TestMethod]
+        public void DoubleBoundaryMutationManagerTest()
+        {
+            var mutationManager = new DoubleBoundaryMutationManager(-1.5, 1.5);
+            var minGenomes = 0;
+            var maxGenomes = 0;
+            for (int i = 0; i < attempts; i++)
+            {
+                var newChromosome = mutationManager.Mutate(new double[] { 0, 0, 0, 0, 0 });
+                foreach (var genome in newChromosome)
+                {
+                    if (genome == -1.5) minGenomes++;
+                    if (genome == 1.5) maxGenomes++;
                 }
             }
 
