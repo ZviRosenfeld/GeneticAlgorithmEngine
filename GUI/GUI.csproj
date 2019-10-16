@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicEvaluator.cs" />
     <Compile Include="DoubleInputBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -93,10 +94,6 @@
     <ProjectReference Include="..\GeneticAlgorithm\GeneticAlgorithm.csproj">
       <Project>{5fadb04c-ee9d-4169-81a1-441ff61da671}</Project>
       <Name>GeneticAlgorithm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NumberVector\NumberVector.csproj">
-      <Project>{e84d6bd7-ff0d-4125-9e5c-36462247613a}</Project>
-      <Name>NumberVector</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserControls\UserControls.csproj">
       <Project>{77d37cc0-b19f-46a4-96c0-b9e49c3daf5e}</Project>

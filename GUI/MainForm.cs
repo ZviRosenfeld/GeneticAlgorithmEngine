@@ -1,12 +1,15 @@
 ﻿using System.Windows.Forms;
 using GeneticAlgorithm;
-using GreatestVectorTests;
+using GeneticAlgorithm.Components.CrossoverManagers;
+using GeneticAlgorithm.Components.MutationManagers;
+using GeneticAlgorithm.Components.PopulationGenerators;
 
 namespace GUI
 {
     public partial class MainForm : Form
     {
         private const int POPULATION_SIZE = 20;
+        private const int VECTOR_SIZE = 10;
         private const int GENERATION = int.MaxValue;
         
 
@@ -18,10 +21,14 @@ namespace GUI
 
         private void InitializeEngine()
         {
-            var engineBuilder = new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION,
-                    new NumberVectorCrossoverManager(),
-                    new NumberVectorPopulationGenerator()).SetMutationProbability(MutationInputBox.GetValue)
-                .SetElitePercentage(ElitismInputBox.GetValue);
+            var mutationManager = new UniformMutationManager(0, 100);
+            var evaluator = new BasicEvaluator();
+            var populationGenerator =
+                new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 1, mutationManager, evaluator);
+            var crossoverManager = new SinglePointCrossoverManager<int>(mutationManager, evaluator);
+            var engineBuilder =
+                new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, crossoverManager, populationGenerator)
+                    .SetMutationProbability(MutationInputBox.GetValue).SetElitePercentage(ElitismInputBox.GetValue);
             searchRunner1.SetEngineBuilder(engineBuilder);
         }
 
