@@ -4,6 +4,7 @@ namespace GeneticAlgorithm.Components.MutationManagers
 {
     /// <summary>
     /// This mutation operator replaces the genome with either lower or upper bound randomly.
+    /// The probability of a bit being replaced is 1 / <vector-length>.
     /// </summary>
     public class BoundaryMutationManager : IMutationManager<int>
     {

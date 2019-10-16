@@ -134,7 +134,7 @@ Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability method.
-Note that the mutation probability will be ignored if you set a [MutationManager](#imutationmanager).
+Note that the mutation probability will be ignored if you set a [IMutationProbabilityManager](#imutationprobabilitymanager).
 
 ### CancellationToken
 You can use the GeneticSearchEngineBuilder.SetCancellationToken method to add cencellationTokens.
