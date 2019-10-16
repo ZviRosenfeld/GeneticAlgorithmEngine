@@ -36,5 +36,24 @@ namespace GeneticAlgorithm
             }
             return selectedIndexes;
         }
+
+        /// <summary>
+        /// returns a random number with a Gaussian distribution.
+        /// </summary>
+        public static double GaussianDistribution(double variance, double mean)
+        {
+            var t = GetStandardDistribution();
+            return mean + variance * t;// GetStandardDistribution();
+        }
+
+        /// <summary>
+        /// Returns random numbers with a standard distribution using Box-Muller Transformation.
+        /// </summary>
+        private static double GetStandardDistribution()
+        {
+            double u1 = 1.0 - random.NextDouble();
+            double u2 = 1.0 - random.NextDouble();
+            return Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+        }
     }
 }
