@@ -269,13 +269,13 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
             ((VectorChromosome<int>) chromosome).GetVector().Sum();
     }
 	
-	class UseVectorChromosome
-	{
-	    IMutationManager mutationManager = new UniformMutationManager(0, 10);
+    class UseVectorChromosome
+    {
+    	IMutationManager mutationManager = new UniformMutationManager(0, 10);
         IEvaluator evaluator = new BasicEvaluator();
 		int[] vector = new int[] {1, 3, 2, 8};
         VectorChromosome<int> = new VectorChromosome<int>(vector, mutationManager, evaluator);
-	}
+    }
 ```
 
 ### MutationManagers
@@ -284,9 +284,9 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
 You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
 
 Existing managers:
-- [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes. It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / <vector-length>.
-- [BoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/BoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / <vector-length>.
-- [UniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/UniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / <vector-length>.
+- [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes. It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
+- [BoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/BoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
+- [UniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/UniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
 
 ### CrossoverManagers
 
@@ -314,9 +314,9 @@ Following is an example of using components:
             ((VectorChromosome<int>) chromosome).GetVector().Sum();
     }
 	
-	class UseComponents
-	{
-	    IMutationManager mutationManager = new UniformMutationManager(0, 10);
+    class UseComponents
+    {
+	IMutationManager mutationManager = new UniformMutationManager(0, 10);
         IEvaluator evaluator = new BasicEvaluator();
         IPopulationGenerator populationGenerator =
                 new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 10, mutationManager, evaluator);
@@ -324,7 +324,7 @@ Following is an example of using components:
         GeneticSearchEngine engine =
             new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, crossoverManager, populationGenerator).Build();
         SearchReasult result = engine.Run();
-	}
+    }
 ```
 
 ## Using an Environment
