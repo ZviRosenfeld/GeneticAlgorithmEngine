@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -62,6 +63,25 @@ namespace GeneticAlgorithm.UnitTests
 
             for (int i = 0; i < till; i++)
                 Assert.IsTrue(allNumbers.Contains(i), $"{nameof(allNumbers)} dosn't contain {i}");
+        }
+
+        [TestMethod]
+        [DataRow(0, 1)]
+        [DataRow(10, 5)]
+        [DataRow(40, 5)]
+        public void GaussianDistribution_CommonNumbersAreMoreLikely(double mean, double sd)
+        {
+            var smallCount = 0;
+            var bigCount = 0;
+            for (int i = 0; i < 100; i++)
+            {
+                var value = ProbabilityUtils.GaussianDistribution(sd, mean);
+                Console.WriteLine(value);
+                if (value >= mean + sd || value <= mean - sd) bigCount++;
+                else smallCount++;
+            }
+
+            Assert.IsTrue(smallCount > bigCount, $"Got to many big genomes. Big numberes = {bigCount}; small numbers = {smallCount}");
         }
     }
 }

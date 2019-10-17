@@ -1,4 +1,5 @@
 ﻿using GeneticAlgorithm.Components.Interfaces;
+using GeneticAlgorithm.Exceptions;
 
 namespace GeneticAlgorithm.Components.MutationManagers
 {
@@ -10,20 +11,22 @@ namespace GeneticAlgorithm.Components.MutationManagers
     {
         private readonly double minValue;
         private readonly double maxValue;
-        private readonly double variance;
+        private readonly double standardDeviation;
 
         public DoubleGaussianMutationManager(double minValue, double maxValue)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
-            variance = (maxValue - minValue) / 2.0;
+            standardDeviation = (maxValue - minValue) / 4.0;
         }
 
-        public DoubleGaussianMutationManager(double minValue, double maxValue, double variance)
+        public DoubleGaussianMutationManager(double minValue, double maxValue, double standardDeviation)
         {
             this.minValue = minValue;
             this.maxValue = maxValue;
-            this.variance = variance;
+            if (standardDeviation < 0)
+                throw new GeneticAlgorithmException($"{nameof(standardDeviation)} can't be nagitave");
+            this.standardDeviation = standardDeviation;
         }
 
         public double[] Mutate(double[] vector)
@@ -31,7 +34,7 @@ namespace GeneticAlgorithm.Components.MutationManagers
             var mean = (maxValue + minValue) / 2.0;
             for (int i = 0; i < vector.Length; i++)
                 if (ProbabilityUtils.P(1.0 / vector.Length))
-                    vector[i] = ProbabilityUtils.GaussianDistribution(variance, mean).Clip(minValue, maxValue);
+                    vector[i] = ProbabilityUtils.GaussianDistribution(standardDeviation, mean).Clip(minValue, maxValue);
 
             return vector;
         }
