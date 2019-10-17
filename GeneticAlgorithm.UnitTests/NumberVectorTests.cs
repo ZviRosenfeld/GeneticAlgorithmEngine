@@ -43,18 +43,17 @@ namespace GeneticAlgorithm.UnitTests
 
         [TestMethod]
         [DataRow(RunType.Run)]
-        [DataRow(RunType.Next)]
         public void MutationTest(RunType runType)
         {
             var searchEngine =
                 new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, crossoverManager, populationGenerator)
                     .SetSelectionStrategy(new AssertRequestedChromosomesIsRightSelectionWrapper())
-                    .SetMutationProbability(0.1).Build();
+                    .SetMutationProbability(0.1).IncludeAllHistory().Build();
 
             var result = searchEngine.Run(runType);
 
             Assert.IsTrue(VECTOR_SIZE < result.BestChromosome.Evaluate(),
-                $"best result ({result.BestChromosome.Evaluate()}) should have been greater than {VECTOR_SIZE}");
+                $"best result ({result.BestChromosome.Evaluate()}) should have been greater than {VECTOR_SIZE}. Chromosome is {result.BestChromosome}");
         }
 
         [TestMethod]
