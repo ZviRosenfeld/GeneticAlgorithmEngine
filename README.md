@@ -284,7 +284,7 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
 You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
 
 Existing managers:
-- [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes. It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
+- [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes (represented as type VectorChromosome<bool>). It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
 - [IntBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
 - [DoubleBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/DoubleBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on double-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
 - [IntUniformMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntUniformMutationManager.cs): This mutation operator replaces the genome with a random value between the lower and upper bound (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
@@ -306,7 +306,7 @@ PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulat
 
 - [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<int> within some min and max bounds.
 - [DoubleVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/DoubleVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<double> within some min and max bounds. 
-- [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome<int> with all ones and zeros).
+- [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome<bool>).
 
 ### Example of Using Components
 

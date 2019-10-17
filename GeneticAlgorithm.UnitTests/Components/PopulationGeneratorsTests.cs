@@ -83,11 +83,23 @@ namespace GeneticAlgorithm.UnitTests.Components
         }
 
         [TestMethod]
-        public void BinaryVectorChromosomePopulationGenerator_CreatesChromosomeOfWithRightValues()
+        public void BinaryVectorChromosomePopulationGenerator_AllValuesCreated()
         {
             var populationGenerator =
-                new BinaryVectorChromosomePopulationGenerator(10, A.Fake<IMutationManager<int>>(), A.Fake<IEvaluator>());
-            TestChromosomes<int>(0, 1, populationGenerator);
+                new BinaryVectorChromosomePopulationGenerator(5, A.Fake<IMutationManager<bool>>(), A.Fake<IEvaluator>());
+            var vector = ((VectorChromosome<bool>) populationGenerator.GeneratePopulation(1).First()).GetVector();
+            Assert.IsTrue(vector.Contains(true), "Vector dosn't contain true");
+            Assert.IsTrue(vector.Contains(false), "Vector dosn't contain false");
+        }
+
+        [TestMethod]
+        public void BinaryVectorChromosomePopulationGenerator_VectorsAreRightSize()
+        {
+            var vecotrSize = 5;
+            var populationGenerator =
+                new BinaryVectorChromosomePopulationGenerator(vecotrSize, A.Fake<IMutationManager<bool>>(), A.Fake<IEvaluator>());
+            var vector = ((VectorChromosome<bool>)populationGenerator.GeneratePopulation(1).First()).GetVector();
+            Assert.AreEqual(vecotrSize, vector.Length);
         }
 
         /// <summary>

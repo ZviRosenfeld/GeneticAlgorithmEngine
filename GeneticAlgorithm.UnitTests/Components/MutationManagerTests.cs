@@ -158,13 +158,8 @@ namespace GeneticAlgorithm.UnitTests.Components
         public void BitStringMutationManagerTest()
         {
             var mutationManager = new BitStringMutationManager();
-            CheckMutationsHappenWithRightProbability(mutationManager, g => g != 0);
+            CheckMutationsHappenWithRightProbability(mutationManager, g => g);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(BadChromosomeTypeException))]
-        public void BitStringMutationManager_SendNotBinayChromosome_ThrowException() =>
-            new BitStringMutationManager().Mutate(new[] { 0, 0, 3, 0 });
 
         private static void CheckMutationsHappenWithRightProbability(IMutationManager<int> mutationManager, Func<int, bool> isMutated)
         {
@@ -172,6 +167,18 @@ namespace GeneticAlgorithm.UnitTests.Components
             for (int i = 0; i < attempts; i++)
             {
                 var newChromosome = mutationManager.Mutate(new[] {0, 0, 0, 0, 0});
+                mutatedGenomes += newChromosome.Count(isMutated);
+            }
+
+            mutatedGenomes.AssertIsWithinRange(attempts, attempts * 0.1);
+        }
+
+        private static void CheckMutationsHappenWithRightProbability(IMutationManager<bool> mutationManager, Func<bool, bool> isMutated)
+        {
+            var mutatedGenomes = 0;
+            for (int i = 0; i < attempts; i++)
+            {
+                var newChromosome = mutationManager.Mutate(new[] { false, false, false, false, false });
                 mutatedGenomes += newChromosome.Count(isMutated);
             }
 
@@ -214,7 +221,7 @@ namespace GeneticAlgorithm.UnitTests.Components
         {
             var gottenValues = new HashSet<int>();
             var runs = maxValue - minValue;
-            for (int i = 0; i < runs * 5; i++)
+            for (int i = 0; i < runs * 7; i++)
                 gottenValues.Add(mutationManager.Mutate(new[] { 0 }).First() + 5);
 
             for (int i = 1; i < runs; i++)
