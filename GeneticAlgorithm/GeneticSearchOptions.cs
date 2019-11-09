@@ -7,7 +7,7 @@ namespace GeneticAlgorithm
     public class GeneticSearchOptions
     {
         public GeneticSearchOptions(int populationSize,List<IStopManager> stopManagers, bool includeAllHistory,
-            List<IPopulationRenwalManager> populationRenwalManagers, double elitePercentage, IMutationManager mutationManager, List<IPopulationConverter> populationConverters, IChromosomeEvaluator chromosomeEvaluator)
+            List<IPopulationRenwalManager> populationRenwalManagers, double elitePercentage, IMutationProbabilityManager mutationManager, List<IPopulationConverter> populationConverters, IChromosomeEvaluator chromosomeEvaluator)
         {
             StopManagers = stopManagers;
             IncludeAllHistory = includeAllHistory;
@@ -39,7 +39,7 @@ namespace GeneticAlgorithm
 
         public List<IPopulationRenwalManager> PopulationRenwalManagers { get; }
 
-        public IMutationManager MutationManager { get; }
+        public IMutationProbabilityManager MutationManager { get; }
 
         public IChromosomeEvaluator ChromosomeEvaluator { get; }
 

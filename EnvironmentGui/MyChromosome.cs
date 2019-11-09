@@ -5,8 +5,6 @@ namespace Environment
 {
     class MyChromosome : IChromosome
     {
-        private readonly Random random = new Random();
-
         public ChromosomeType Type { get; private set; }
 
         public MyChromosome(ChromosomeType type)

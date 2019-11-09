@@ -17,12 +17,11 @@ namespace GeneticAlgorithm
             typeof(StochasticUniversalSampling),
             typeof(TournamentSelection)
         };
-        private readonly Random random = new Random();
         private readonly ICrossoverManager crossoverManager;
-        private readonly IMutationManager mutationManager;
+        private readonly IMutationProbabilityManager mutationManager;
         private readonly ISelectionStrategy selectionStrategy;
 
-        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationManager mutationManager, ISelectionStrategy selectionStrategy)
+        public ChildrenGenerator(ICrossoverManager crossoverManager, IMutationProbabilityManager mutationManager, ISelectionStrategy selectionStrategy)
         {
             this.crossoverManager = crossoverManager;
             this.mutationManager = mutationManager;
@@ -46,7 +45,7 @@ namespace GeneticAlgorithm
                     var parent1 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var parent2 = AssertNotNull(selectionStrategy.SelectChromosome());
                     var child = crossoverManager.Crossover(parent1, parent2);
-                    if (random.NextDouble() < mutationProbability)
+                    if (ProbabilityUtils.P(mutationProbability))
                         child.Mutate();
                     children.Add(child);
                 });
@@ -61,7 +60,7 @@ namespace GeneticAlgorithm
         {
             if (probability >= 0 && probability <= 1) return;
 
-            if (mutationManager.GetType() == typeof(BassicMutationManager))
+            if (mutationManager.GetType() == typeof(BassicMutationProbabilityManager))
                 throw new InternalSearchException(
                     $"Code 1004 (Bad mutation value for manager {mutationManager.GetType()})");
             throw new BadMutationProbabilityException(probability);

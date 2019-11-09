@@ -5,12 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests
 {
     [TestClass]
-    public class MutationManagersTests
+    public class MutationProbabilityManagersTests
     {
         [TestMethod]
         public void ConvergenceMutationManagerTest()
         {
-            var convergenceMutationManager = new ConvergenceMutationManager();
+            var convergenceMutationManager = new ConvergenceMutationProbabilityManager();
 
             var homogeneousPopulation = new double[] {2, 2, 2, 2, 2 }.ToPopulation().Evaluate();
             var diversifiedPopulation = new double[] { 1, 2, 3, 4, 5 }.ToPopulation().Evaluate();

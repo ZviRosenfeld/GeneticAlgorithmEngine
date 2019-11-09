@@ -12,7 +12,7 @@ namespace GeneticAlgorithm
         protected readonly ICrossoverManager crossoverManager;
         protected readonly IPopulationGenerator populationGenerator;
         protected readonly int populationSize;
-        protected IMutationManager mutationManager = null;
+        protected IMutationProbabilityManager mutationManager = null;
         private double mutationProbability = 0;
         protected IChromosomeEvaluator chromosomeEvaluator = new BassicChromosomeEvaluator();
         protected IEnvironment environment = null;
@@ -46,7 +46,7 @@ namespace GeneticAlgorithm
         /// A Custom Mutation Manager lets you dynamically determine the probability of a mutation based on the current population.
         /// For instance, you might want to set a high mutation probability for a few generations if the population is homogeneous, and lower it while the population is diversified.
         /// </summary>
-        public GeneticSearchEngineBuilder SetCustomMutationManager(IMutationManager manager)
+        public GeneticSearchEngineBuilder SetCustomMutationProbabilityManager(IMutationProbabilityManager manager)
         {
             mutationManager = manager;
             return this;
@@ -175,7 +175,7 @@ namespace GeneticAlgorithm
                 environment = new DefaultEnvironment();
 
             if (mutationManager == null)
-                mutationManager = new BassicMutationManager(mutationProbability);
+                mutationManager = new BassicMutationProbabilityManager(mutationProbability);
         }
 
         public virtual GeneticSearchEngine Build()

@@ -30,5 +30,15 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             var engineBuilder = new TestGeneticSearchEngineBuilder(5, int.MaxValue, populationManager);
             return engineBuilder.Build();
         }
+
+        /// <summary>
+        /// Converts a value that we know is a double or an int to an int.
+        /// </summary>
+        public static int ToInt<T>(this T value)
+        {
+            var intGenome = value as int?;
+            var doubleGenoe = value as double?;
+            return intGenome ?? (int) doubleGenoe.Value;
+        }
     }
 }
