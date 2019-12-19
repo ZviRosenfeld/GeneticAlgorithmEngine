@@ -6,7 +6,7 @@ GeneticAlgorithmEngine provides an engine for running a Genetic Algorithm that c
 
 You can find the GeneticAlgorithmEngine library on nuget.org via package name GeneticAlgorithm.
 
-## Table of Content
+## Table of Contents
 
 - [Usage](#usage)
   - [IChromosome](#ichromosome)
