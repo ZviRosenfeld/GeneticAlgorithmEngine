@@ -298,17 +298,17 @@ Existing managers:
 
 The CrossoverManagers are implementations of the [ICrossoverManager](#icrossovermanager) interface.
 
-- [SinglePointCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/SinglePointCrossoverManager.cs): A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover) for more information.
-- [K_PointCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/K_PointCrossoverManager.cs): Similar to SinglePointCrossoverManager, only that K points are chosen instead of one. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover) for more information.
-- [UniformCrossoverManager<T>](/GeneticAlgorithm/Components/CrossoverManagers/UniformCrossoverManager.cs): In uniform crossover, each bit is chosen from either parent with equal probability.
+- [SinglePointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/SinglePointCrossoverManager.cs): A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover) for more information.
+- [K_PointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/K_PointCrossoverManager.cs): Similar to SinglePointCrossoverManager, only that K points are chosen instead of one. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover) for more information.
+- [UniformCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/UniformCrossoverManager.cs): In uniform crossover, each bit is chosen from either parent with equal probability.
 
 ### PopulationGenerators
 
 PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulationgenerator) interface.
 
-- [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<int> within some min and max bounds.
-- [DoubleVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/DoubleVectorChromosomePopulationGenerator.cs): Generates a population of VectorChromosome<double> within some min and max bounds. 
-- [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome<bool>).
+- [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of type VectorChromosome\<int> within some min and max bounds.
+- [DoubleVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/DoubleVectorChromosomePopulationGenerator.cs): Generates a population of type VectorChromosome\<double> within some min and max bounds. 
+- [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome\<bool>).
 
 ### Example of Using Components
 
