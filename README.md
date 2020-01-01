@@ -12,6 +12,7 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
   - [IChromosome](#ichromosome)
   - [ICrossoverManager](#icrossovermanager)
   - [IPopulationGenerator](#ipopulationgenerator)
+  - [Creating an Instance of GeneticSearchEngine](#creating-an-instance-of-geneticsearchengine)
     
 - [Events](#events)
 
@@ -108,12 +109,14 @@ You can also use the Pause method to pause the search, and then resume it anytim
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
 	.SetMutationProbability(0.1).Build();
 	
-var result = searchEngine.Next();
+GeneticSearchResult nextGeneration = searchEngine.Next(); // Run a single generation
 Task.Run(() => searchEngine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
 Thread.Sleep(10); // Give the engine some time to run
 searchEngine.Pause();
 var task = Task.Run(() => searchEngine.Run());
-var result = task.Result;
+GeneticSearchResult result = task.Result;
+
+searchEngine.Dispose();
 ```
 
 ## Events
@@ -178,7 +181,7 @@ var result = searchEngine.Run();
 ```
 
 ### IPopulationRenwalManagers
-[PopulationRenwalManagers](/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. 
+[PopulationRenwalManagers](/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. This can fix premature convergence.
 You can create your own managers by implementing the IPopulationRenwalManager interface, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
@@ -273,7 +276,7 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
     {
     	IMutationManager mutationManager = new UniformMutationManager(0, 10);
         IEvaluator evaluator = new BasicEvaluator();
-		int[] vector = new int[] {1, 3, 2, 8};
+	int[] vector = new int[] {1, 3, 2, 8};
         VectorChromosome<int> = new VectorChromosome<int>(vector, mutationManager, evaluator);
     }
 ```
@@ -370,4 +373,4 @@ var result = searchEngine.Run();
 ### Tutorial
 
 You can find a tutorial on using an environment [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Using-an-Environment).
-The tutorial's full source code (alone with a poorly designed GUI) is located [here](/EnvironmentGui).
+The tutorial's full source code (alongside a poorly designed GUI) is located [here](/EnvironmentGui).
