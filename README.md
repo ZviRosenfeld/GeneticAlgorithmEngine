@@ -102,7 +102,7 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
-Once you have an instance of an engine you can either use the Run method to run a complete search, or the Next method to run just one more generation.
+Once you have an instance of an engine you can either use the Run method to run a complete search, or the Next method to run a single generation.
 You can also use the Pause method to pause the search, and then resume it anytime.
 
 ```CSharp
@@ -124,7 +124,7 @@ searchEngine.Dispose();
 ### OnNewGeneration
 
 This event is called once for every new generations.
-This is a good way for GUIs to visually show the argument's progress, or just show the search progress.
+This is a good way for GUIs to visually show the changing population, or just show the search progress.
 
 Example:
 ```CSharp
