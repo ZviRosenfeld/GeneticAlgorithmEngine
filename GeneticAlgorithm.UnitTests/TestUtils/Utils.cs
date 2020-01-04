@@ -1,6 +1,4 @@
-﻿using GeneticAlgorithm.SelectionStrategies;
-
-namespace GeneticAlgorithm.UnitTests.TestUtils
+﻿namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     static class Utils
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GeneticAlgorithm.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,10 +26,34 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
                 collection1[i].AssertAreTheSame(collection2[i]);
         }
 
-        public static void AssertAreTheSame(this double[] collection1, double[] collection2)
+        public static void AssertAreTheSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
-            for (int i = 0; i < collection1.Length; i++)
-                Assert.AreEqual(collection1[i], collection2[i]);
+            Assert.AreEqual(collection1.Count(), collection2.Count());
+
+            for (int i = 0; i < collection1.Count(); i++)
+                Assert.AreEqual(collection1.ElementAt(i), collection2.ElementAt(i));
+        }
+
+        public static void AssertAreNotTheSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            var areSame = true;
+
+            if (collection1.Count() != collection2.Count())
+                areSame = false;
+
+            for (int i = 0; i < collection1.Count(); i++)
+                if (!collection1.ElementAt(i).Equals(collection2.ElementAt(i)))
+                    areSame = false;
+
+            Assert.IsFalse(areSame);
+        }
+
+        public static void AssertContainSameElements<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            Assert.AreEqual(collection1.Count(), collection2.Count());
+
+            foreach (var element in collection1)
+                Assert.IsTrue(collection2.Contains(element));
         }
 
         public static void AssertAreTheSame(GeneticSearchResult result1, GeneticSearchResult result2)

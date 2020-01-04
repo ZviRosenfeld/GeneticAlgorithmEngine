@@ -1,7 +1,7 @@
 ﻿namespace GeneticAlgorithm.Interfaces
 {
     /// <summary>
-    /// SelectionStrategies tell the engine how to choose the chromosmes that will create the next generation.
+    /// SelectionStrategies tell the engine how to choose the chromosomes that will create the next generation.
     /// </summary>
     public interface ISelectionStrategy
     {
@@ -13,7 +13,7 @@
         void SetPopulation(Population population, int requestedChromosomes);
 
         /// <summary>
-        /// Selects a chromosme from the population.
+        /// Selects a chromosome from the population.
         /// </summary>
         IChromosome SelectChromosome();
     }

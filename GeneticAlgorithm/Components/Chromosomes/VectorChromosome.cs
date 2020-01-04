@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.Chromosomes
 {
-    public class VectorChromosome<T> : IChromosome
+    public class VectorChromosome<T> : IChromosome, IEnumerable<T>
     {
         private T[] vector;
         private readonly IMutationManager<T> mutationManager;
@@ -25,6 +28,10 @@ namespace GeneticAlgorithm.Components.Chromosomes
 
         public T this[int index] => vector[index];
 
+        public int Length => vector.Length;
+
+        public IEnumerator<T> GetEnumerator() => vector.Cast<T>().GetEnumerator();
+
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -33,5 +40,7 @@ namespace GeneticAlgorithm.Components.Chromosomes
             
             return stringBuilder.ToString();
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

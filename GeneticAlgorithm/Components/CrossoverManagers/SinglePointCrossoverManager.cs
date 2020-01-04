@@ -5,6 +5,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
 {
     /// <summary>
     /// A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes.
+    /// Works on chromosomes of type VectorChromosome&lt;T&gt;.
     /// See: https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover
     /// </summary>
     public class SinglePointCrossoverManager<T> : ICrossoverManager

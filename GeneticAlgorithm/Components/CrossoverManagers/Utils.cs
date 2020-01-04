@@ -1,4 +1,6 @@
-﻿using GeneticAlgorithm.Components.Chromosomes;
+﻿using System;
+using GeneticAlgorithm.Components.Chromosomes;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.Components.CrossoverManagers
@@ -17,6 +19,13 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
                 ? (vectorChromosome1, vectorChromosome2)
                 : (vectorChromosome2, vectorChromosome1);
         }
+        
+        public static (int, int) GetTwoRandomNumbers(this Random random, int max)
+        {
+            var num1 = random.Next(max);
+            var num2 = random.Next(max);
 
+            return (Math.Min(num1, num2), Math.Max(num1, num2));
+        }
     }
 }

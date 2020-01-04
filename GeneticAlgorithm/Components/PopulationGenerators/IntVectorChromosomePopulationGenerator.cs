@@ -16,6 +16,14 @@ namespace GeneticAlgorithm.Components.PopulationGenerators
         private readonly IMutationManager<int> mutationManager;
         private readonly IEvaluator evaluator;
 
+        /// <summary>
+        /// This class will create chromosomes of type VectorChromosome&lt;int&gt;
+        /// </summary>
+        /// <param name="vectorSize">The size of the generated chromosomes</param>
+        /// <param name="minGenome">The genomes will be equal to or greater than minGenom</param>
+        /// <param name="maxGenome">The genomes will be equal to or smaller than minGenom</param>
+        /// <param name="mutationManager">A mutation manager to use</param>
+        /// <param name="evaluator">An evaluator to use</param>
         public IntVectorChromosomePopulationGenerator(int vectorSize, int minGenome, int maxGenome, IMutationManager<int> mutationManager, IEvaluator evaluator)
         {
             if (vectorSize <= 0)

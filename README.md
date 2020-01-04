@@ -287,6 +287,7 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
 You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
 
 Existing managers:
+- [SingleSwapMutationManager/<T>](/GeneticAlgorithm/Components/MutationManagers/SingleSwapMutationManager.cs): Swaps two genomes in the chromosome.
 - [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes (represented as type VectorChromosome<bool>). It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
 - [IntBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
 - [DoubleBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/DoubleBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on double-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
@@ -301,9 +302,18 @@ Existing managers:
 
 The CrossoverManagers are implementations of the [ICrossoverManager](#icrossovermanager) interface.
 
-- [SinglePointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/SinglePointCrossoverManager.cs): A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover) for more information.
-- [K_PointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/K_PointCrossoverManager.cs): Similar to SinglePointCrossoverManager, only that K points are chosen instead of one. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover) for more information.
-- [UniformCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/UniformCrossoverManager.cs): In uniform crossover, each bit is chosen from either parent with equal probability.
+- [SinglePointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/SinglePointCrossoverManager.cs): A point on both parents' chromosomes is picked randomly, and designated a 'crossover point'. Bits to the right of that point are swapped between the two parent chromosomes. Works on chromosomes of type VectorChromosome\<T>.. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover) for more information.
+- [K_PointCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/K_PointCrossoverManager.cs): Similar to SinglePointCrossoverManager, only that K points are chosen instead of one. Works on chromosomes of type VectorChromosome\<T>. See [this](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover) for more information.
+- [UniformCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/UniformCrossoverManager.cs): In uniform crossover, each bit is chosen from either parent with equal probability. Works on chromosomes of type VectorChromosome\<T>.
+
+In some problems, it's impotent to insure that all chromosomes contain each genome exactly once.
+The following list contains crossover managers that *must* be used on chromosomes of the same length that contain each genome exactly once.
+There managers will ensure that the children also contain each genome exactly once.
+Note that for these crossover managers to work, the Equals method must be implemented for type T.
+
+- [OrderCrossover\<T>](/GeneticAlgorithm/Components/CrossoverManagers/OrderCrossover.cs): See [this](https://stackoverflow.com/questions/26518393/order-crossover-ox-genetic-algorithm/26521576). Ordered crossover Works on chromosomes of type VectorChromosome\<T>. In ordered crossover, we randomly select a subset of the first parent string and then fill the remainder of the route with the genes from the second parent in the order in which they appear. This insures that if no genome was repeated in the parents, no genome will be repeated in the child either. 
+- [PartiallyMatchedCrossover\<T>](/GeneticAlgorithm/Components/CrossoverManagers/PartiallyMatchedCrossover.cs): See [this](http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/PMXCrossoverOperator.aspx).
+- [CycleCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/CycleCrossoverManager.cs): See [this](http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/CycleCrossoverOperator.aspx). The Cycle Crossover operator identifies a number of so-called cycles between two parent chromosomes. Then, to form Child 1, cycle one is copied from parent 1, cycle 2 from parent 2, cycle 3 from parent 1, and so on.
 
 ### PopulationGenerators
 
@@ -312,6 +322,7 @@ PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulat
 - [IntVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/IntVectorChromosomePopulationGenerator.cs): Generates a population of type VectorChromosome\<int> within some min and max bounds.
 - [DoubleVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/DoubleVectorChromosomePopulationGenerator.cs): Generates a population of type VectorChromosome\<double> within some min and max bounds. 
 - [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome\<bool>).
+- [AllElementsVectorChromosomePopulationGenerator\<T>](/GeneticAlgorithm/Components/PopulationGenerators/AllElementsVectorChromosomePopulationGenerator.cs): Generates a population of chromosomes of type VectorChromosome\<T> in which each chromosome contains every element exactly once (a list of the elements is provided in the constructor).
 
 ### Example of Using Components
 

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm
@@ -52,6 +54,22 @@ namespace GeneticAlgorithm
             if (value > max) return max;
             if (value < min) return min;
             return value;
+        }
+        
+        public static T[] Shuffle<T>(this ICollection<T> collection, Random random)
+        {
+            var array = collection.ToArray();
+            int n = array.Length;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                T value = array[k];
+                array[k] = array[n];
+                array[n] = value;
+            }
+
+            return array;
         }
     }
 }

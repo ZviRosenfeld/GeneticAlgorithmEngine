@@ -7,6 +7,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
 {
     /// <summary>
     /// K crossover points are picked randomly from the parent chromosomes. The bits in between these points are swapped between the parent organisms.
+    /// Works on chromosomes of type VectorChromosome&lt;T&gt;.
     /// See: https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Two-point_and_k-point_crossover
     /// </summary>
     public class K_PointCrossoverManager<T> : ICrossoverManager
