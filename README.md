@@ -312,7 +312,7 @@ There managers will ensure that the children also contain each genome exactly on
 Note that for these crossover managers to work, the Equals method must be implemented for type T.
 
 - [OrderCrossover\<T>](/GeneticAlgorithm/Components/CrossoverManagers/OrderCrossover.cs): See [this](https://stackoverflow.com/questions/26518393/order-crossover-ox-genetic-algorithm/26521576). Ordered crossover Works on chromosomes of type VectorChromosome\<T>. In ordered crossover, we randomly select a subset of the first parent string and then fill the remainder of the route with the genes from the second parent in the order in which they appear. This insures that if no genome was repeated in the parents, no genome will be repeated in the child either. 
-- [PartiallyMatchedCrossover\<T>](/GeneticAlgorithm/Components/CrossoverManagers/PartiallyMatchedCrossover.cs): See [this](http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/PMXCrossoverOperator.aspx).
+- [PartiallyMappedCrossover\<T>](/GeneticAlgorithm/Components/CrossoverManagers/PartiallyMappedCrossover.cs): See [this](http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/PMXCrossoverOperator.aspx).
 - [CycleCrossoverManager\<T>](/GeneticAlgorithm/Components/CrossoverManagers/CycleCrossoverManager.cs): See [this](http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/CycleCrossoverOperator.aspx). The Cycle Crossover operator identifies a number of so-called cycles between two parent chromosomes. Then, to form Child 1, cycle one is copied from parent 1, cycle 2 from parent 2, cycle 3 from parent 1, and so on.
 
 ### PopulationGenerators

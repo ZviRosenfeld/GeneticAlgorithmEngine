@@ -10,11 +10,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
 {
     [TestClass]
-    public class PartiallyMatchedCrossoverTests
+    public class PartiallyMappedCrossoverTests
     {
         private static readonly List<string> elements = new List<string>() { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
         private readonly IPopulationGenerator generator = new AllElementsVectorChromosomePopulationGenerator<string>(elements, null, null);
-        private readonly ICrossoverManager crossoverManager = new PartiallyMatchedCrossover<string>(null, null);
+        private readonly ICrossoverManager crossoverManager = new PartiallyMappedCrossover<string>(null, null);
 
         [TestMethod]
         [DataRow(20)]

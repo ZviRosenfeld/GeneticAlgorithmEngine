@@ -17,7 +17,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// 
     /// See: http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/PMXCrossoverOperator.aspx
     /// </summary>
-    public class PartiallyMatchedCrossover<T> : ICrossoverManager
+    public class PartiallyMappedCrossover<T> : ICrossoverManager
     {
         private readonly Random random = new Random();
         private readonly IMutationManager<T> mutationManager;
@@ -31,7 +31,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
         /// 
         /// Also, the Equals method must be implemented for type T.
         /// </summary>
-        public PartiallyMatchedCrossover(IMutationManager<T> mutationManager, IEvaluator evaluator)
+        public PartiallyMappedCrossover(IMutationManager<T> mutationManager, IEvaluator evaluator)
         {
             this.mutationManager = mutationManager;
             this.evaluator = evaluator;
