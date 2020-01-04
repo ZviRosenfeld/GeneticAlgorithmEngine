@@ -16,6 +16,7 @@ namespace TravellingSalesman
             maxDistance = 1500 * locations.Count;
         }
 
+        // Note that a shorter route should give a better evaluation
         public double Evaluate(IChromosome chromosome) => 
             maxDistance - distanceCalclator.GetDistance(chromosome);
     }

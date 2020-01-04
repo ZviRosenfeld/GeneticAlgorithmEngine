@@ -287,7 +287,7 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
 You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
 
 Existing managers:
-- [SingleSwapMutationManager/<T>](/GeneticAlgorithm/Components/MutationManagers/SingleSwapMutationManager.cs): Swaps two genomes in the chromosome.
+- [SingleSwapMutationManager\<T>](/GeneticAlgorithm/Components/MutationManagers/SingleSwapMutationManager.cs): Swaps two genomes in the chromosome.
 - [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes (represented as type VectorChromosome<bool>). It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
 - [IntBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/IntBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on integer-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
 - [DoubleBoundaryMutationManager](/GeneticAlgorithm/Components/MutationManagers/DoubleBoundaryMutationManager.cs): This mutation operator replaces the genome with either lower or upper bound randomly (works only on double-vector chromosomes). The probability of a bit being replaced is 1 / \<vector-length>\.
