@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.SelectionStrategies
@@ -14,31 +13,15 @@ namespace GeneticAlgorithm.SelectionStrategies
     /// </summary>
     public class ChromosomePool
     {
-        private IChromosome[] chromosomes;
+        private readonly Random random = new Random();
+        private readonly IChromosome[] chromosomes;
         private int counter = -1;
 
         public ChromosomePool(IChromosome[] chromosomes)
         {
-            this.chromosomes = Shuffle(chromosomes);
+            this.chromosomes = chromosomes.Shuffle(random);
         }
         
-        private IChromosome[] Shuffle(IChromosome[] chromosome)
-        {
-            var random = new Random();
-            var n = chromosome.Length;
-            var shuffledChromosomes = chromosome.ToArray(); // Clone
-            while (n > 1)
-            {
-                n--;
-                int k = random.Next(n + 1);
-                IChromosome value = shuffledChromosomes[k];
-                shuffledChromosomes[k] = shuffledChromosomes[n];
-                shuffledChromosomes[n] = value;
-            }
-
-            return shuffledChromosomes;
-        }
-
         /// <summary>
         /// Note that GetChromosome can only be called chromosomes.Length times
         /// </summary>

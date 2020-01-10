@@ -5,9 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
 {
     [TestClass]
-    public class OrderCrossoverTests
+    public class AlternatingPositionCrossoverTests
     {
-        private readonly ICrossoverManager crossoverManager = new OrderCrossover<string>(null, null);
+        private readonly ICrossoverManager crossoverManager = new AlternatingPositionCrossover<string>(null, null);
 
         [TestMethod]
         [DataRow(20)]

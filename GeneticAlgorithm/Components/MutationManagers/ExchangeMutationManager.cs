@@ -4,9 +4,10 @@ using GeneticAlgorithm.Components.Interfaces;
 namespace GeneticAlgorithm.Components.MutationManagers
 {
     /// <summary>
-    /// Swaps two genomes in the chromosome
+    /// Swaps two genomes in the chromosome.
+    /// ExchangeMutationManager guarantees that if the original chromosome contained each genome exactly once, so will the mutated chromosome.
     /// </summary>
-    public class SingleSwapMutationManager<T> : IMutationManager<T>
+    public class ExchangeMutationManager<T> : IMutationManager<T>
     {
         private readonly Random random = new Random();
 

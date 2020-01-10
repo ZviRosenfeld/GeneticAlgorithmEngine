@@ -33,7 +33,7 @@ namespace TravellingSalesman
         {
             Console.WriteLine("Started!");
 
-            IMutationManager<string> mutationManager = new SingleSwapMutationManager<string>();
+            IMutationManager<string> mutationManager = new ExchangeMutationManager<string>();
             IEvaluator evaluator = new DistanceEvaluator(locations);
             ICrossoverManager crossoverManager = new OrderCrossover<string>(mutationManager, evaluator);
             IPopulationGenerator populationGenerator =

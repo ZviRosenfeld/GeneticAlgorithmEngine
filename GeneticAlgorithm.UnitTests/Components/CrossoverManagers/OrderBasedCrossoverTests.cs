@@ -5,19 +5,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
 {
     [TestClass]
-    public class OrderCrossoverTests
+    public class OrderBassedCrossoverTests
     {
-        private readonly ICrossoverManager crossoverManager = new OrderCrossover<string>(null, null);
+        private readonly ICrossoverManager crossoverManager = new OrderBasedCrossover<string>(null, null);
 
         [TestMethod]
         [DataRow(20)]
-        public void OrderCrossover_AllElementsInEachVector(int vectors)
+        public void OrderBasedCrossover_AllElementsInEachVector(int vectors)
         {
             crossoverManager.TestThatAllElementsInEachVector(vectors);
         }
 
         [TestMethod]
-        public void OrderCrossover_ChildChanged()
+        public void OrderBasedCrossover_ChildChanged()
         {
             crossoverManager.TestThatChildChanged();
         }

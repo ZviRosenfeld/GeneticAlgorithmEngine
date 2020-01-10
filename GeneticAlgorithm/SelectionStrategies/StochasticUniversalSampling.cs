@@ -42,7 +42,7 @@ namespace GeneticAlgorithm.SelectionStrategies
         private void FillPool(int requestedChromosomes, IChromosome[] chromosomes, double[] evaluations)
         {
             var pointer = random.NextDouble() / requestedChromosomes;
-            var increment = 1.0 / (double) requestedChromosomes;
+            var increment = 1.0 / requestedChromosomes;
             var sum = 0.0;
             var chromosomeIndex = -1;
             var poolChromosomes = new IChromosome[requestedChromosomes];

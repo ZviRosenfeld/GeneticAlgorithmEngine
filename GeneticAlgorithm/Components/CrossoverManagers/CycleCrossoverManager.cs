@@ -15,6 +15,8 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// The Cycle Crossover operator identifies a number of so-called cycles between two parent chromosomes. 
     /// Then, to form Child 1, cycle one is copied from parent 1, cycle 2 from parent 2, cycle 3 from parent 1, and so on.
     /// 
+    /// In Cycle Crossover, the child is guaranteed to contain each genome exactly once.
+    /// 
     /// See: http://www.rubicite.com/Tutorials/GeneticAlgorithms/CrossoverOperators/CycleCrossoverOperator.aspx
     /// </summary>
     public class CycleCrossoverManager<T> : ICrossoverManager

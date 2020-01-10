@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Components.Interfaces;
+using GeneticAlgorithm.Components.PopulationGenerators;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -70,6 +72,43 @@ namespace GeneticAlgorithm.UnitTests.Components.MutationManagers
             }
 
             Assert.IsTrue(values.Count > 8, $"We only got {values.Count} diffrent values");
+        }
+
+        public static void TestChromosomeChanged(this IMutationManager<string> mutationManager)
+        {
+            var elements = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+            var generator = new AllElementsVectorChromosomePopulationGenerator<string>(elements, null, null);
+
+            // Since there's a certain chance that this test will fail, I want to run it twice
+            var passed = false;
+            for (int i = 0; i < 2; i++)
+            {
+                try
+                {
+                    var before = ((VectorChromosome<string>) generator.GeneratePopulation(1).First()).GetVector();
+                    var after = mutationManager.Mutate(before.ToArray());
+
+                    before.AssertAreNotTheSame(after);
+                    passed = true;
+                }
+                catch
+                {
+                    // Do nothing
+                }
+            }
+            Assert.IsTrue(passed);
+        }
+
+        public static void TestAllElementsInEachVector(this IMutationManager<string> mutationManager, int testRuns)
+        {
+            var elements = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+            var generator = new AllElementsVectorChromosomePopulationGenerator<string>(elements, null, null);
+            for (int i = 0; i < testRuns; i++)
+            {
+                var before = ((VectorChromosome<string>)generator.GeneratePopulation(1).First()).GetVector();
+                var after = mutationManager.Mutate(before.ToArray());
+                before.AssertContainSameElements(after);
+            }
         }
     }
 }

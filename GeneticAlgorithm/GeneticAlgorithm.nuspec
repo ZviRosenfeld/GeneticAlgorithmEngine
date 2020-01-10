@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GeneticAlgorithm</id>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
 	<title>A parallel Genetic Algorithm Engine</title>
     <description>A parallel Genetic Algorithm Engine. GeneticAlgorithm was created to be easily customized and simple to use.</description>
     <authors>Zvi Rosenfeld</authors>
