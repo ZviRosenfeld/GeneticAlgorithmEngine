@@ -38,7 +38,7 @@ namespace GeneticAlgorithm.UnitTests.Components.PopulationGenerators
 
         [TestMethod]
         [DataRow(-10, 10)]
-        public void DoubleVectorChromosomePopulationGenerator_CreatesChromosomeOfWithRightValues(int minGenome, int maxGenome)
+        public void DoubleVectorChromosomePopulationGenerator_CreatesChromosomeWithRightValues(int minGenome, int maxGenome)
         {
             var populationGenerator =
                 new DoubleVectorChromosomePopulationGenerator(10, minGenome, maxGenome, A.Fake<IMutationManager<double>>(), A.Fake<IEvaluator>());

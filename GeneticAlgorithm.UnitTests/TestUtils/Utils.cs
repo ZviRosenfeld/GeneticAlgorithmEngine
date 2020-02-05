@@ -1,4 +1,7 @@
-﻿namespace GeneticAlgorithm.UnitTests.TestUtils
+﻿using GeneticAlgorithm.Components.Chromosomes;
+using GeneticAlgorithm.Interfaces;
+
+namespace GeneticAlgorithm.UnitTests.TestUtils
 {
     static class Utils
     {
@@ -38,5 +41,11 @@
             var doubleGenoe = value as double?;
             return intGenome ?? (int) doubleGenoe.Value;
         }
+
+        /// <summary>
+        /// Works on chromosomes of type VectorChromosome. Returns their vector.
+        /// </summary>
+        public static T[] ToArray<T>(this IChromosome chromosome) =>
+            ((VectorChromosome<T>)chromosome).GetVector();
     }
 }

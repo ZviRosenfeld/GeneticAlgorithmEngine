@@ -1,4 +1,4 @@
-﻿namespace GeneticAlgorithm.Components.CrossoverManagers
+﻿namespace GeneticAlgorithm.Components.CrossoverManagers.Utilities
 {
     interface IIndexManager<T>
     {

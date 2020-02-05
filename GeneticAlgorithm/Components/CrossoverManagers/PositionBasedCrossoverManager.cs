@@ -44,7 +44,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var vector1 = ((VectorChromosome<T>)chromosome1).GetVector();
             var vector2 = ((VectorChromosome<T>)chromosome2).GetVector();
             var length = vector1.Length;
-            var indexesToTakeFromParent1 = ProbabilityUtils.SelectKRandomNumbers(length, random.Next(length));
+            var indexesToTakeFromParent1 = ProbabilityUtils.SelectKRandomNumbersNonRepeating(length, random.Next(length));
             
             var genomesFromChromosome1 = new HashSet<T>();
             var newVector = new T[length];

@@ -20,9 +20,9 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
-        /// Selects K random indexes between 0 and 'till'
+        /// Selects K random indexes between 0 and 'till' not repeating.
         /// </summary>
-        public static List<int> SelectKRandomNumbers(int till, int k)
+        public static List<int> SelectKRandomNumbersNonRepeating(int till, int k)
         {
             var selectedIndexes = new List<int>();
             for (int i = 0; i < till; i++)
@@ -32,6 +32,24 @@ namespace GeneticAlgorithm
                     selectedIndexes.Add(i);
                     k--;
                     if (k == 0) break;
+                }
+            }
+            return selectedIndexes;
+        }
+
+        /// <summary>
+        /// Selects K random elements from the collection not repeating.
+        /// </summary>
+        public static T[] SelectKRandomElementsNonRepeating<T>(this T[] collection, int k)
+        {
+            var selectedIndexes = new T[k];
+            for (int i = 0, added = 0; i < collection.Length; i++)
+            {
+                if (P((k - added) / (double)(collection.Length - i)))
+                {
+                    selectedIndexes[added] = collection[i];
+                    added++;
+                    if (k == added) break;
                 }
             }
             return selectedIndexes;

@@ -46,11 +46,13 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(10, 3)]
         public void SelectKRandomNumbers_KNumbersSelectedTillTill(int till, int k)
         {
-            var numbers = ProbabilityUtils.SelectKRandomNumbers(till, k);
+            var numbers = ProbabilityUtils.SelectKRandomNumbersNonRepeating(till, k);
 
             Assert.AreEqual(k, numbers.Count, "Didn't get enough numbers");
             foreach (var number in numbers)
                 Assert.AreEqual(1, numbers.Count(n => n == number), "Found the same index more then once");
+            foreach (var number in numbers)
+                Assert.IsTrue(number < till, $"{nameof(number)} = {number}, which is bigger than {nameof(till)} = {till}");
         }
 
         [TestMethod]
@@ -59,10 +61,49 @@ namespace GeneticAlgorithm.UnitTests
             var till = 20;
             var allNumbers = new List<int>();
             for (int i = 0; i < till * 5; i++)
-                allNumbers.AddRange(ProbabilityUtils.SelectKRandomNumbers(till, 2));
+                allNumbers.AddRange(ProbabilityUtils.SelectKRandomNumbersNonRepeating(till, 2));
 
+            // All numbers are generated
             for (int i = 0; i < till; i++)
-                Assert.IsTrue(allNumbers.Contains(i), $"{nameof(allNumbers)} dosn't contain {i}");
+                Assert.IsTrue(allNumbers.Contains(i), $"{nameof(allNumbers)} doesn't contain {i}");
+
+            // No number is generated more than 20% of the time
+            foreach (var number in allNumbers)
+                Assert.IsTrue(allNumbers.Count(n => n == number) < till * 5 * 2 * 0.2);
+        }
+
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        public void SelectKRandomElements_KElementsSelectedFromElements(int k)
+        {
+            var allElements = new[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+            var selectedElements = allElements.SelectKRandomElementsNonRepeating(k);
+
+            Assert.AreEqual(k, selectedElements.Length, "Didn't get enough elements");
+            foreach (var element in selectedElements)
+                Assert.AreEqual(1, selectedElements.Count(n => n == element), "Found the same element more then once");
+            foreach (var element in selectedElements)
+                Assert.IsTrue(allElements.Contains(element), $"Got {nameof(element)} {element} which isn't in {nameof(allElements)}");
+        }
+
+        [TestMethod]
+        public void SelectKRandomElements_ElementsAreRandom()
+        {
+            var allElements = new[] {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"};
+            var length = allElements.Length;
+            var slelectedElements = new List<string>();
+            for (int i = 0; i < length * 5; i++)
+                slelectedElements.AddRange(allElements.SelectKRandomElementsNonRepeating(2));
+
+            // All elements are generated
+            for (int i = 0; i < length; i++)
+                Assert.IsTrue(slelectedElements.Contains(allElements[i]), $"{nameof(slelectedElements)} doesn't contain {slelectedElements[i]}");
+
+            // No element is generated more than 20% of the time
+            foreach (var element in slelectedElements)
+                Assert.IsTrue(slelectedElements.Count(e => e.Equals(element)) < length * 5 * 2 * 0.2, $"{nameof(element)} {element} selected too many times");
         }
 
         [TestMethod]

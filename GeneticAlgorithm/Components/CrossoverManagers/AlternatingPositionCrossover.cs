@@ -19,7 +19,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// </summary>
     public class AlternatingPositionCrossover<T> : ICrossoverManager
     {
-        private readonly Random random = new Random();
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 

@@ -15,7 +15,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// 
     /// In OrderBasedCrossover, several positions are selected at random from the second parent. 
     /// Let A be the list of elements at the selected indexes in parent2.
-    /// All elements that aren't A are copied as is from parent1.
+    /// All elements that aren't in A are copied as is from parent1.
     /// The missing elements are added in the order in which they appear in parent2
     /// 
     /// In OrderBasedCrossover, the child is guaranteed to contain each genome exactly once.
@@ -45,7 +45,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var vector1 = ((VectorChromosome<T>)chromosome1).GetVector();
             var vector2 = ((VectorChromosome<T>)chromosome2).GetVector();
             var length = vector1.Length;
-            var indexes = ProbabilityUtils.SelectKRandomNumbers(length, random.Next(length));
+            var indexes = ProbabilityUtils.SelectKRandomNumbersNonRepeating(length, random.Next(length));
 
             var elementsFromParent2 = new HashSet<T>();
             var elementsFromParent2OrderedByIndex = new List<T>();

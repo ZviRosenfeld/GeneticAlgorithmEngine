@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GeneticAlgorithm.Components.Chromosomes;
+using GeneticAlgorithm.Components.CrossoverManagers.Utilities;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
 

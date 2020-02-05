@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GeneticAlgorithm.Components.Chromosomes;
+using GeneticAlgorithm.Components.CrossoverManagers.Utilities;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
 
@@ -50,7 +51,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
         private List<int> ChooseCrossoverPoints(int k, int length)
         {
             var crossoverPoints = k < length ? k : length - 1;
-            return ProbabilityUtils.SelectKRandomNumbers(length - 1, crossoverPoints);
+            return ProbabilityUtils.SelectKRandomNumbersNonRepeating(length - 1, crossoverPoints);
         }
     }
 }

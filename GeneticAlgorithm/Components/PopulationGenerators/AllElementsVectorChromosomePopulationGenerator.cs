@@ -9,7 +9,7 @@ using GeneticAlgorithm.Interfaces;
 namespace GeneticAlgorithm.Components.PopulationGenerators
 {
     /// <summary>
-    /// Creates a population of chromosomes of type VectorChromosome&lt;T&gt in which each chromosome contains every element exactly once.
+    /// Creates a population of chromosomes of type VectorChromosome&lt;T&gt; in which each chromosome contains every element exactly once.
     /// </summary>
     public class AllElementsVectorChromosomePopulationGenerator<T> : IPopulationGenerator
     {
@@ -19,7 +19,7 @@ namespace GeneticAlgorithm.Components.PopulationGenerators
         private readonly Random random = new Random();
 
         /// <summary>
-        /// Creates a population of chromosomes of type VectorChromosome&lt;T&gt in which each chromosome contains every element exactly once.
+        /// Creates a population of chromosomes of type VectorChromosome&lt;T&gt; in which each chromosome contains every element exactly once.
         /// </summary>
         public AllElementsVectorChromosomePopulationGenerator(ICollection<T> elements, IMutationManager<T> mutationManager, IEvaluator evaluator)
         {

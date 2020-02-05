@@ -16,8 +16,7 @@ namespace GeneticAlgorithm.UnitTests.Components.PopulationGenerators
         [TestMethod]
         [ExpectedException(typeof(GeneticAlgorithmException))]
         public void AllElementsVectorChromosomePopulationGenerator_EmptyElementList_ThrowException() =>
-            new AllElementsVectorChromosomePopulationGenerator<int>(new List<int>(), A.Fake<IMutationManager<int>>(),
-                A.Fake<IEvaluator>());
+            new AllElementsVectorChromosomePopulationGenerator<int>(new List<int>(), null, null);
 
         [TestMethod]
         [DataRow(20)]
