@@ -140,35 +140,34 @@ var result = searchEngine.Run();
 ```
 
 ## Search Options
-Let's see how we can configure our search engine to better match our needs.
 
 ### Mutations
 By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability method.
 Note that the mutation probability will be ignored if you set a [IMutationProbabilityManager](#imutationprobabilitymanager).
 
 ### CancellationToken
-You can use the GeneticSearchEngineBuilder.SetCancellationToken method to add cencellationTokens.
+You can use the GeneticSearchEngineBuilder.SetCancellationToken method to set a cencellationToken.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
 When the cancellation is requested, you'll get the result that was found up till than.
 
 ### IncludeAllHistory
-If this option is turned on (by default it's off) the result will include the entire history of the population.
+If this option is turned on (by default it's off) the result will include the entire history of the population (and not only the last generation).
 
 ### Elitism
 Using elitism, you can set a percentage of the best chromosomes that will be passed "as is" to the next generation.
 You can read more about elitism [here](https://en.wikipedia.org/wiki/Genetic_algorithm#Elitism).
 
 ### IStopManagers
-[StopManagers](/GeneticAlgorithm/Interfaces/IStopManager.cs) let you configure when you want the search to stop. 
-You can create your own managers by implementing the IStopManager interface, or use one of the existing managers.
-Note that there is no limit to the number of StopManagers you can add to your search engine.
+[StopManagers](/GeneticAlgorithm/Interfaces/IStopManager.cs) let you configure when the search is stopped. 
+You can create your own managers by implementing the [IStopManager](/GeneticAlgorithm/Interfaces/IStopManager.cs) interface, or use one of the existing managers.
+Note that there is no limit to the number of StopManagers that you can add to your search engine.
 
 You can find a tutorial on creating a custom StopManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-StopManager).
 In addition, [here](/GeneticAlgorithm/StopManagers) are some examples of custom StopManagers.
 
 Existing StopManagers:
-- [StopAtEvaluation](/GeneticAlgorithm/StopManagers/StopAtEvaluation.cs): Will cause the search to stop when it reaches some predefined evaluation.
+- [StopAtEvaluation](/GeneticAlgorithm/StopManagers/StopAtEvaluation.cs): Will cause the search to stop when a chromosome reaches some predefined evaluation.
 - [StopAtConvergence](/GeneticAlgorithm/StopManagers/StopAtConvergence.cs): The search will stop when the difference between chromosomes in the population is too small.
 - [StopIfNoImprovment](/GeneticAlgorithm/StopManagers/StopIfNoImprovment.cs): Will stop if the improvement over 'X' generations isn't good enough.
 
@@ -182,7 +181,7 @@ var result = searchEngine.Run();
 
 ### IPopulationRenwalManagers
 [PopulationRenwalManagers](/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) will tell the engine to renew a certain percentage of the population if some condition is met. This can fix premature convergence.
-You can create your own managers by implementing the IPopulationRenwalManager interface, or use one of the existing managers.
+You can create your own managers by implementing the [IPopulationRenwalManager](/GeneticAlgorithm/Interfaces/IPopulationRenwalManager.cs) interface, or use one of the existing managers.
 Note that there is no limit to the number of PopulationRenwalManagers you can add to your search engine.
 
 You can find a tutorial on creating a custom PopulationRenwalManager [here](https://github.com/ZviRosenfeld/GeneticAlgorithmEngine/wiki/Creating-a-Custom-PopulationRenwalManager).
@@ -256,7 +255,7 @@ var result = searchEngine.Run();
 
 ## Ready-Made Components
 
-Components are ready-made implementations of commonly used genetic components (such as CrossoverManagers, MutationManagers and chromosomes).
+GeneticAlgorithmEngine includes a library of ready-made implementations of commonly used genetic components (such as CrossoverManagers, MutationManagers and chromosomes).
 
 ### Chromosomes
 
@@ -266,6 +265,7 @@ It holds a generic vector, which is set in its constructor and can be retrieved 
 VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvaluator](/GeneticAlgorithm/Components/Interfaces/IEvaluator.cs) in its constructor, which tell it how to preform mutations and evaluate itself.
 
 ```CSharp
+	// A very simple implementation of IEvaluator for VectorChromosome of type int
     class BasicEvaluator : IEvaluator
     {
         public double Evaluate(IChromosome chromosome) =>
@@ -276,8 +276,8 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
     {
     	IMutationManager mutationManager = new UniformMutationManager(0, 10);
         IEvaluator evaluator = new BasicEvaluator();
-	    int[] vector = new int[] {1, 3, 2, 8};
-        VectorChromosome<int> = new VectorChromosome<int>(vector, mutationManager, evaluator);
+        int[] vector = new int[] {1, 3, 2, 8};
+        VectorChromosome<int> vectorChromosome = new VectorChromosome<int>(vector, mutationManager, evaluator);
     }
 ```
 
