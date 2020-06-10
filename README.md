@@ -142,14 +142,14 @@ var result = searchEngine.Run();
 ## Search Options
 
 ### Mutations
-By default, the probability of mutations is 0. You can change this be using the GeneticSearchEngineBuilder.SetMutationProbability method.
+By default, the probability of mutations is 0. You can change this by using the GeneticSearchEngineBuilder.SetMutationProbability method.
 Note that the mutation probability will be ignored if you set a [IMutationProbabilityManager](#imutationprobabilitymanager).
 
 ### CancellationToken
 You can use the GeneticSearchEngineBuilder.SetCancellationToken method to set a cencellationToken.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
-When the cancellation is requested, you'll get the result that was found up till than.
+When the cancellation is requested, you'll get whatever result was found up till than.
 
 ### IncludeAllHistory
 If this option is turned on (by default it's off) the result will include the entire history of the population (and not only the last generation).
