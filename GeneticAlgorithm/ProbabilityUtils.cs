@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GeneticAlgorithm.Exceptions;
 
@@ -9,9 +9,9 @@ namespace GeneticAlgorithm
         private static readonly Random random = new Random();
 
         /// <summary>
-        /// Returns true with a probability of probability - where probability is between
+        /// Returns true with a probability of probability - where probability is between 0 to 1 (not including)
         /// </summary>
-        public static bool P(double probability)
+        public static bool P(double probability)h
         {
             if (probability > 1 || probability < 0)
                 throw new InternalSearchException($"Code 1008 (probability is {probability})");
