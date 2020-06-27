@@ -11,7 +11,7 @@ namespace GeneticAlgorithm
         /// <summary>
         /// Returns true with a probability of probability - where probability is between 0 to 1 (not including)
         /// </summary>
-        public static bool P(double probability)h
+        public static bool P(double probability)
         {
             if (probability > 1 || probability < 0)
                 throw new InternalSearchException($"Code 1008 (probability is {probability})");
