@@ -9,7 +9,7 @@ namespace GeneticAlgorithm
         private static readonly Random random = new Random();
 
         /// <summary>
-        /// Returns true with a probability of probability - where probability is between 0 to 1 (not including)
+        /// Returns true with a probability of probability - where probability is between 0 to 1 (including)
         /// </summary>
         public static bool P(double probability)
         {
