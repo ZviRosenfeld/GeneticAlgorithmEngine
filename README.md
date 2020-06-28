@@ -259,13 +259,13 @@ GeneticAlgorithmEngine includes a library of ready-made implementations of commo
 
 ### Chromosomes
 
-The [VectorChromosome<T>](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs) is an implementation of the IChromosome interface.
+The [VectorChromosome\<T>](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs) is an implementation of the IChromosome interface.
 It holds a generic vector, which is set in its constructor and can be retrieved via the GetVector method.
 
-VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvaluator](/GeneticAlgorithm/Components/Interfaces/IEvaluator.cs) in its constructor, which tell it how to preform mutations and evaluate itself.
+VectorChromosome expects an [IMutationManager\<T>](#mutationmanagers) and [IEvaluator](/GeneticAlgorithm/Components/Interfaces/IEvaluator.cs) in its constructor, which tell it how to preform mutations and evaluate itself.
 
 ```CSharp
-	// A very simple implementation of IEvaluator for VectorChromosome of type int
+    // A very simple implementation of IEvaluator for VectorChromosome of type int
     class BasicEvaluator : IEvaluator
     {
         public double Evaluate(IChromosome chromosome) =>
@@ -283,8 +283,8 @@ VectorChromosome expects an [IMutationManager<T>](#mutationmanagers) and [IEvalu
 
 ### MutationManagers
 
-[IMutationManager<T>](/GeneticAlgorithm/Components/Interfaces/IMutationManager.cs) tells the VectorChromosome<T> how to preform mutations.
-You can create your own MutationManager by implementing the IMutationManager<T> interface, or use an existing managers.
+[IMutationManager\<T>](/GeneticAlgorithm/Components/Interfaces/IMutationManager.cs) tells the VectorChromosome\<T> how to preform mutations.
+You can create your own MutationManager by implementing the IMutationManager\<T> interface, or use an existing managers.
 
 Existing managers:
 - [BitStringMutationManager](/GeneticAlgorithm/Components/MutationManagers/BitStringMutationManager.cs): This mutation only works on binary chromosomes (represented as type VectorChromosome\<bool>). It flips bits at random (that is replaces 1 with 0 and 0 with 1). The probability of a bit being flipped is 1 / \<vector-length>\.
