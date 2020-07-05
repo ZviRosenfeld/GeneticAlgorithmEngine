@@ -11,7 +11,6 @@ namespace GeneticAlgorithm.Components.MutationManagers
     {
         private readonly int minValue;
         private readonly int maxValue;
-        private readonly Random random = new Random();
 
         public IntUniformMutationManager(int minValue, int maxValue)
         {
@@ -23,7 +22,7 @@ namespace GeneticAlgorithm.Components.MutationManagers
         {
             for (int i = 0; i < vector.Length; i++)
                 if (ProbabilityUtils.P(1.0 / vector.Length))
-                    vector[i] = random.Next(minValue, maxValue + 1);
+                    vector[i] = ProbabilityUtils.GetRandomInt(minValue, maxValue + 1);
 
             return vector;
         }

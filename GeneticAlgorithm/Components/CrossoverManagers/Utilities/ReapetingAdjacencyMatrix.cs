@@ -10,17 +10,15 @@ namespace GeneticAlgorithm.Components.CrossoverManagers.Utilities
     /// </summary>
     public class ReapetingAdjacencyMatrix<T> : IAdjacencyMatrix<T>
     {
-        private readonly Random random = new Random();
         private readonly Dictionary<T, List<T>> adjacencyMatrix = new Dictionary<T, List<T>>();
-
 
         public T GetNeighbor(T element)
         {
             var neighbors = adjacencyMatrix[element];
             if (neighbors.Count == 0)
-                return adjacencyMatrix.Keys.ElementAt(random.Next(adjacencyMatrix.Count));
+                return adjacencyMatrix.Keys.ElementAt(ProbabilityUtils.GetRandomInt(adjacencyMatrix.Count));
 
-            return neighbors.ElementAt(random.Next(neighbors.Count));
+            return neighbors.ElementAt(ProbabilityUtils.GetRandomInt(neighbors.Count));
         }
 
         public ReapetingAdjacencyMatrix(T[] vector1, T[] vector2)

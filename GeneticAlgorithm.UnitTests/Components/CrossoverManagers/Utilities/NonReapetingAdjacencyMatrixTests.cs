@@ -103,10 +103,10 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers.Utilities
             }
 
             var excpectedToGetAtLeast = selectNeighborWithLeastNeighbors ? 35 : 25;
-            Assert.IsTrue(excpectedToGetAtLeast < got2);
-            Assert.IsTrue(excpectedToGetAtLeast < got5);
+            Assert.IsTrue(excpectedToGetAtLeast < got2, $"Got 2 only {got2} times");
+            Assert.IsTrue(excpectedToGetAtLeast < got5, $"Got 5 only {got5} times");
             if (!selectNeighborWithLeastNeighbors)
-                Assert.IsTrue(excpectedToGetAtLeast < got4);
+                Assert.IsTrue(excpectedToGetAtLeast < got4, $"Got 4 only {got4} times");
         }
 
         [TestMethod]

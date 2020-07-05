@@ -175,7 +175,7 @@ namespace GeneticAlgorithm
                 environment = new DefaultEnvironment();
 
             if (mutationManager == null)
-                mutationManager = new BassicMutationProbabilityManager(mutationProbability);
+                mutationManager = new BasicMutationProbabilityManager(mutationProbability);
         }
 
         public virtual GeneticSearchEngine Build()

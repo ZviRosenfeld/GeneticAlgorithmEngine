@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,30 +27,39 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(EngineAlreadyRunningException))]
         public void SetCurrentPopulation_EngineRunning_ThrowException()
         {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            Utils.RunTimedTest(() =>
+            {
+                var engine =
+                    new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
-            Task.Run(() => engine.Run());
-            while (!engine.IsRunning) ;
+                Task.Run(() => engine.Run());
+                while (!engine.IsRunning) ;
+                
+                engine.SetCurrentPopulation(new double[] { 3, 3 }.ToChromosomes("Converted"));
 
-            engine.SetCurrentPopulation(new double[] { 3, 3 }.ToChromosomes("Converted"));
-
-            Assert.Fail("Should have thrown an exception by now");
+                if (engine.IsRunning)
+                    Assert.Fail("Should have thrown an exception.");
+                else
+                    Assert.Fail("For some reason, the engine is no longer running.");
+            });
         }
 
         [TestMethod]
         [ExpectedException(typeof(GeneticAlgorithmException))]
         public void SetCurrentPopulation_WrongNumberOfChromosomes_ThrowException()
         {
-            var engine =
+            Utils.RunTimedTest(() =>
+            {
+                var engine =
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
-            Task.Run(() => engine.Run());
-            while (!engine.IsRunning) ;
+                Task.Run(() => engine.Run());
+                while (!engine.IsRunning) ;
 
-            engine.SetCurrentPopulation(new double[] { 3, 3, 3 }.ToChromosomes("Converted"));
+                engine.SetCurrentPopulation(new double[] { 3, 3, 3 }.ToChromosomes("Converted"));
 
-            Assert.Fail("Should have thrown an exception by now");
+                Assert.Fail("Should have thrown an exception by now");
+            });
         }
 
         [TestMethod]

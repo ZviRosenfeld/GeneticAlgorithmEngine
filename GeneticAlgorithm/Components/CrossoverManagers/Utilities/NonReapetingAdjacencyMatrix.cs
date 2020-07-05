@@ -10,7 +10,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers.Utilities
     /// </summary>
     public class NonReapetingAdjacencyMatrix<T> : IAdjacencyMatrix<T>
     {
-        private readonly Random random = new Random();
         private readonly Dictionary<T, LinkedList<T>> adjacencyMatrix = new Dictionary<T, LinkedList<T>>();
         
         /// <summary>
@@ -34,13 +33,13 @@ namespace GeneticAlgorithm.Components.CrossoverManagers.Utilities
             var neighbors = adjacencyMatrix[element];
             Remove(element, neighbors);
             if (neighbors.Count == 0)
-                return adjacencyMatrix.Keys.ElementAt(random.Next(adjacencyMatrix.Count));
+                return adjacencyMatrix.Keys.ElementAt(ProbabilityUtils.GetRandomInt(adjacencyMatrix.Count));
 
             if (!selectNeighborWithLeastNeighbors)
-                return neighbors.ElementAt(random.Next(neighbors.Count));
+                return neighbors.ElementAt(ProbabilityUtils.GetRandomInt(neighbors.Count));
 
             var elemenetsWithMinNeighbors = FindNeighborsWithLeaseNeighbors(neighbors);
-            return elemenetsWithMinNeighbors[random.Next(elemenetsWithMinNeighbors.Count)];
+            return elemenetsWithMinNeighbors[ProbabilityUtils.GetRandomInt(elemenetsWithMinNeighbors.Count)];
         }
 
         private List<T> FindNeighborsWithLeaseNeighbors(LinkedList<T> neighbors)

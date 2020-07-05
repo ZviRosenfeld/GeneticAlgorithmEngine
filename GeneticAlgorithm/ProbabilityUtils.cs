@@ -6,7 +6,38 @@ namespace GeneticAlgorithm
 {
     public static class ProbabilityUtils
     {
-        private static readonly Random random = new Random();
+        private static Random random = new Random();
+        private static object randomLockObject = new object();
+
+        /// <summary>
+        /// Returens a random double between 0 and 1.
+        /// </summary>
+        public static double GetRandomDouble()
+        {
+            // We need this lock, since random isn't thread-safe
+            lock (randomLockObject)
+                return random.NextDouble();
+        }
+
+        /// <summary>
+        /// Returens a random double between min (inclusive) and max (exclusive).
+        /// </summary>
+        public static int GetRandomInt(int min, int max)
+        {
+            // We need this lock, since random isn't thread-safe
+            lock (randomLockObject)
+                return random.Next(min, max);
+        }
+
+        /// <summary>
+        /// Returens a random double between 0 (inclusive) and max (exclusive).
+        /// </summary>
+        public static int GetRandomInt(int max)
+        {
+            // We need this lock, since random isn't thread-safe
+            lock (randomLockObject)
+                return random.Next(max);
+        }
 
         /// <summary>
         /// Returns true with a probability of probability - where probability is between 0 to 1 (including)
@@ -16,7 +47,7 @@ namespace GeneticAlgorithm
             if (probability > 1 || probability < 0)
                 throw new InternalSearchException($"Code 1008 (probability is {probability})");
 
-            return random.NextDouble() < probability;
+            return GetRandomDouble() < probability;
         }
 
         /// <summary>
@@ -68,8 +99,8 @@ namespace GeneticAlgorithm
         /// </summary>
         private static double GetStandardDistribution()
         {
-            var u1 = 1.0 - random.NextDouble();
-            var u2 = 1.0 - random.NextDouble();
+            var u1 = 1.0 - GetRandomDouble();
+            var u2 = 1.0 - GetRandomDouble();
             return Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
         }
     }

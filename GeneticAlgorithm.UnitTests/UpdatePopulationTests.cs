@@ -110,18 +110,21 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void ConvertPopulation_NewPopulationUpdated()
         {
-            var initialPopulation = new double[] { 2, 2 };
-            var newPopulation = new double[] { 3, 3 };
-            var populationManager = new TestPopulationManager(initialPopulation);
+            Utils.RunTimedTest(() =>
+            {
+                var initialPopulation = new double[] { 2, 2 };
+                var newPopulation = new double[] { 3, 3 };
+                var populationManager = new TestPopulationManager(initialPopulation);
 
-            var engine = CreateEngineBuilder(populationManager).Build();
-            engine.OnNewGeneration += populationUpdatedOnEvent.Save;
+                var engine = CreateEngineBuilder(populationManager).Build();
+                engine.OnNewGeneration += populationUpdatedOnEvent.Save;
 
-            engine.Next();
+                engine.Next();
 
-            engine.SetCurrentPopulation(newPopulation.ToChromosomes("Converted"));
+                engine.SetCurrentPopulation(newPopulation.ToChromosomes("Converted"));
 
-            AssertManagersUpdated(new[] { initialPopulation, newPopulation });
+                AssertManagersUpdated(new[] { initialPopulation, newPopulation });
+            });
         }
 
         [TestMethod]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using FakeItEasy;
 using GeneticAlgorithm.Interfaces;
 
@@ -23,7 +24,7 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
                 });
         }
         
-        public TestPopulationManager(double[] populationEvaluation, Func<IChromosome, double> nextGenerationEvaluationFunc = null)
+        public TestPopulationManager(double[] populationEvaluation, Func<IChromosome, double> nextGenerationEvaluationFunc = null, int millisecondsPerGeneration = 0)
         {
             GenerateInitailPopulation(populationEvaluation);
 
@@ -33,6 +34,7 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             A.CallTo(() => childrenGenerator.GenerateChildren(A<Population>._, A<int>._, A<int>._, A<IEnvironment>._)).ReturnsLazily(
                 (Population p, int n, int g, IEnvironment e) =>
                 {
+                    Thread.Sleep(millisecondsPerGeneration);
                     index++;
 
                     var newEvaluation = new double[populationEvaluation.Length];

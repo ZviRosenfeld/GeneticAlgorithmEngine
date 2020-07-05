@@ -9,12 +9,10 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// </summary>
     public class InsertionMutationManager<T> : IMutationManager<T>
     {
-        private readonly Random random = new Random();
-
         public T[] Mutate(T[] vector)
         {
-            var toRemove = random.Next(vector.Length);
-            var insertAt = random.Next(vector.Length);
+            var toRemove = ProbabilityUtils.GetRandomInt(vector.Length);
+            var insertAt = ProbabilityUtils.GetRandomInt(vector.Length);
 
             var newVector = new T[vector.Length];
             if (toRemove < insertAt)

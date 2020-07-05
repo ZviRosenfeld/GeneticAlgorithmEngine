@@ -20,7 +20,7 @@ namespace GeneticAlgorithm.UnitTests
             var trueCount = 0;
             var falseCount = 0;
             var attempts = 1000;
-            var margernOnError = attempts * 0.1;
+            var marginOfError = attempts * 0.1;
             for (int i = 0; i < attempts; i++)
             {
                 if (ProbabilityUtils.P(probability))
@@ -29,8 +29,8 @@ namespace GeneticAlgorithm.UnitTests
                     falseCount++;
             }
 
-            trueCount.AssertIsWithinRange(attempts * probability, margernOnError);
-            falseCount.AssertIsWithinRange(attempts * (1 - probability), margernOnError);
+            trueCount.AssertIsWithinRange(attempts * probability, marginOfError);
+            falseCount.AssertIsWithinRange(attempts * (1 - probability), marginOfError);
         }
 
         [TestMethod]
@@ -103,7 +103,10 @@ namespace GeneticAlgorithm.UnitTests
 
             // No element is generated more than 20% of the time
             foreach (var element in slelectedElements)
-                Assert.IsTrue(slelectedElements.Count(e => e.Equals(element)) < length * 5 * 2 * 0.2, $"{nameof(element)} {element} selected too many times");
+            {
+                var timesSelected = slelectedElements.Count(e => e.Equals(element));
+                Assert.IsTrue(timesSelected < length * 5 * 2 * 0.2, $"{nameof(element)} {element} selected too many times ({timesSelected}).");
+            }
         }
 
         [TestMethod]

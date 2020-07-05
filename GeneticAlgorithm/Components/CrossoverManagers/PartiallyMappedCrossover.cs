@@ -20,7 +20,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// </summary>
     public class PartiallyMappedCrossover<T> : ICrossoverManager
     {
-        private readonly Random random = new Random();
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 
@@ -45,7 +44,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var indexManager = new IndexManager<T>(vector2);
             var length = vector1.Length;
 
-            (var start, var end) = random.GetTwoRandomNumbers(length + 1);
+            (var start, var end) = ComponetsUtils.GetTwoRandomNumbers(length + 1);
             var addedIndexes = new List<int>();
             var genomesFromChromosome1 = new List<T>();
             for (int i = start; i < end; i++)

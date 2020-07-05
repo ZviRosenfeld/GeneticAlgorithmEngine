@@ -38,7 +38,7 @@ namespace GeneticAlgorithm.UnitTests
             if (engineRunning)
                 Task.Run(() => engine.Run());
 
-            Thread.Sleep(10);
+            Thread.Sleep(100);
             Assert.AreEqual(engineRunning, engine.IsRunning);
         }
         

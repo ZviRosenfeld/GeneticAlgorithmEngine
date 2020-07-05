@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.StopManagers
@@ -16,7 +17,9 @@ namespace GeneticAlgorithm.StopManagers
         /// </summary>
         public StopIfNoImprovment(int generationsToConsider, double minImprovment)
         {
-            this.generationsToConsider = generationsToConsider;
+            this.generationsToConsider = generationsToConsider > 0
+                ? generationsToConsider
+                : throw new GeneticAlgorithmArgumentException(nameof(generationsToConsider) + " must be greater then zero");
             this.minImprovment = minImprovment;
         }
 

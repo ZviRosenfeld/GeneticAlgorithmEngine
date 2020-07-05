@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.StopManagers
@@ -12,6 +13,10 @@ namespace GeneticAlgorithm.StopManagers
         /// </summary>
         public StopAtEvaluation(double evaluationToStopAt)
         {
+            if (evaluationToStopAt < 0)
+                throw GeneticAlgorithmArgumentException.SmallerThanZeroException(nameof(evaluationToStopAt), evaluationToStopAt);
+
+
             this.evaluationToStopAt = evaluationToStopAt;
         }
 

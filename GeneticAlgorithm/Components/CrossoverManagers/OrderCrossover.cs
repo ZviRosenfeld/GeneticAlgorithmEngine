@@ -45,7 +45,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var vector2 = ((VectorChromosome<T>) chromosome2).GetVector();
             var length = vector1.Length;
 
-            (var start, var end) = random.GetTwoRandomNumbers(length + 1);
+            (var start, var end) = ComponetsUtils.GetTwoRandomNumbers(length + 1);
             var genomesFromChromosome1 = new HashSet<T>();
             for (int i = start; i < end; i++)
                 genomesFromChromosome1.Add(vector1[i]);

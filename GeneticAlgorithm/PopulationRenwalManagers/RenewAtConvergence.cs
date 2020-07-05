@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Interfaces;
+﻿using GeneticAlgorithm.Exceptions;
+using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.PopulationRenwalManagers
 {
@@ -15,6 +16,8 @@ namespace GeneticAlgorithm.PopulationRenwalManagers
         /// </summary>
         public RenewAtConvergence(double diff, double precentageToRenew)
         {
+            precentageToRenew.VerifyPrecentageToRenew();
+
             this.precentageToRenew = precentageToRenew;
             stopManager = new StopManagers.StopAtConvergence(diff);
         }

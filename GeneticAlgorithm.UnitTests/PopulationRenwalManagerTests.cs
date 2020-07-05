@@ -18,14 +18,14 @@ namespace GeneticAlgorithm.UnitTests
         {
             var populationManager = new TestPopulationManager(new double[] {1, 1, 1});
             populationManager.SetPopulationGenerated(new[]
-                {new double[] {2, 2, 2}, new double[] {3, 3, 3}, new double[] {4, 4, 4}});
+                {new double[] {2, 3, 2}, new double[] {4, 4, 4}, new double[] {5, 5, 5}});
             var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
                 .AddPopulationRenwalManager(new RenewAtConvergence(0.9, 1))
                 .IncludeAllHistory().Build();
 
             var result = engine.Run(runType);
 
-            Assert.AreEqual(4, result.BestChromosome.Evaluate());
+            Assert.AreEqual(3, result.BestChromosome.Evaluate());
         }
 
         [TestMethod]
@@ -74,6 +74,23 @@ namespace GeneticAlgorithm.UnitTests
             var result = engine.Run(runType);
 
             Assert.AreEqual(2, result.BestChromosome.Evaluate());
+        }
+
+        [TestMethod]
+        [DataRow(RunType.Run)]
+        [DataRow(RunType.Next)]
+        public void RenewAtDifferenceBetweenAverageAndMaximumFitnessTest(RunType runType)
+        {
+            var populationManager = new TestPopulationManager(new double[] { 1, 2, 1 });
+            populationManager.SetPopulationGenerated(new[]
+                {new double[] {2, 5, 2}, new double[] {6, 6, 6}, new double[] {7, 7, 7}});
+            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+                .AddPopulationRenwalManager(new RenewAtDifferenceBetweenAverageAndMaximumFitness(1, 1))
+                .IncludeAllHistory().Build();
+
+            var result = engine.Run(runType);
+
+            Assert.AreEqual(5, result.BestChromosome.Evaluate());
         }
 
         [TestMethod]

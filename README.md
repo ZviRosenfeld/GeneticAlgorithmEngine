@@ -50,7 +50,7 @@ Your chromosomes will need to implement the [IChromosome](/GeneticAlgorithm/Inte
     public interface IChromosome
     {
         /// <summary>
-        /// Must return a value that is greater then zero
+        /// Must return a value that is greater then zero.
         /// </summary>
         double Evaluate();
 
@@ -60,9 +60,12 @@ Your chromosomes will need to implement the [IChromosome](/GeneticAlgorithm/Inte
 
 You can find a sample Chromosome [here](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs).
 
+Please note that the Evaluate and Mutate methods will be called on deferent chromosomes in parallel, so they must be thread safe in that aspect.
+
 ### ICrossoverManager
 
 You'll need to implement the [ICrossoverManager](/GeneticAlgorithm/Interfaces/ICrossoverManager.cs) interface. This tells the engine how to perform crossovers for your chromosomes.
+Please note that your crossoverManager will be called on deferent chromosomes in parallel, so it must be thread safe in that aspect.
 You can read more about crossovers [here](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
 
 ```CSharp
@@ -78,6 +81,7 @@ You can find some sample CrossoverManagers [here](/GeneticAlgorithm/Components/C
 
 You'll also need to implement the [IPopulationGenerator](/GeneticAlgorithm/Interfaces/IPopulationGenerator.cs) interface. The engine uses this class to create its initial population. 
 The PopulationGenerator will also renew the population when needed (see [IPopulationRenwalManagers](#ipopulationrenwalmanagers)).
+PopulationGenerator doesn't need to be thread safe.
 
 ```CSharp
     public interface IPopulationGenerator
@@ -190,6 +194,7 @@ In addition, [here](/GeneticAlgorithm/PopulationRenwalManagers) are some example
 Existing PopulationRenwalManagers:
 - [RenewAtConvergence](/GeneticAlgorithm/PopulationRenwalManagers/RenewAtConvergence.cs): The search will renew some of the population if the difference between chromosomes in the population is too small.
 - [RenewIfNoImprovment](/GeneticAlgorithm/PopulationRenwalManagers/RenewIfNoImprovment.cs): Will renew some of the population if the improvement over 'X' generations isn't good enough.
+- [RenewAtDifferenceBetweenAverageAndMaximumFitness](/GeneticAlgorithm/PopulationRenwalManagers/RenewAtDifferenceBetweenAverageAndMaximumFitness.cs): Will renew some of the population when the difference between the average and max evaluation is equal too small (available since 1.3.4).
 
 Example:
 ```CSharp

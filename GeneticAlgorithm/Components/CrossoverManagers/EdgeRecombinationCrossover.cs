@@ -23,7 +23,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     {
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
-        private readonly Random random = new Random();
 
         /// <summary>
         /// EdgeRecombinationCrossover Works on chromosomes of type VectorChromosome&lt;T&gt;.
@@ -44,7 +43,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var vector1 = ((VectorChromosome<T>)chromosome1).GetVector();
             var vector2 = ((VectorChromosome<T>)chromosome2).GetVector();
             var length = vector1.Length;
-            var firstElement = vector1[random.Next(0, vector1.Length)];
+            var firstElement = vector1[ProbabilityUtils.GetRandomInt(0, vector1.Length)];
 
             var childArray = new NonReapetingAdjacencyMatrix<T>(vector1, vector2, true).Crossover(firstElement, length);
             return new VectorChromosome<T>(childArray, mutationManager, evaluator);

@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.Interfaces;
+using GeneticAlgorithm.PopulationRenwalManagers;
+using GeneticAlgorithm.StopManagers;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,7 +23,7 @@ namespace GeneticAlgorithm.UnitTests
                 .Build();
 
         [TestMethod]
-        [ExpectedException(typeof(GeneticAlgorithmException))]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
         [DataRow(1)]
         [DataRow(-2)]
         public void BadNumberOfGenerations_ThrowsException(int size) =>
@@ -107,30 +109,95 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(EngineAlreadyRunningException))]
         public void SetCurrentPopulation_EngineRunning_ThrowException()
         {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            Utils.RunTimedTest(() =>
+            {
+                var engine =
+                    new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
-            Task.Run(() => engine.Run());
-            while (!engine.IsRunning) ;
+                Task.Run(() => engine.Run());
+                while (!engine.IsRunning) ;
 
-            engine.SetCurrentPopulation(new double[] { 3 ,3 }.ToChromosomes("Converted"));
+                engine.SetCurrentPopulation(new double[] { 3, 3 }.ToChromosomes("Converted"));
 
-            Assert.Fail("Should have thrown an exception by now");
+                Assert.Fail("Should have thrown an exception by now");
+            });
         }
 
         [TestMethod]
         [ExpectedException(typeof(GeneticAlgorithmException))]
         public void SetCurrentPopulation_WrongNumberOfChromosomes_ThrowException()
         {
-            var engine =
+            Utils.RunTimedTest(() =>
+            {
+                var engine =
                 new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
 
-            Task.Run(() => engine.Run());
-            while (!engine.IsRunning) ;
+                Task.Run(() => engine.Run());
+                while (!engine.IsRunning) ;
 
-            engine.SetCurrentPopulation(new double[] { 3, 3 ,3 }.ToChromosomes("Converted"));
+                engine.SetCurrentPopulation(new double[] { 3, 3, 3 }.ToChromosomes("Converted"));
 
-            Assert.Fail("Should have thrown an exception by now");
+                Assert.Fail("Should have thrown an exception by now");
+            });
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void StopAtConvergence_DiffNegative_ThrowException() =>
+            new StopAtConvergence(-0.1);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void StopAtEvaluation_EvaluationNegative_ThrowException() =>
+            new StopAtEvaluation(-0.1);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void StopAtGeneration_BadGeneration_ThrowException() =>
+            new StopAtGeneration(1);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void StopIfNoImprovment_BadGenerationsToConsider_ThrowException() =>
+            new StopIfNoImprovment(0, 0.5);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewIfNoImprovment_BadGenerationsToConsider_ThrowException() =>
+            new RenewIfNoImprovment(0, 1, 0.5);
+
+        [TestMethod]
+        [DataRow(-0.1)]
+        [DataRow(0)]
+        [DataRow(1.1)]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewIfNoImprovment_BadPrecentageToRenew_ThrowException(double precentageToRenew) =>
+            new RenewIfNoImprovment(1, 0.5, precentageToRenew);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewAtConvergence_BadGenerationsToConsider_ThrowException() =>
+            new RenewAtConvergence(-0.1, 0.5);
+
+        [TestMethod]
+        [DataRow(-0.1)]
+        [DataRow(0)]
+        [DataRow(1.1)]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewAtConvergence_BadPrecentageToRenew_ThrowException(double precentageToRenew) =>
+            new RenewAtConvergence(1, precentageToRenew);
+
+        [TestMethod]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewAtDifferenceBetweenAverageAndMaximumFitness_NegativeDiff_ThrowException() =>
+            new RenewAtDifferenceBetweenAverageAndMaximumFitness(-0.1, 0.5);
+
+        [TestMethod]
+        [DataRow(-0.1)]
+        [DataRow(0)]
+        [DataRow(1.1)]
+        [ExpectedException(typeof(GeneticAlgorithmArgumentException))]
+        public void RenewAtDifferenceBetweenAverageAndMaximumFitness_BadPrecentageToRenew_ThrowException(double precentageToRenew) =>
+            new RenewAtDifferenceBetweenAverageAndMaximumFitness(1, precentageToRenew);
     }
 }

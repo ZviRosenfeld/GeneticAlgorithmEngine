@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Interfaces;
+﻿using GeneticAlgorithm.Exceptions;
+using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.StopManagers
 {
@@ -11,6 +12,9 @@ namespace GeneticAlgorithm.StopManagers
         /// </summary>
         public StopAtConvergence(double diff)
         {
+            if (diff < 0)
+                throw GeneticAlgorithmArgumentException.SmallerThanZeroException(nameof(diff), diff);
+
             this.diff = diff;
         }
 

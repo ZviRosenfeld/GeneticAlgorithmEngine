@@ -9,12 +9,10 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// </summary>
     public class ExchangeMutationManager<T> : IMutationManager<T>
     {
-        private readonly Random random = new Random();
-
         public T[] Mutate(T[] vector)
         {
-            int from = random.Next(vector.Length);
-            int to = random.Next(vector.Length);
+            int from = ProbabilityUtils.GetRandomInt(vector.Length);
+            int to = ProbabilityUtils.GetRandomInt(vector.Length);
 
             var temp = vector[to];
             vector[to] = vector[from];

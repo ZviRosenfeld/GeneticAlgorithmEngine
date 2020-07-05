@@ -47,7 +47,7 @@ namespace GeneticAlgorithm.UnitTests
         }
 
         [TestMethod]
-        public void CombineTest_FirstArrayEmty()
+        public void CombineTest_FirstArrayEmpty()
         {
             var population1 = new IChromosome[] {};
             var population2 = new[] { chromosome1, chromosome2 , chromosome3 };

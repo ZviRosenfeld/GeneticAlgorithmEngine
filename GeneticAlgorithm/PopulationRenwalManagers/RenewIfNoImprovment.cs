@@ -1,4 +1,5 @@
-﻿using GeneticAlgorithm.Interfaces;
+﻿using GeneticAlgorithm.Exceptions;
+using GeneticAlgorithm.Interfaces;
 using GeneticAlgorithm.StopManagers;
 
 namespace GeneticAlgorithm.PopulationRenwalManagers
@@ -16,6 +17,8 @@ namespace GeneticAlgorithm.PopulationRenwalManagers
         /// </summary>
         public RenewIfNoImprovment(int generationsToConsider, double minImprvment,  double precentageToRenew)
         {
+            precentageToRenew.VerifyPrecentageToRenew();
+
             this.precentageToRenew = precentageToRenew;
             stopManager = new StopIfNoImprovment(generationsToConsider, minImprvment);
         }

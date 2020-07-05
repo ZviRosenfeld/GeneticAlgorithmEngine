@@ -1,5 +1,7 @@
 ﻿using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.UnitTests.TestUtils
 {
@@ -47,5 +49,26 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
         /// </summary>
         public static T[] ToArray<T>(this IChromosome chromosome) =>
             ((VectorChromosome<T>)chromosome).GetVector();
+
+        /// <summary>
+        /// If the action dosn't finish in time, the test is terminated and failes.
+        /// </summary>
+        public static void RunTimedTest(Action action, TimeSpan? time = null)
+        {
+            if (time == null)
+                time = TimeSpan.FromSeconds(1);
+
+            var task = Task.Run(action);
+            try
+            {
+                task.Wait(time.Value);
+            }
+            catch (AggregateException e)
+            {
+                throw e.InnerException;
+            }
+            if (!task.IsCompleted)
+                throw new Exception($"{nameof(action)} didn't finish in time.");
+        }
     }
 }

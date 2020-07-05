@@ -3,7 +3,7 @@ using GeneticAlgorithm.Interfaces;
 
 namespace GeneticAlgorithm.StopManagers
 {
-    class StopAtGeneration : IStopManager
+    public class StopAtGeneration : IStopManager
     {
         private readonly int generationToStopAt;
 
@@ -11,7 +11,7 @@ namespace GeneticAlgorithm.StopManagers
         {
             this.generationToStopAt = generationToStopAt > 1
                 ? generationToStopAt
-                : throw new GeneticAlgorithmException(nameof(generationToStopAt) + " must be greater then one");
+                : throw new GeneticAlgorithmArgumentException(nameof(generationToStopAt) + " must be greater then one");
         }
 
         public bool ShouldStop(Population population, IEnvironment environment, int generation) =>

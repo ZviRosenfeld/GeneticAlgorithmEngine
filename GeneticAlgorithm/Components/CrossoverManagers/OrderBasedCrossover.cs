@@ -22,7 +22,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// </summary>
     public class OrderBasedCrossover<T> : ICrossoverManager
     {
-        private readonly Random random = new Random();
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 
@@ -45,7 +44,7 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
             var vector1 = ((VectorChromosome<T>)chromosome1).GetVector();
             var vector2 = ((VectorChromosome<T>)chromosome2).GetVector();
             var length = vector1.Length;
-            var indexes = ProbabilityUtils.SelectKRandomNumbersNonRepeating(length, random.Next(length));
+            var indexes = ProbabilityUtils.SelectKRandomNumbersNonRepeating(length, ProbabilityUtils.GetRandomInt(0, length));
 
             var elementsFromParent2 = new HashSet<T>();
             var elementsFromParent2OrderedByIndex = new List<T>();

@@ -10,12 +10,10 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// </summary>
     public class ScrambleMutationManager<T> : IMutationManager<T>
     {
-        private readonly Random random = new Random();
-
         public T[] Mutate(T[] vector)
         {
-            (var start, var end) = random.GetTwoRandomNumbers(vector.Length + 1);
-            var scrambledGenomes = vector.Skip(start).Take(end - start).ToArray().Shuffle(random);
+            (var start, var end) = ComponetsUtils.GetTwoRandomNumbers(vector.Length + 1);
+            var scrambledGenomes = vector.Skip(start).Take(end - start).ToArray().Shuffle();
 
             var newVector = new T[vector.Length];
             for (int i = 0; i < start; i++)

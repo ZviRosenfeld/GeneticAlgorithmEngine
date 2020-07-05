@@ -56,14 +56,17 @@ namespace GeneticAlgorithm
             return value;
         }
         
-        public static T[] Shuffle<T>(this ICollection<T> collection, Random random)
+        /// <summary>
+        /// Only send the random if the compoment calling shuffle doesn't need to be thread safe.
+        /// </summary>
+        public static T[] Shuffle<T>(this ICollection<T> collection, Random random = null)
         {
             var array = collection.ToArray();
             int n = array.Length;
             while (n > 1)
             {
                 n--;
-                int k = random.Next(n + 1);
+                int k = random != null ? random.Next(n + 1) : ProbabilityUtils.GetRandomInt(n + 1);
                 T value = array[k];
                 array[k] = array[n];
                 array[n] = value;

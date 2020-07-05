@@ -86,24 +86,35 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         public void SearchTimeWithNextTest()
         {
-            var sleepTime = 10;
             var generations = 50;
-            var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
+            var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 }, millisecondsPerGeneration: 10);
             var engine = new TestGeneticSearchEngineBuilder(10, generations, populationManager).Build();
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             GeneticSearchResult result = null;
             while (result == null || !result.IsCompleted)
-            {
                 result = engine.Next();
-                Thread.Sleep(sleepTime);
-            }
+            
             stopwatch.Stop();
 
-            var time = stopwatch.Elapsed.TotalMilliseconds - sleepTime * generations -
-                       result.SearchTime.TotalMilliseconds;
-            Assert.IsTrue(time < 0.2 * stopwatch.Elapsed.TotalMilliseconds);
+            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 0.90 < stopwatch.Elapsed.TotalMilliseconds, $"time is too short. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 1.1 > stopwatch.Elapsed.TotalMilliseconds, $"time is too long. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+        }
+
+        [TestMethod]
+        public void SearchTimeRunTest()
+        {
+            var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
+            var engine = new TestGeneticSearchEngineBuilder(10, 50, populationManager).Build();
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var result = engine.Run();
+            stopwatch.Stop();
+
+            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 0.90 < stopwatch.Elapsed.TotalMilliseconds, $"time is too short. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 1.1> stopwatch.Elapsed.TotalMilliseconds, $"time is too long. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
         }
 
         [DataRow(false, RunType.Run)]

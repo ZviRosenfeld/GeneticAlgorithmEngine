@@ -29,7 +29,7 @@ namespace GeneticAlgorithm.UnitTests
         [TestMethod]
         [DataRow(RunType.Run)]
         [DataRow(RunType.Next)]
-        public void BassicTest(RunType runType)
+        public void BasicTest(RunType runType)
         {
             var searchEngine =
                 new GeneticSearchEngineBuilder(POPULATION_SIZE, 50, crossoverManager, populationGenerator)

@@ -14,7 +14,6 @@ namespace GeneticAlgorithm.Components.MutationManagers
     /// </summary>
     class DisplacementMutationBase<T> : IMutationManager<T>
     {
-        private readonly Random random = new Random();
         private readonly bool inversionSttretch;
 
         public DisplacementMutationBase(bool inversionSttretch)
@@ -24,8 +23,8 @@ namespace GeneticAlgorithm.Components.MutationManagers
 
         public T[] Mutate(T[] vector)
         {
-            (var start, var end) = random.GetTwoRandomNumbers(vector.Length + 1);
-            var insertionIndex = random.Next(vector.Length - (end - start));
+            (var start, var end) = ComponetsUtils.GetTwoRandomNumbers(vector.Length + 1);
+            var insertionIndex = ProbabilityUtils.GetRandomInt(vector.Length - (end - start));
             var vectorWithoutStretch = new T[vector.Length - (end - start)];
             for (int i = 0; i < start; i++)
                 vectorWithoutStretch[i] = vector[i];
