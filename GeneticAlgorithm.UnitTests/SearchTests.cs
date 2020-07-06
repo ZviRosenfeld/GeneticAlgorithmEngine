@@ -22,16 +22,18 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager =
                 new TestPopulationManager(
                     new double[] {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
-            var engine = new TestGeneticSearchEngineBuilder(25, int.MaxValue, populationManager)
-                .SetCancellationToken(cancellationSource.Token).Build();
-            
-            Task.Run(() =>
+            using (var engine = new TestGeneticSearchEngineBuilder(25, int.MaxValue, populationManager)
+                .SetCancellationToken(cancellationSource.Token).Build())
             {
-                Thread.Sleep(1000);
-                Assert.Fail("We should have finished running by now");
-            });
 
-            engine.Run(runType);
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    Assert.Fail("We should have finished running by now");
+                });
+
+                engine.Run(runType);
+            }
         }
 
         // In this test, without elitism, the population will decrease without the elitism.
@@ -46,15 +48,17 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager =
                 new TestPopulationManager(
                     new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 }, c => c.Evaluate() - 1);
-            var engine = new TestGeneticSearchEngineBuilder(populationSize, 10, populationManager)
-                .SetElitePercentage(eilentPrecentage).IncludeAllHistory().Build();
-            
-            var result = engine.Run(runType);
-            var maxEvaluation = result.BestChromosome.Evaluate();
-            
-            Assert.AreEqual(10, maxEvaluation);
-            Assert.AreEqual(eilentPrecentage * populationSize,
-                result.Population.GetChromosomes().Count(c => c.Evaluate() == maxEvaluation));
+            using (var engine = new TestGeneticSearchEngineBuilder(populationSize, 10, populationManager)
+                .SetElitePercentage(eilentPrecentage).IncludeAllHistory().Build())
+            {
+
+                var result = engine.Run(runType);
+                var maxEvaluation = result.BestChromosome.Evaluate();
+
+                Assert.AreEqual(10, maxEvaluation);
+                Assert.AreEqual(eilentPrecentage * populationSize,
+                    result.Population.GetChromosomes().Count(c => c.Evaluate() == maxEvaluation));
+            }
         }
 
         [TestMethod]
@@ -62,14 +66,16 @@ namespace GeneticAlgorithm.UnitTests
         [DataRow(RunType.Next)]
         public void SearchTimeTest(RunType runType)
         {
-            var populationManager = new TestPopulationManager( new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
-            var engine1 = new TestGeneticSearchEngineBuilder(10, 10, populationManager).Build();
-            var engine2 = new TestGeneticSearchEngineBuilder(10, 1000, populationManager).Build();
+            var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
+            using (var engine1 = new TestGeneticSearchEngineBuilder(10, 10, populationManager).Build())
+            using (var engine2 = new TestGeneticSearchEngineBuilder(10, 1000, populationManager).Build())
+            {
 
-            var result1 = engine1.Run(runType);
-            var result2 = engine2.Run(runType);
+                var result1 = engine1.Run(runType);
+                var result2 = engine2.Run(runType);
 
-            Assert.IsTrue(result2.SearchTime > result1.SearchTime, $"engine1 ran for less time than engine2 (engine1 = {result1.SearchTime}; engine2 = {result2.SearchTime})");
+                Assert.IsTrue(result2.SearchTime > result1.SearchTime, $"engine1 ran for less time than engine2 (engine1 = {result1.SearchTime}; engine2 = {result2.SearchTime})");
+            }
         }
 
         [TestMethod]
@@ -106,15 +112,17 @@ namespace GeneticAlgorithm.UnitTests
         public void SearchTimeRunTest()
         {
             var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
-            var engine = new TestGeneticSearchEngineBuilder(10, 50, populationManager).Build();
+            using (var engine = new TestGeneticSearchEngineBuilder(10, 50, populationManager).Build())
+            {
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var result = engine.Run();
-            stopwatch.Stop();
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                var result = engine.Run();
+                stopwatch.Stop();
 
-            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 0.90 < stopwatch.Elapsed.TotalMilliseconds, $"time is too short. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
-            Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 1.1> stopwatch.Elapsed.TotalMilliseconds, $"time is too long. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+                Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 0.90 < stopwatch.Elapsed.TotalMilliseconds, $"time is too short. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+                Assert.IsTrue(stopwatch.Elapsed.TotalMilliseconds * 1.1 > stopwatch.Elapsed.TotalMilliseconds, $"time is too long. {nameof(stopwatch.Elapsed)} = {stopwatch.Elapsed}; {nameof(result.SearchTime)} = {result.SearchTime.TotalMilliseconds}");
+            }
         }
 
         [DataRow(false, RunType.Run)]
@@ -126,14 +134,16 @@ namespace GeneticAlgorithm.UnitTests
         {
             var populationManager = new TestPopulationManager(new double[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 });
             var enigneBuilder = new TestGeneticSearchEngineBuilder(10, 2, populationManager);
-            var searchEngine = includeHistory ? enigneBuilder.IncludeAllHistory().Build() : enigneBuilder.Build();
+            using (var searchEngine = includeHistory ? enigneBuilder.IncludeAllHistory().Build() : enigneBuilder.Build())
+            {
 
-            var result = searchEngine.Run(runType);
+                var result = searchEngine.Run(runType);
 
-            if (includeHistory)
-                Assert.AreEqual(2, result.History.Count, "There should have been history");
-            else
-                Assert.AreEqual(0, result.History.Count, "There shouldn't be any history");
+                if (includeHistory)
+                    Assert.AreEqual(2, result.History.Count, "There should have been history");
+                else
+                    Assert.AreEqual(0, result.History.Count, "There shouldn't be any history");
+            }
         }
 
         [TestMethod]
@@ -143,13 +153,15 @@ namespace GeneticAlgorithm.UnitTests
         {
             var population = new[] {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {2, 3, 2}};
             var populationManager = new TestPopulationManager(population);
-            var searchEngine =
+            using (var searchEngine =
                 new TestGeneticSearchEngineBuilder(population[0].Length, population.Length - 1, populationManager)
-                    .IncludeAllHistory().Build();
+                    .IncludeAllHistory().Build())
+            {
 
-            var result = searchEngine.Run(runType);
-            
-            result.History.AssertHasEvaluation(population);
+                var result = searchEngine.Run(runType);
+
+                result.History.AssertHasEvaluation(population);
+            }
         }
         
         [TestMethod]
@@ -159,22 +171,24 @@ namespace GeneticAlgorithm.UnitTests
         {
             var population = new[] { new double[] { 1, 1, 1 }, new double[] { 2, 2, 2 }, new double[] { 2, 3, 2 } };
             var populationManager = new TestPopulationManager(population);
-            var searchEngine =
+            using (var searchEngine =
                 new TestGeneticSearchEngineBuilder(population[0].Length, population.Length - 1, populationManager)
-                    .Build();
-
-            var actualPopulation = new List<IChromosome[]>();
-            var actualEvaluations = new List<double[]>();
-            searchEngine.OnNewGeneration += (p, e) =>
+                    .Build())
             {
-                actualEvaluations.Add(p.GetEvaluations());
-                actualPopulation.Add(p.GetChromosomes());
-            };
 
-            searchEngine.Run(runType);
-            
-            actualEvaluations.AssertAreTheSame(population);
-            actualPopulation.AssertHasEvaluation(population);
+                var actualPopulation = new List<IChromosome[]>();
+                var actualEvaluations = new List<double[]>();
+                searchEngine.OnNewGeneration += (p, e) =>
+                {
+                    actualEvaluations.Add(p.GetEvaluations());
+                    actualPopulation.Add(p.GetChromosomes());
+                };
+
+                searchEngine.Run(runType);
+
+                actualEvaluations.AssertAreTheSame(population);
+                actualPopulation.AssertHasEvaluation(population);
+            }
         }
 
         [TestMethod]

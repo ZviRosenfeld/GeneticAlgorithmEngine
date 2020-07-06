@@ -1,6 +1,7 @@
 ﻿using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Interfaces;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.UnitTests.TestUtils
@@ -27,7 +28,7 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             return population;
         }
 
-        public static GeneticSearchEngine GetBassicEngine()
+        public static GeneticSearchEngine GetBasicEngine()
         {
             var populationManager = new TestPopulationManager(new double[] { 1, 1, 1, 1, 1 });
             var engineBuilder = new TestGeneticSearchEngineBuilder(5, int.MaxValue, populationManager);
@@ -59,6 +60,8 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
                 time = TimeSpan.FromSeconds(1);
 
             var task = Task.Run(action);
+            WaitForTaskToStart(task, TimeSpan.FromSeconds(5));
+
             try
             {
                 task.Wait(time.Value);
@@ -69,6 +72,27 @@ namespace GeneticAlgorithm.UnitTests.TestUtils
             }
             if (!task.IsCompleted)
                 throw new Exception($"{nameof(action)} didn't finish in time.");
+        }
+
+        private static void WaitForTaskToStart(Task task, TimeSpan time)
+        {
+            var runTill = DateTime.Now + time;
+            while (task.Status == TaskStatus.WaitingToRun)
+            {
+                try
+                {
+                    task.Wait(1000);
+                }
+                catch (AggregateException e)
+                {
+                    throw e.InnerException;
+                }
+                if (DateTime.Now > runTill)
+                    break;
+            }
+
+            if (task.Status == TaskStatus.WaitingToRun)
+                throw new Exception("The task never started!");
         }
     }
 }

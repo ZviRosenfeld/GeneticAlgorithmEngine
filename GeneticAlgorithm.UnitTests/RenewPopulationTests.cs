@@ -39,14 +39,16 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(EngineAlreadyRunningException))]
         public void RenewPopulation_EngineRunning_ThrowException()
         {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            using (var engine =
+                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build())
+            {
 
-            Task.Run(() => engine.Run());
-            Thread.Sleep(50); // Give the eingine some time to start
+                Task.Run(() => engine.Run());
+                Thread.Sleep(50); // Give the eingine some time to start
 
-            engine.RenewPopulation(0.5);
-            Assert.Fail("Should have thrown an exception by now");
+                engine.RenewPopulation(0.5);
+                Assert.Fail("Should have thrown an exception by now");
+            }
         }
 
         [TestMethod]

@@ -134,6 +134,7 @@ namespace GeneticAlgorithm
 
         public void Dispose()
         {
+            Pause();
             runAndPauseManager.Dispose();
         }
     }

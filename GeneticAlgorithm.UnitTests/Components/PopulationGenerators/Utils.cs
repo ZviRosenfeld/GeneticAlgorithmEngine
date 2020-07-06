@@ -13,7 +13,7 @@ namespace GeneticAlgorithm.UnitTests.Components.PopulationGenerators
         /// </summary>
         public static void TestChromosomes<T>(this IPopulationGenerator populationGenerator, int minGenome, int maxGenome)
         {
-            var chromosomes = populationGenerator.GeneratePopulation(10);
+            var chromosomes = populationGenerator.GeneratePopulation(20);
             var recivedGenomes = new HashSet<int>();
             foreach (var chromosome in chromosomes)
             {

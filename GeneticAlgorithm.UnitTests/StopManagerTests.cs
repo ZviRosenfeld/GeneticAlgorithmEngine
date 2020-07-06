@@ -19,12 +19,14 @@ namespace GeneticAlgorithm.UnitTests
         {
             var populationManager = new TestPopulationManager(new[]
                 {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {2, 3, 2}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
-                .AddStopManager(new StopAtEvaluation(3)).IncludeAllHistory().Build();
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                .AddStopManager(new StopAtEvaluation(3)).IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(3, result.Generations);
+                Assert.AreEqual(3, result.Generations);
+            }
         }
         
         [TestMethod]
@@ -34,12 +36,14 @@ namespace GeneticAlgorithm.UnitTests
         {
             var populationManager = new TestPopulationManager(new[]
                 {new double[] {1, 2, 1}, new double[] {2, 6, 2}, new double[] {2, 2.5, 2}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
-                .AddStopManager(new StopAtConvergence(0.5)).IncludeAllHistory().Build();
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                .AddStopManager(new StopAtConvergence(0.5)).IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(3, result.Generations);
+                Assert.AreEqual(3, result.Generations);
+            }
         }
 
         [TestMethod]
@@ -51,12 +55,14 @@ namespace GeneticAlgorithm.UnitTests
             {
                 var populationManager = new TestPopulationManager(new[]
                     {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}, new double[] {4, 4, 4}});
-                var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
-                    .AddStopManager(new StopIfNoImprovment(3, 3)).IncludeAllHistory().Build();
+                using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                    .AddStopManager(new StopIfNoImprovment(3, 3)).IncludeAllHistory().Build())
+                {
 
-                var result = engine.Run(runType);
+                    var result = engine.Run(runType);
 
-                Assert.AreEqual(4, result.Generations);
+                    Assert.AreEqual(4, result.Generations);
+                }
             });
         }
 
@@ -69,12 +75,14 @@ namespace GeneticAlgorithm.UnitTests
            {
                var populationManager = new TestPopulationManager(new[]
                    {new double[] {1, 1, 1}, new double[] {2, 2.5, 2}, new double[] {3, 3, 3}});
-               var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
-                   .AddStopManager(new StopIfNoImprovment(1, 0.9)).IncludeAllHistory().Build();
+               using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                   .AddStopManager(new StopIfNoImprovment(1, 0.9)).IncludeAllHistory().Build())
+               {
 
-               var result = engine.Run(runType);
+                   var result = engine.Run(runType);
 
-               Assert.AreEqual(3, result.Generations);
+                   Assert.AreEqual(3, result.Generations);
+               }
            });
         }
 
@@ -87,15 +95,16 @@ namespace GeneticAlgorithm.UnitTests
            {
                var populationManager = new TestPopulationManager(new[]
                {
-                new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}, new double[] {4, 4, 4},
-                new double[] {4, 4, 4}, new double[] {4, 4, 4}
-           });
-               var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
-                   .AddStopManager(new StopIfNoImprovment(2, 0.9)).IncludeAllHistory().Build();
+                    new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}, new double[] {4, 4, 4},
+                    new double[] {4, 4, 4}, new double[] {4, 4, 4}
+               });
+               using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, populationManager)
+                   .AddStopManager(new StopIfNoImprovment(2, 0.9)).IncludeAllHistory().Build())
+               {
+                   var result = engine.Run(runType);
 
-               var result = engine.Run(runType);
-
-               Assert.AreEqual(6, result.Generations);
+                   Assert.AreEqual(6, result.Generations);
+               }
            });
         }
 
@@ -121,10 +130,11 @@ namespace GeneticAlgorithm.UnitTests
                     });
                 var populationManager = new TestPopulationManager(new[]
                     {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}});
-                var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 3, populationManager)
-                    .AddStopManager(stopManager).IncludeAllHistory().Build();
-
-                engine.Run(runType);
+                using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 3, populationManager)
+                    .AddStopManager(stopManager).IncludeAllHistory().Build())
+                {
+                    engine.Run(runType);
+                }
             });
         }
 

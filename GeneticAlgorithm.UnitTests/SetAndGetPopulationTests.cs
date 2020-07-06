@@ -13,14 +13,19 @@ namespace GeneticAlgorithm.UnitTests
         [ExpectedException(typeof(EngineAlreadyRunningException))]
         public void GetCurrentPopulation_EngineRunning_ThrowException()
         {
-            var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+            Utils.RunTimedTest(() =>
+            {
+                using (var engine =
+                    new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build())
+                {
 
-            Task.Run(() => engine.Run());
-            while (!engine.IsRunning) ;
+                    Task.Run(() => engine.Run());
+                    while (!engine.IsRunning) ;
 
-            engine.GetCurrentPopulation();
-            Assert.Fail("Should have thrown an exception by now");
+                    engine.GetCurrentPopulation();
+                    Assert.Fail("Should have thrown an exception by now");
+                }
+            });
         }
 
         [TestMethod]
@@ -29,18 +34,20 @@ namespace GeneticAlgorithm.UnitTests
         {
             Utils.RunTimedTest(() =>
             {
-                var engine =
-                    new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+                using (var engine =
+                    new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build())
+                {
 
-                Task.Run(() => engine.Run());
-                while (!engine.IsRunning) ;
-                
-                engine.SetCurrentPopulation(new double[] { 3, 3 }.ToChromosomes("Converted"));
+                    Task.Run(() => engine.Run());
+                    while (!engine.IsRunning) ;
 
-                if (engine.IsRunning)
-                    Assert.Fail("Should have thrown an exception.");
-                else
-                    Assert.Fail("For some reason, the engine is no longer running.");
+                    engine.SetCurrentPopulation(new double[] { 3, 3 }.ToChromosomes("Converted"));
+
+                    if (engine.IsRunning)
+                        Assert.Fail("Should have thrown an exception.");
+                    else
+                        Assert.Fail("For some reason, the engine is no longer running.");
+                }
             });
         }
 
@@ -50,31 +57,35 @@ namespace GeneticAlgorithm.UnitTests
         {
             Utils.RunTimedTest(() =>
             {
-                var engine =
-                new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build();
+                using (var engine = new TestGeneticSearchEngineBuilder(2, int.MaxValue, new TestPopulationManager(new double[] { 2, 2 })).Build())
+                {
 
-                Task.Run(() => engine.Run());
-                while (!engine.IsRunning) ;
+                    Task.Run(() => engine.Run());
+                    while (!engine.IsRunning) ;
 
-                engine.SetCurrentPopulation(new double[] { 3, 3, 3 }.ToChromosomes("Converted"));
+                    engine.SetCurrentPopulation(new double[] { 3, 3, 3 }.ToChromosomes("Converted"));
 
-                Assert.Fail("Should have thrown an exception by now");
+                    Assert.Fail("Should have thrown an exception by now");
+                }
             });
         }
 
         [TestMethod]
         public void SetPopulation_PopulationSet()
         {
-            var newPopulationEvaluation = new double[] { 2, 2, 2 };
-            var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 });
-            var engine = new TestGeneticSearchEngineBuilder(3, 10, populationManager).Build();
-            engine.Next();
+            Utils.RunTimedTest(() =>
+            {
+                var newPopulationEvaluation = new double[] { 2, 2, 2 };
+                var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 });
+                var engine = new TestGeneticSearchEngineBuilder(3, 10, populationManager).Build();
+                engine.Next();
 
-            var newPopulation = engine.SetCurrentPopulation(newPopulationEvaluation.ToChromosomes("Converted"));
-            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+                var newPopulation = engine.SetCurrentPopulation(newPopulationEvaluation.ToChromosomes("Converted"));
+                newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
 
-            newPopulation = engine.GetCurrentPopulation();
-            newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+                newPopulation = engine.GetCurrentPopulation();
+                newPopulation.Population.GetChromosomes().AssertHasEvaluation(newPopulationEvaluation);
+            });
         }
 
         [TestMethod]

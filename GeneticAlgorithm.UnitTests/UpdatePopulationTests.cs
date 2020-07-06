@@ -60,12 +60,14 @@ namespace GeneticAlgorithm.UnitTests
         {
             var population = new[] { new double[] { 1, 1, 1 }, new double[] { 2, 2, 2 }, new double[] { 2, 3, 2 } };
             var populationManager = new TestPopulationManager(population);
-            var engine = CreateEngineBuilder(populationManager, population.Length).Build();
-            engine.OnNewGeneration += populationUpdatedOnEvent.Save;
+            using (var engine = CreateEngineBuilder(populationManager, population.Length).Build())
+            {
+                engine.OnNewGeneration += populationUpdatedOnEvent.Save;
 
-            engine.Run(runType);
+                engine.Run(runType);
 
-            AssertManagersUpdated(population);
+                AssertManagersUpdated(population);
+            }
         }
 
         [TestMethod]

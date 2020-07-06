@@ -19,13 +19,15 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager = new TestPopulationManager(new double[] {1, 1, 1});
             populationManager.SetPopulationGenerated(new[]
                 {new double[] {2, 3, 2}, new double[] {4, 4, 4}, new double[] {5, 5, 5}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
                 .AddPopulationRenwalManager(new RenewAtConvergence(0.9, 1))
-                .IncludeAllHistory().Build();
+                .IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(3, result.BestChromosome.Evaluate());
+                Assert.AreEqual(3, result.BestChromosome.Evaluate());
+            }
         }
 
         [TestMethod]
@@ -36,13 +38,15 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager = new TestPopulationManager(new double[] { 4, 4, 4 });
             populationManager.SetPopulationGenerated(new[]
                 {new double[] {3, 3, 3}, new double[] {2, 2, 2}, new double[] {1, 1, 1}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
                 .AddPopulationRenwalManager(new RenewAtConvergence(0.9, 0.5))
-                .IncludeAllHistory().Build();
+                .IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(4, result.BestChromosome.Evaluate());
+                Assert.AreEqual(4, result.BestChromosome.Evaluate());
+            }
         }
 
         [TestMethod]
@@ -53,12 +57,14 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 });
             populationManager.SetPopulationGenerated(new[]
                 {new double[] {2, 2, 2}, new double[] {3, 3, 3}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
-                .AddPopulationRenwalManager(new RenewIfNoImprovment(1, 3, 1)).IncludeAllHistory().Build();
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+                .AddPopulationRenwalManager(new RenewIfNoImprovment(1, 3, 1)).IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(3, result.BestChromosome.Evaluate());
+                Assert.AreEqual(3, result.BestChromosome.Evaluate());
+            }
         }
 
         [TestMethod]
@@ -68,12 +74,14 @@ namespace GeneticAlgorithm.UnitTests
         {
             var populationManager = new TestPopulationManager(new double[] { 1, 1, 1 });
             populationManager.SetPopulationGenerated(new[] {new double[] {2, 2, 2}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
-                .AddPopulationRenwalManager(new RenewIfNoImprovment(2, 10, 1)).IncludeAllHistory().Build();
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+                .AddPopulationRenwalManager(new RenewIfNoImprovment(2, 10, 1)).IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(2, result.BestChromosome.Evaluate());
+                Assert.AreEqual(2, result.BestChromosome.Evaluate());
+            }
         }
 
         [TestMethod]
@@ -84,13 +92,15 @@ namespace GeneticAlgorithm.UnitTests
             var populationManager = new TestPopulationManager(new double[] { 1, 2, 1 });
             populationManager.SetPopulationGenerated(new[]
                 {new double[] {2, 5, 2}, new double[] {6, 6, 6}, new double[] {7, 7, 7}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 4, populationManager)
                 .AddPopulationRenwalManager(new RenewAtDifferenceBetweenAverageAndMaximumFitness(1, 1))
-                .IncludeAllHistory().Build();
+                .IncludeAllHistory().Build())
+            {
 
-            var result = engine.Run(runType);
+                var result = engine.Run(runType);
 
-            Assert.AreEqual(5, result.BestChromosome.Evaluate());
+                Assert.AreEqual(5, result.BestChromosome.Evaluate());
+            }
         }
 
         [TestMethod]
@@ -113,10 +123,11 @@ namespace GeneticAlgorithm.UnitTests
                 });
             var populationManager = new TestPopulationManager(new[]
                 {new double[] {1, 1, 1}, new double[] {2, 2, 2}, new double[] {3, 3, 3}});
-            var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 3, populationManager)
-                .AddPopulationRenwalManager(populationRenwalManager).IncludeAllHistory().Build();
-
-            engine.Run(runType);
+            using (var engine = new TestGeneticSearchEngineBuilder(POPULATION_SIZE, 3, populationManager)
+                .AddPopulationRenwalManager(populationRenwalManager).IncludeAllHistory().Build())
+            {
+                engine.Run(runType);
+            }
         }
 
         [TestMethod]
@@ -130,14 +141,16 @@ namespace GeneticAlgorithm.UnitTests
             A.CallTo(() => managers[1].ShouldRenew(A<Population>._, A<IEnvironment>._, A<int>._))
                 .Invokes((Population p, IEnvironment e, int g) => manager2Called = true);
 
-            var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
+            using (var engine = new TestGeneticSearchEngineBuilder(5, 10, testPopulationManager)
                 .AddPopulationRenwalManagers(managers)
-                .Build();
+                .Build())
+            {
 
-            engine.Next();
+                engine.Next();
 
-            Assert.IsTrue(manager1Called);
-            Assert.IsTrue(manager2Called);
+                Assert.IsTrue(manager1Called);
+                Assert.IsTrue(manager2Called);
+            }
         }
     }
 }

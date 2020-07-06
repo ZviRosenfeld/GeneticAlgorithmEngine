@@ -18,119 +18,137 @@ namespace GeneticAlgorithm.UnitTests.RaceConditionTests
         private const int RUN_TIMES = 1000;
         private const int TEST_TIME = 3000;
 
-        private GeneticSearchEngine engine;
-        private CommandRunner runEngine;
-        private CommandRunner engineNext;
-        private CommandRunner pauseEngine;
-        private CommandRunner getPopulation;
-        private CommandRunner setPopulation;
-        private CommandRunner renewPopulation;
+        private CommandRunner GetRunCommand(GeneticSearchEngine engine) =>
+            new EngineRunner("Run", () => engine.Run());
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            engine = TestUtils.Utils.GetBassicEngine();
-            runEngine = new EngineRunner("Run", () => engine.Run());
-            engineNext = new EngineRunner("Next", () => engine.Next());
-            pauseEngine = new PauseEngine("Pause", () => engine.Pause());
-            setPopulation = new EngineRunner("SetPopulation",
-                () => engine.SetCurrentPopulation(new double[] {1, 2, 3, 4, 5}.ToChromosomes()));
-            getPopulation = new EngineRunner("GetPopulation", () => engine.GetCurrentPopulation());
-            renewPopulation = new EngineRunner("RenewPopulation", () => engine.RenewPopulation(0.5));
-            engine.Next();
-        }
+        private CommandRunner GetNextCommand(GeneticSearchEngine engine) =>
+            new EngineRunner("Next", () => engine.Next());
+
+        private CommandRunner GetPauseCommand(GeneticSearchEngine engine) =>
+            new PauseEngine("Pause", () => engine.Pause());
+
+        private CommandRunner GetSetPopulationCommand(GeneticSearchEngine engine) =>
+            new EngineRunner("SetPopulation", () => engine.SetCurrentPopulation(new double[] { 1, 2, 3, 4, 5 }.ToChromosomes()));
+        private CommandRunner GetRenewPopulationCommand(GeneticSearchEngine engine) =>
+            new EngineRunner("RenewPopulation", () => engine.RenewPopulation(0.5));
+
+        private CommandRunner GetGetPopulationCommand(GeneticSearchEngine engine) =>
+           new EngineRunner("GetPopulation", () => engine.GetCurrentPopulation());
+
 
         [TestMethod]
         public void AllCommands()
         {
-            var actions = new List<CommandRunner>
+            using (var engine = Utils.GetBasicEngine())
             {
-                pauseEngine,
-                runEngine,
-                engineNext,
-                setPopulation,
-                getPopulation,
-                renewPopulation
-            };
-            var engineTasks = RunOverAndOver(actions);
+                engine.Next();
+                var actions = new List<CommandRunner>
+                {
+                    GetPauseCommand(engine),
+                    GetRunCommand(engine),
+                    GetNextCommand(engine),
+                    GetSetPopulationCommand(engine),
+                    GetGetPopulationCommand(engine),
+                    GetRenewPopulationCommand(engine),
+                };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(TEST_TIME); // Give some time for things to run
+                Thread.Sleep(TEST_TIME); // Give some time for things to run
 
-            PrintResults(actions);
-            WaitOnTasks(engineTasks);
-            AssertCommandsWereCalled(actions);
+                PrintResults(actions);
+                WaitOnTasks(engineTasks);
+                AssertCommandsWereCalled(actions);
+            }
         }
 
         [TestMethod]
         public void ManyRunPauseAndNextCommands()
         {
-            var actions = new List<CommandRunner>
+            using (var engine = Utils.GetBasicEngine())
             {
-                pauseEngine,
-                runEngine,
-                engineNext
-            };
-            var engineTasks = RunOverAndOver(actions);
+                var actions = new List<CommandRunner>
+                {
+                    GetPauseCommand(engine),
+                    GetRunCommand(engine),
+                    GetNextCommand(engine)
+                };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(TEST_TIME); // Give some time for things to run
+                Thread.Sleep(TEST_TIME); // Give some time for things to run
 
-            PrintResults(actions);
-            WaitOnTasks(engineTasks);
-            AssertCommandsWereCalled(actions);
+                PrintResults(actions);
+                WaitOnTasks(engineTasks);
+                AssertCommandsWereCalled(actions);
+            }
         }
 
         [TestMethod]
         public void ManyRunAndPauseCommands()
         {
-            var actions = new List<CommandRunner> {pauseEngine, runEngine};
-            var engineTasks = RunOverAndOver(actions);
+            using (var engine = Utils.GetBasicEngine())
+            {
+                var runEngine = GetRunCommand(engine);
+                var pauseEngine = GetPauseCommand(engine);
+                var actions = new List<CommandRunner> { pauseEngine, runEngine };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(TEST_TIME); // Give some time for things to run
+                Thread.Sleep(TEST_TIME); // Give some time for things to run
 
-            PrintResults(actions);
-            WaitOnTasks(engineTasks);
-            AssertCommandsWereCalled(actions);
-            Assert.AreEqual(runEngine.CommandSucceeded, pauseEngine.CommandSucceeded, $"{nameof(runEngine)} != {nameof(pauseEngine)}");
+                PrintResults(actions);
+                WaitOnTasks(engineTasks);
+                AssertCommandsWereCalled(actions);
+                Assert.AreEqual(runEngine.CommandSucceeded, pauseEngine.CommandSucceeded, $"{nameof(runEngine)} != {nameof(pauseEngine)}");
+            }
         }
-        
+
         [TestMethod]
         public void ManyNextCommands()
         {
-            var actions = new List<CommandRunner> {engineNext};
-            var engineTasks = RunOverAndOver(actions);
+            using (var engine = Utils.GetBasicEngine())
+            {
+                var actions = new List<CommandRunner> { GetNextCommand(engine) };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(TEST_TIME); // Give some time for things to run
+                Thread.Sleep(TEST_TIME); // Give some time for things to run
 
-            PrintResults(actions);
-            WaitOnTasks(engineTasks);
-            AssertCommandsWereCalled(actions);
+                PrintResults(actions);
+                WaitOnTasks(engineTasks);
+                AssertCommandsWereCalled(actions);
+            }
         }
 
         [TestMethod]
         public void ManyNextAndPauseCommands()
         {
-            var actions = new List<CommandRunner> {pauseEngine, engineNext};
-            var engineTasks = RunOverAndOver(actions);
+            using (var engine = Utils.GetBasicEngine())
+            {
+                var actions = new List<CommandRunner> { GetPauseCommand(engine), GetNextCommand(engine) };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(TEST_TIME); // Give some time for things to run
+                Thread.Sleep(TEST_TIME); // Give some time for things to run
 
-            PrintResults(actions);
-            WaitOnTasks(engineTasks);
-            AssertCommandsWereCalled(actions);
+                PrintResults(actions);
+                WaitOnTasks(engineTasks);
+                AssertCommandsWereCalled(actions);
+            }
         }
 
         [TestMethod]
         public void EngineCanOnlyRunOnce()
         {
-            var actions = new List<CommandRunner> {runEngine};
-            var engineTasks = RunOverAndOver(actions);
+            using (var engine = Utils.GetBasicEngine())
+            {
+                var runEngine = GetRunCommand(engine);
+                var actions = new List<CommandRunner> { runEngine };
+                var engineTasks = RunOverAndOver(actions);
 
-            Thread.Sleep(50); // Give some time for things to run
+                Thread.Sleep(50); // Give some time for things to run
 
-            WaitOnTasks(engineTasks);
-            engine.Pause();
+                WaitOnTasks(engineTasks);
+                engine.Pause();
 
-            Assert.AreEqual(1, runEngine.CommandSucceeded, "Engine should have only ran once");
+                Assert.AreEqual(1, runEngine.CommandSucceeded, "Engine should have only ran once");
+            }
         }
         
         private void PrintResults(List<CommandRunner> commands)

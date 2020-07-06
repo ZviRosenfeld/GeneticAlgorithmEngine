@@ -56,9 +56,9 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers.Utilities
                 else Assert.Fail("We didn't get 2, 4 or 5. Got " + neighbor);
             }
 
-            Assert.IsTrue(25 < got2);
-            Assert.IsTrue(25 < got5);
-            Assert.IsTrue(25 < got4);
+            Assert.IsTrue(25 < got2 , $"Got 2 {got2} times");
+            Assert.IsTrue(25 < got5, $"Got 5 {got5} times");
+            Assert.IsTrue(25 < got4, $"Got 4 {got4} times");
         }
 
         [TestMethod]

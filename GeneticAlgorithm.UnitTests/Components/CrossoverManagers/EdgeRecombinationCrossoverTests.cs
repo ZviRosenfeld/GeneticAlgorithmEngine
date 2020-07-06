@@ -123,7 +123,10 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
             var alreadyVisitedElements = childArray.Take(currentIndex).ToArray();
             for (int i = 0; i < neighbors.Count; i++)
                 if (alreadyVisitedElements.Contains(neighbors[i]))
+                {
                     neighbors.Remove(neighbors[i]);
+                    i--;
+                }
         }
 
         private List<string> GetNeighbors(string[] array1, string[] array2, string element)

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GeneticAlgorithm.UnitTests.RaceConditionTests
+﻿namespace GeneticAlgorithm.UnitTests.RaceConditionTests
 {
     abstract class CommandRunner
     {
