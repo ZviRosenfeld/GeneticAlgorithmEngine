@@ -373,6 +373,7 @@ Following is an example of using components:
 ## Using an Environment
 
 Sometimes, it's impossible to evaluate a chromosome without knowing information about it's surroundings, such as the rest of the population. (This, by the way, in the case in nature - where the fitness an individual depends on its environment and the way it interacts with the other individuals).
+Also, you can use the environment to implement fitness sharing (a technique to prevent premature conversion in which part of a chromosome's fitness depends on it's similarity to the rest of the population).
 
 GeneticAlgorithmEngine provides two classes to deal with this.
 
