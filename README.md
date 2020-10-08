@@ -32,6 +32,7 @@ You can find the GeneticAlgorithmEngine library on nuget.org via package name Ge
   - [MutationManagers](#mutationmanagers)
   - [CrossoverManagers](#crossovermanagers)
   - [PopulationGenerators](#populationgenerators)
+  - [FitnessSharingChromosomeEvaluator](#fitnesssharingchromosomeevaluator)
   - [Example of Using Components](#example-of-using-components)
   
 - [Using An Environment](#using-an-environment)
@@ -153,7 +154,7 @@ Note that the mutation probability will be ignored if you set a [IMutationProbab
 You can use the GeneticSearchEngineBuilder.SetCancellationToken method to set a cencellationToken.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
-When the cancellation is requested, you'll get whatever result was found up till than.
+When the cancellation is requested, you'll get whatever result was found up till then (no exception is thrown).
 
 ### IncludeAllHistory
 If this option is turned on (by default it's off) the result will include the entire history of the population (and not only the last generation).
@@ -334,7 +335,7 @@ Note that for these crossover managers to work, the Equals method must be implem
 - [PositionBasedCrossoverManager\<T> (POS)](/GeneticAlgorithm/Components/CrossoverManagers/PositionBasedCrossoverManager.cs): In PositionBasedCrossover, several positions are selected at random from the first parent. The genomes in those positions are copied as-is from the first parent. The rest of the genomes are coped from the second parent in order as long as the genome hasn't already been copied from parent1. Works on chromosomes of type VectorChromosome\<T>. (Available since 1.3.2) 
 - [AlternatingPositionCrossover\<T> (AP)](/GeneticAlgorithm/Components/CrossoverManagers/AlternatingPositionCrossover.cs): In AlternatingPositionCrossover, we alternately select the next element of the first parent and the next element of the second parent, omitting the elements already present in the offspring. This guarantees that the child contains each genome exactly once. Works on chromosomes of type VectorChromosome\<T>. (Available since 1.3.2) 
 - [EdgeRecombinationCrossover\<T> (ERO)](/GeneticAlgorithm/Components/CrossoverManagers/EdgeRecombinationCrossover.cs): Every genome has two neighborers in each chromosome - or between 2 to 4 neighbors between both its parents. In EdgeRecombinationCrossover we randomly chose a neighbor with the lease neighbors from one of these and continue with it. See [this](https://en.wikipedia.org/wiki/Edge_recombination_operator) for mote details. Works on chromosomes of type VectorChromosome\<T>. (Available since 1.3.3) 
-- [HeuristicCrossover\<T> (HX)](/GeneticAlgorithm/Components/CrossoverManagers/HeuristicCrossover.cs): HeuristicCrossover is almost the same as EdgeRecombinationCrossover. The only diffrance is that in HeuristicCrossover we select the next neighbor at random from the neighbors of the current element. In EdgeRecombinationCrossover we take the current element's neighbor with the least neighbors. Works on chromosomes of type VectorChromosome\<T>. (Available since 1.3.3) 
+- [HeuristicCrossover\<T> (HX)](/GeneticAlgorithm/Components/CrossoverManagers/HeuristicCrossover.cs): HeuristicCrossover is almost the same as EdgeRecombinationCrossover. The only difference is that in HeuristicCrossover we select the next neighbor at random from the neighbors of the current element. In EdgeRecombinationCrossover we take the current element's neighbor with the least neighbors. Works on chromosomes of type VectorChromosome\<T>. (Available since 1.3.3) 
 
 ### PopulationGenerators
 
@@ -345,6 +346,19 @@ PopulationGenerators are implementations of the [IPopulationGenerator](#ipopulat
 - [BinaryVectorChromosomePopulationGenerator](/GeneticAlgorithm/Components/PopulationGenerators/BinaryVectorChromosomePopulationGenerator.cs): Generates binary chromosomes (chromosomes of type VectorChromosome\<bool>).
 - [AllElementsVectorChromosomePopulationGenerator\<T>](/GeneticAlgorithm/Components/PopulationGenerators/AllElementsVectorChromosomePopulationGenerator.cs): Generates a population of chromosomes of type VectorChromosome\<T> in which each chromosome contains every element exactly once (a list of the elements is provided in the constructor). (Available since 1.3.1)
 - [FromElementsVectorChromosomePopulationGenerator\<T>](/GeneticAlgorithm/Components/PopulationGenerators/FromElementsVectorChromosomePopulationGenerator.cs): Generates a population of chromosomes of type VectorChromosome\<T> in which each chromosome contains the element provided to it in its constructor. Unlike AllElementsVectorChromosomePopulationGenerator, not all the elements will appear in each vector. An argument provided in the constructor defines whether or not elements will be repeated. (Available since 1.3.3)
+
+### FitnessSharingChromosomeEvaluator
+
+[FitnessSharingChromosomeEvaluator](/GeneticAlgorithm/Components/ChromosomeEvaluators/FitnessSharingChromosomeEvaluator.cs) is an implementation of the [IChromosomeEvaluators](#ichromosomeevaluator) interface that implements fitness sharing (a technique to prevent premature conversion in which part of a chromosome's fitness depends on it's similarity to the rest of the population).
+
+The class expects three parameters
+- minDistance: Only distances smaller than minDistance will be considered when calculating the distance.
+- distanceScale: A parameter that defines how much influence sharing has. Higher = more sharing.
+- distanceCalculator: A function that calculates the distance between 2 chromosomes. *Note that the distance must be between 0 to 1 (not including)*.
+
+Please note that FitnessSharingChromosomeEvaluator expects to get an environment of type DefaultEnvironment, so don't set a different environment when using it.
+
+FitnessSharingChromosomeEvaluator is available since version 1.3.5.
 
 ### Example of Using Components
 
