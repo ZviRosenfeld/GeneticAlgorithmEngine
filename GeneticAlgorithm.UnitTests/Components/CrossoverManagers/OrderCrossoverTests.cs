@@ -7,19 +7,17 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
     [TestClass]
     public class OrderCrossoverTests
     {
-        private readonly ICrossoverManager crossoverManager = new OrderCrossover<string>(null, null);
-
         [TestMethod]
         [DataRow(20)]
         public void OrderCrossover_AllElementsInEachVector(int vectors)
         {
-            crossoverManager.TestThatAllElementsInEachVector(vectors);
+            new OrderCrossover<string>(null, null).TestThatAllElementsInEachVector(vectors);
         }
 
         [TestMethod]
         public void OrderCrossover_ChildChanged()
         {
-            crossoverManager.TestThatChildChanged();
+            new OrderCrossover<string>(null, null).TestThatChildChanged();
         }
     }
 }

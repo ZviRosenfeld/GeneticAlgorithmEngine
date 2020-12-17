@@ -71,7 +71,7 @@ namespace GeneticAlgorithm.UnitTests.Components.MutationManagers
                 values.Add(value.ToInt());
             }
 
-            Assert.IsTrue(values.Count > 8, $"We only got {values.Count} diffrent values");
+            Assert.IsTrue(values.Count > 8, $"We only got {values.Count} different values");
         }
 
         public static void TestChromosomeChanged(this IMutationManager<string> mutationManager)

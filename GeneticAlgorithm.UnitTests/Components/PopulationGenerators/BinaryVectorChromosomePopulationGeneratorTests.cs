@@ -16,8 +16,8 @@ namespace GeneticAlgorithm.UnitTests.Components.PopulationGenerators
             var populationGenerator =
                 new BinaryVectorChromosomePopulationGenerator(5, A.Fake<IMutationManager<bool>>(), A.Fake<IEvaluator>());
             var vector = ((VectorChromosome<bool>)populationGenerator.GeneratePopulation(1).First()).GetVector();
-            Assert.IsTrue(vector.Contains(true), "Vector dosn't contain true");
-            Assert.IsTrue(vector.Contains(false), "Vector dosn't contain false");
+            Assert.IsTrue(vector.Contains(true), "Vector doesn't contain true");
+            Assert.IsTrue(vector.Contains(false), "Vector doesn't contain false");
         }
 
         [TestMethod]

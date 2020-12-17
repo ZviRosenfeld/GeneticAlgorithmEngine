@@ -89,8 +89,8 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers.Utilities
         [DataRow(false)]
         public void GetNeigbor_GetRandomNeigbor(bool selectNeighborWithLeastNeighbors)
         {
-            // This test checks that we don't get the same neigbor over and over again.
-            // If selectNeighborWithLeastNeighbors = true, we expect to get neigbors 2 and 5 and not 4 - since 4 has more neighbors than 2 and 5.
+            // This test checks that we don't get the same neighbor over and over again.
+            // If selectNeighborWithLeastNeighbors = true, we expect to get neighbors 2 and 5 and not 4 - since 4 has more neighbors than 2 and 5.
             int got2 = 0, got4 = 0, got5 = 0;
             for (int i = 0; i < 100; i++)
             {

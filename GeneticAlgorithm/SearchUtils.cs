@@ -57,7 +57,7 @@ namespace GeneticAlgorithm
         }
         
         /// <summary>
-        /// Only send the random if the compoment calling shuffle doesn't need to be thread safe.
+        /// Only send the random if the component calling shuffle doesn't need to be thread safe.
         /// </summary>
         public static T[] Shuffle<T>(this ICollection<T> collection, Random random = null)
         {

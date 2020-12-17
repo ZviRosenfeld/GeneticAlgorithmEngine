@@ -25,7 +25,7 @@ namespace GeneticAlgorithm.Components.MutationManagers
             this.minValue = minValue;
             this.maxValue = maxValue;
             if (standardDeviation < 0)
-                throw new GeneticAlgorithmException($"{nameof(standardDeviation)} can't be nagitave");
+                throw new GeneticAlgorithmException($"{nameof(standardDeviation)} can't be negative");
             this.standardDeviation = standardDeviation;
         }
 
