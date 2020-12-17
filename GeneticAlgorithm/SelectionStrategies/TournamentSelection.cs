@@ -12,7 +12,6 @@ namespace GeneticAlgorithm.SelectionStrategies
     public class TournamentSelection : ISelectionStrategy
     {
         private readonly int tournamentSize;
-        private readonly Random random = new Random();
         private Population population;
         private readonly double percentage;
 
@@ -45,7 +44,7 @@ namespace GeneticAlgorithm.SelectionStrategies
             ChromosomeEvaluationPair bestChromosome = null;
             for (int i = 0; i < tournamentSize; i++)
             {
-                var chromosome = population[random.Next(0, population.Count())];
+                var chromosome = population[ProbabilityUtils.GetRandomInt(0, population.Count())];
                 if (bestChromosome == null || chromosome.Evaluation > bestChromosome.Evaluation)
                     bestChromosome = chromosome;
             }

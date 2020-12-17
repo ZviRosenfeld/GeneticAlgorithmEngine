@@ -10,7 +10,7 @@ namespace GeneticAlgorithm
         private static object randomLockObject = new object();
 
         /// <summary>
-        /// Returens a random double between 0 and 1.
+        /// Returns a random double between 0 and 1.
         /// </summary>
         public static double GetRandomDouble()
         {
@@ -20,7 +20,7 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
-        /// Returens a random double between min (inclusive) and max (exclusive).
+        /// Returns a random double between min (inclusive) and max (exclusive).
         /// </summary>
         public static int GetRandomInt(int min, int max)
         {
@@ -30,7 +30,7 @@ namespace GeneticAlgorithm
         }
 
         /// <summary>
-        /// Returens a random double between 0 (inclusive) and max (exclusive).
+        /// Returns a random double between 0 (inclusive) and max (exclusive).
         /// </summary>
         public static int GetRandomInt(int max)
         {

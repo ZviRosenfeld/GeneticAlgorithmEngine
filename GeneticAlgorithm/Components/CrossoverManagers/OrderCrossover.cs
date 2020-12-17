@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GeneticAlgorithm.Components.Chromosomes;
 using GeneticAlgorithm.Components.Interfaces;
 using GeneticAlgorithm.Interfaces;
@@ -21,7 +20,6 @@ namespace GeneticAlgorithm.Components.CrossoverManagers
     /// </summary>
     public class OrderCrossover<T> : ICrossoverManager
     {
-        private readonly Random random = new Random();
         private readonly IMutationManager<T> mutationManager;
         private readonly IEvaluator evaluator;
 

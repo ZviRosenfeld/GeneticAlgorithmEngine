@@ -12,7 +12,6 @@ namespace GeneticAlgorithm.SelectionStrategies
     /// </summary>
     public class RouletteWheelSelection : ISelectionStrategy
     {
-        private readonly Random random = new Random();
         private IChromosome[] chromosomes;
         private double[] evaluations;
         private readonly double percentage;
@@ -41,7 +40,7 @@ namespace GeneticAlgorithm.SelectionStrategies
 
         public IChromosome SelectChromosome()
         {
-            var randomNumber = random.NextDouble();
+            var randomNumber = ProbabilityUtils.GetRandomDouble();
             var sum = 0.0;
             var index = -1;
             while (sum < randomNumber)

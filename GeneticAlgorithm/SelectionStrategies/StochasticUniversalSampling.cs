@@ -11,7 +11,6 @@ namespace GeneticAlgorithm.SelectionStrategies
     /// </summary>
     public class StochasticUniversalSampling : ISelectionStrategy
     {
-        private readonly Random random = new Random();
         private ChromosomePool pool;
         private readonly double percentage;
 
@@ -41,7 +40,7 @@ namespace GeneticAlgorithm.SelectionStrategies
 
         private void FillPool(int requestedChromosomes, IChromosome[] chromosomes, double[] evaluations)
         {
-            var pointer = random.NextDouble() / requestedChromosomes;
+            var pointer = ProbabilityUtils.GetRandomDouble() / requestedChromosomes;
             var increment = 1.0 / requestedChromosomes;
             var sum = 0.0;
             var chromosomeIndex = -1;

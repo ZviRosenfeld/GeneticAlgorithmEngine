@@ -13,13 +13,12 @@ namespace GeneticAlgorithm.SelectionStrategies
     /// </summary>
     public class ChromosomePool
     {
-        private readonly Random random = new Random();
         private readonly IChromosome[] chromosomes;
         private int counter = -1;
 
         public ChromosomePool(IChromosome[] chromosomes)
         {
-            this.chromosomes = chromosomes.Shuffle(random);
+            this.chromosomes = chromosomes.Shuffle(new Random());
         }
         
         /// <summary>

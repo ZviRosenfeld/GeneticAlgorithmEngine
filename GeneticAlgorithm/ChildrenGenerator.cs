@@ -61,8 +61,7 @@ namespace GeneticAlgorithm
             if (probability >= 0 && probability <= 1) return;
 
             if (mutationManager.GetType() == typeof(BasicMutationProbabilityManager))
-                throw new InternalSearchException(
-                    $"Code 1004 (Bad mutation value for manager {mutationManager.GetType()})");
+                throw new InternalSearchException($"Code 1004 (Bad mutation value for manager {mutationManager.GetType()})");
             throw new BadMutationProbabilityException(probability);
         }
 
