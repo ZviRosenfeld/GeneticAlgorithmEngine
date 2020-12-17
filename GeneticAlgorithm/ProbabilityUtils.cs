@@ -34,9 +34,7 @@ namespace GeneticAlgorithm
         /// </summary>
         public static int GetRandomInt(int max)
         {
-            // We need this lock, since random isn't thread-safe
-            lock (randomLockObject)
-                return random.Next(max);
+            return GetRandomInt(0, max);
         }
 
         /// <summary>

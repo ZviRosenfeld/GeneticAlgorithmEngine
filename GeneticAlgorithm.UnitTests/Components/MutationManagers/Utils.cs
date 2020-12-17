@@ -81,7 +81,7 @@ namespace GeneticAlgorithm.UnitTests.Components.MutationManagers
 
             // Since there's a certain chance that this test will fail, I want to run it twice
             var passed = false;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 try
                 {

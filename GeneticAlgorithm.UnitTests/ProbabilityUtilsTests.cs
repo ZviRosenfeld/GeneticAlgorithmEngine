@@ -4,6 +4,8 @@ using GeneticAlgorithm.Exceptions;
 using GeneticAlgorithm.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.UnitTests
 {
@@ -126,6 +128,23 @@ namespace GeneticAlgorithm.UnitTests
             }
 
             Assert.IsTrue(smallCount > bigCount, $"Got to many big genomes. Big numberes = {bigCount}; small numbers = {smallCount}");
+        }
+
+        [TestMethod]
+        public void GetRandomDouble_CheckIsThreadSafe()
+        {
+            var receivedValues = new ConcurrentDictionary<double, byte>();
+            var tasks = new Task[1000];
+            for (var i = 0; i < 1000; i++)
+            {
+                tasks[i] = Task.Run(() => 
+                {
+                    var value = ProbabilityUtils.GetRandomDouble();
+                    var addedValue = receivedValues.TryAdd(value, 1);
+                    Assert.IsTrue(addedValue, $"Value {value} already in dictionary");
+                });
+            }
+            Task.WaitAll(tasks);
         }
     }
 }

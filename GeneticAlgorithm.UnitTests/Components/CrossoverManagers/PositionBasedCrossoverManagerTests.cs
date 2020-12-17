@@ -7,19 +7,17 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
     [TestClass]
     public class PositionBasedCrossoverManagerTests
     {
-        private readonly ICrossoverManager crossoverManager = new PositionBasedCrossoverManager<string>(null, null);
-
         [TestMethod]
         [DataRow(20)]
         public void PositionBasedCrossover_AllElementsInEachVector(int vectors)
         {
-            crossoverManager.TestThatAllElementsInEachVector(vectors);
+            new PositionBasedCrossoverManager<string>(null, null).TestThatAllElementsInEachVector(vectors);
         }
 
         [TestMethod]
         public void PositionBasedCrossover_ChildChanged()
         {
-            crossoverManager.TestThatChildChanged();
+            new PositionBasedCrossoverManager<string>(null, null).TestThatChildChanged();
         }
     }
 }

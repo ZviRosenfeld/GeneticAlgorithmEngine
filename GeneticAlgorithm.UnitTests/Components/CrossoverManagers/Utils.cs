@@ -62,7 +62,7 @@ namespace GeneticAlgorithm.UnitTests.Components.CrossoverManagers
             
             // Since there's a certain chance that this test will fail, I want to run it twice
             var passed = false;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var parentChromosomes = generator.GeneratePopulation(2);
                 var child = (VectorChromosome<string>)crossoverManager.Crossover(parentChromosomes.ElementAt(0),
