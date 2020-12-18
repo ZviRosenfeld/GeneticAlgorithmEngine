@@ -11,20 +11,20 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
     public class SelectionStrategyTests
     {
         private const int runs = 3000;
-        private const double chromosome1Probability = 0.1, chromosome2Probability = 0.3, chromosome3Probability = 0.6;
+        private const double chromosome1Evaluation = 0.1, chromosome2Evaluation = 0.3, chromosome3Evaluation = 0.6;
         private Population population;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            population = new [] { chromosome1Probability * 2, chromosome2Probability * 2, chromosome3Probability * 2}.ToPopulation().Evaluate();
+            population = new [] { chromosome1Evaluation * 2, chromosome2Evaluation * 2, chromosome3Evaluation * 2}.ToPopulation().Evaluate();
         }
 
         [TestMethod]
         public void RouletteWheelSelection_MostLieklyToChooseBestChromosome()
         {
-            MostLikelyToChooseBestChromosome(new RouletteWheelSelection(), chromosome1Probability,
-                chromosome2Probability, chromosome3Probability);
+            MostLikelyToChooseBestChromosome(new RouletteWheelSelection(), chromosome1Evaluation,
+                chromosome2Evaluation, chromosome3Evaluation);
         }
 
         [TestMethod]
@@ -45,6 +45,31 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         [TestMethod]
         public void RouletteWheelSelection_AssertChromosomesAreScattered() =>
             AssertChromosomesAreScattered(new RouletteWheelSelection());
+
+        [TestMethod]
+        public void RankSelection_MostLieklyToChooseBestChromosome()
+        {
+            MostLikelyToChooseBestChromosome(new RankSelection(), 1.0 / 6.0, 2.0 / 6.0, 3.0 / 6.0);
+        }
+
+        [TestMethod]
+        public void RankSelection_OnlyUsesLastPopulation() =>
+            AssertSelectionStrategyUsesLatestPopulation(new RankSelection());
+
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(3)]
+        public void RankSelection_IgnoreSomeOfPopulation(int chromosomesToIgnore)
+        {
+            var selection = new RankSelection(1 - chromosomesToIgnore / 4.0);
+            AssertLowestChromosomesAreIgnored(selection, chromosomesToIgnore);
+        }
+
+        [TestMethod]
+        public void RankSelection_AssertChromosomesAreScattered() =>
+            AssertChromosomesAreScattered(new RankSelection());
 
         [TestMethod]
         [DataRow(-1)]
@@ -102,8 +127,8 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
         [TestMethod]
         public void StochasticUniversalSampling_MostLieklyToChooseBestChromosome()
         {
-            MostLikelyToChooseBestChromosome(new StochasticUniversalSampling(), chromosome1Probability,
-                chromosome2Probability, chromosome3Probability);
+            MostLikelyToChooseBestChromosome(new StochasticUniversalSampling(), chromosome1Evaluation,
+                chromosome2Evaluation, chromosome3Evaluation);
         }
 
         [TestMethod]
@@ -141,11 +166,11 @@ namespace GeneticAlgorithm.UnitTests.SelectionStrategyTests
             for (int i = 0; i < runs; i++)
             {
                 var chromosome = selection.SelectChromosome();
-                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome1Probability * 2)
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome1Evaluation * 2)
                     chromosome1Counter++;
-                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome2Probability * 2)
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome2Evaluation * 2)
                     chromosome2Counter++;
-                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome3Probability * 2)
+                if (chromosome.Evaluate() == SelectionStrategyTests.chromosome3Evaluation * 2)
                     chromosome3Counter++;
             }
 
