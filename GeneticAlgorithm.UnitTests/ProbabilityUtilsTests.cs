@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace GeneticAlgorithm.UnitTests
 {
@@ -127,7 +128,7 @@ namespace GeneticAlgorithm.UnitTests
                 else smallCount++;
             }
 
-            Assert.IsTrue(smallCount > bigCount, $"Got to many big genomes. Big numberes = {bigCount}; small numbers = {smallCount}");
+            Assert.IsTrue(smallCount > bigCount, $"Got to many big genomes. Big numbers = {bigCount}; small numbers = {smallCount}");
         }
 
         [TestMethod]
@@ -145,6 +146,29 @@ namespace GeneticAlgorithm.UnitTests
                 });
             }
             Task.WaitAll(tasks);
+        }
+
+        [TestMethod]
+        public void P_CheckIsThreadSafe()
+        {
+            var attempts = 1000;
+            var trueCount = 0;
+            var falseCount = 0;
+            var tasks = new Task[attempts];
+            for (var i = 0; i < attempts; i++)
+            {
+                tasks[i] = Task.Run(() =>
+                {
+                    var value = ProbabilityUtils.P(0.5);
+                    if (value) Interlocked.Increment(ref trueCount);
+                    else Interlocked.Increment(ref falseCount);
+                });
+            }
+            Task.WaitAll(tasks);
+
+            var marginOfError = attempts * 0.1;
+            trueCount.AssertIsWithinRange(attempts * 0.5, marginOfError);
+            falseCount.AssertIsWithinRange(attempts * 0.5, marginOfError);
         }
     }
 }
