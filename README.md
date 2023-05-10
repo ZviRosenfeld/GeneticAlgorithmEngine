@@ -48,15 +48,15 @@ GeneticAlgorithmEngine contains 3 interfaces that you'll need to implement.
 Your chromosomes will need to implement the [IChromosome](/GeneticAlgorithm/Interfaces/IChromosome.cs) interface.
 
 ```CSharp
-    public interface IChromosome
-    {
-        /// <summary>
-        /// Must return a value that is greater then zero.
-        /// </summary>
-        double Evaluate();
+public interface IChromosome
+{
+    /// <summary>
+    /// Must return a value that is greater then zero.
+    /// </summary>
+    double Evaluate();
 
-        void Mutate();
-    }
+    void Mutate();
+}
 ```
 
 You can find a sample Chromosome [here](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs).
@@ -70,10 +70,10 @@ Please note that your crossoverManager will be called on deferent chromosomes in
 You can read more about crossovers [here](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
 
 ```CSharp
-    public interface ICrossoverManager
-    {
-        IChromosome Crossover(IChromosome chromosome1, IChromosome chromosome2);
-    }
+public interface ICrossoverManager
+{
+    IChromosome Crossover(IChromosome chromosome1, IChromosome chromosome2);
+}
 ```
 
 You can find some sample CrossoverManagers [here](/GeneticAlgorithm/Components/CrossoverManagers).
@@ -85,20 +85,20 @@ The PopulationGenerator will also renew the population when needed (see [IPopula
 PopulationGenerator doesn't need to be thread safe.
 
 ```CSharp
-    public interface IPopulationGenerator
-    {
-        /// <summary>
-        /// size is the number of chromosomes we want to generate
-        /// </summary>
-        IEnumerable<IChromosome> GeneratePopulation(int size);
-    }
+public interface IPopulationGenerator
+{
+    /// <summary>
+    /// size is the number of chromosomes we want to generate
+    /// </summary>
+    IEnumerable<IChromosome> GeneratePopulation(int size);
+}
 ```
 
 You can find some sample PopulationGenerators [here](/GeneticAlgorithm/Components/PopulationGenerators).
 
 ## Creating an Instance of GeneticSearchEngine
 
-It's highly recommended that you use the [GeneticSearchEngineBuilder](/GeneticAlgorithm/GeneticSearchEngineBuilder.cs) class to create your GeneticSearchEngine. See the following example.
+It's highly recommended that you use the [GeneticSearchEngineBuilder](/GeneticAlgorithm/GeneticSearchEngineBuilder.cs) class to create your GeneticSearchEngine.
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
@@ -107,8 +107,8 @@ var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIO
 var result = searchEngine.Run();
 ```
 
-Once you have an instance of an engine you can either use the Run method to run a complete search, or the Next method to run a single generation.
-You can also use the Pause method to pause the search, and then resume it anytime.
+Once you have an instance of an engine you can either use the `Run` method to run a complete search, or the `Next` method to run a single generation.
+You can also use the `Pause` method to pause the search, and then resume it anytime.
 
 ```CSharp
 var searchEngine = new GeneticSearchEngineBuilder(POPULATION_SIZE, MAX_GENERATIONS, crossoverManager, populationGenerator)
@@ -118,7 +118,7 @@ GeneticSearchResult nextGeneration = searchEngine.Next(); // Run a single genera
 Task.Run(() => searchEngine.Run()); // Do in a new thread, so that we don't need to wait for the engine to finish
 Thread.Sleep(10); // Give the engine some time to run
 searchEngine.Pause();
-var task = Task.Run(() => searchEngine.Run());
+var task = Task.Run(() => searchEngine.Run()); // Resume the search from where it was paused
 GeneticSearchResult result = task.Result;
 
 searchEngine.Dispose();
@@ -147,11 +147,11 @@ var result = searchEngine.Run();
 ## Search Options
 
 ### Mutations
-By default, the probability of mutations is 0. You can change this by using the GeneticSearchEngineBuilder.SetMutationProbability method.
+By default, the probability of a mutation is 0. You can change this by using the `GeneticSearchEngineBuilder.SetMutationProbability` method.
 Note that the mutation probability will be ignored if you set a [IMutationProbabilityManager](#imutationprobabilitymanager).
 
 ### CancellationToken
-You can use the GeneticSearchEngineBuilder.SetCancellationToken method to set a cencellationToken.
+You can use the `GeneticSearchEngineBuilder.SetCancellationToken` method to set a CencellationToken.
 The cancellation is checked once per generation, which means that if you're generations take a while to run, there may be a delay between your requesting of the cancellation and the engine actually stopping.
 
 When the cancellation is requested, you'll get whatever result was found up till then (no exception is thrown).
@@ -223,7 +223,7 @@ var result = searchEngine.Run();
 ### IPopulationConverter
 
 The [IPopulationConverter](/GeneticAlgorithm/Interfaces/IPopulationConverter.cs) interface provides you with a very powerful tool for customizing your search.
-The IPopulationConverter method ConvertPopulation is called every generation after the population is created. In this method you can change the population in any way you want.
+The IPopulationConverter method `ConvertPopulation` is called every generation after the population is created. In this method you can change the population in any way you want.
 This allows you to add [Lamarckian evolution](https://amitksaha.wordpress.com/2009/12/04/lamarckism-in-genetic-algorithms/) to your algorithm - that is, let the chromosomes improve themselves before generating the children.
 
 There is no limit to the number of PopulationConverters you can add to your search. If you add more than one, they will be called in the order in which they were added.
@@ -267,25 +267,25 @@ GeneticAlgorithmEngine includes a library of ready-made implementations of commo
 ### Chromosomes
 
 The [VectorChromosome\<T>](/GeneticAlgorithm/Components/Chromosomes/VectorChromosome.cs) is an implementation of the IChromosome interface.
-It holds a generic vector, which is set in its constructor and can be retrieved via the GetVector method.
+It holds a generic vector, which is set in its constructor and can be retrieved via its `GetVector` method.
 
 VectorChromosome expects an [IMutationManager\<T>](#mutationmanagers) and [IEvaluator](/GeneticAlgorithm/Components/Interfaces/IEvaluator.cs) in its constructor, which tell it how to preform mutations and evaluate itself.
 
 ```CSharp
-    // A very simple implementation of IEvaluator for VectorChromosome of type int
-    class BasicEvaluator : IEvaluator
-    {
-        public double Evaluate(IChromosome chromosome) =>
-            ((VectorChromosome<int>) chromosome).GetVector().Sum();
-    }
+// A very simple implementation of IEvaluator for VectorChromosome of type int
+class BasicEvaluator : IEvaluator
+{
+    public double Evaluate(IChromosome chromosome) =>
+        ((VectorChromosome<int>) chromosome).GetVector().Sum();
+}
 	
-    class UseVectorChromosome
-    {
-    	IMutationManager mutationManager = new UniformMutationManager(0, 10);
-        IEvaluator evaluator = new BasicEvaluator();
-        int[] vector = new int[] {1, 3, 2, 8};
-        VectorChromosome<int> vectorChromosome = new VectorChromosome<int>(vector, mutationManager, evaluator);
-    }
+class UseVectorChromosome
+{
+    IMutationManager mutationManager = new UniformMutationManager(0, 10); // UniformMutationManager is a ready-made in component
+    IEvaluator evaluator = new BasicEvaluator();
+    int[] vector = new int[] {1, 3, 2, 8};
+    VectorChromosome<int> vectorChromosome = new VectorChromosome<int>(vector, mutationManager, evaluator);
+}
 ```
 
 ### MutationManagers
@@ -366,23 +366,23 @@ FitnessSharingChromosomeEvaluator is available since version 1.3.5.
 Following is an example of using components:
 
 ```CSharp
-    class BasicEvaluator : IEvaluator
-    {
-        public double Evaluate(IChromosome chromosome) =>
-            ((VectorChromosome<int>) chromosome).GetVector().Sum();
-    }
+class BasicEvaluator : IEvaluator
+{
+    public double Evaluate(IChromosome chromosome) =>
+        ((VectorChromosome<int>) chromosome).GetVector().Sum();
+}
 	
-    class UseComponents
-    {
-	IMutationManager mutationManager = new UniformMutationManager(0, 10);
-        IEvaluator evaluator = new BasicEvaluator();
-        IPopulationGenerator populationGenerator =
-                new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 10, mutationManager, evaluator);
-        ICrossoverManager crossoverManager = new SinglePointCrossoverManager<int>(mutationManager, evaluator);
-        GeneticSearchEngine engine =
-            new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, crossoverManager, populationGenerator).Build();
-        SearchReasult result = engine.Run();
-    }
+class UseComponents
+{
+    IMutationManager mutationManager = new UniformMutationManager(0, 10);
+    IEvaluator evaluator = new BasicEvaluator();
+    IPopulationGenerator populationGenerator =
+            new IntVectorChromosomePopulationGenerator(VECTOR_SIZE, 0, 10, mutationManager, evaluator);
+    ICrossoverManager crossoverManager = new SinglePointCrossoverManager<int>(mutationManager, evaluator);
+    GeneticSearchEngine engine =
+        new GeneticSearchEngineBuilder(POPULATION_SIZE, GENERATION, crossoverManager, populationGenerator).Build();
+    SearchReasult result = engine.Run();
+}
 ```
 
 ## Using an Environment
@@ -404,8 +404,8 @@ You can find an example of a custom Environment [here](/EnvironmentGui/MyEnviron
 
 ### IChromosomeEvaluator
 
-If you set the [IChromosomeEvaluator](/GeneticAlgorithm/Interfaces/IChromosomeEvaluator.cs), the engine will use your ChromosomeEvaluator's evaluate method (and not the chromosome's default evaluate method).
-Since the IChromosomeEvaluator's SetEnvierment is called before the evaluation begins, your ChromosomeEvaluator can use the information in the environment to evaluate the chromosomes.
+If you set the [IChromosomeEvaluator](/GeneticAlgorithm/Interfaces/IChromosomeEvaluator.cs), the engine will use your ChromosomeEvaluator's `evaluate` method (and not the chromosome's default `evaluate` method).
+Since the IChromosomeEvaluator's `SetEnvierment` is called before the evaluation begins, your ChromosomeEvaluator can use the information in the environment to evaluate the chromosomes.
 
 You can find an example of a custom ChromosomeEvaluator [here](/EnvironmentGui/ChromosomeEvaluator.cs).
 
